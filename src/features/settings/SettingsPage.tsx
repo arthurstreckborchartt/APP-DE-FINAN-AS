@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LogOut } from 'lucide-react'
+import { Link } from 'react-router'
+import { ChevronRight, Landmark, LogOut, Tags } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { Button } from '../../components/ui/Button'
@@ -42,6 +43,18 @@ export default function SettingsPage() {
   return (
     <section className="mx-auto max-w-xl">
       <h1 className="text-2xl font-bold tracking-tight">{t('settings.title')}</h1>
+      <nav aria-label={t('settings.title')} className="mt-6 overflow-hidden rounded-2xl border border-line bg-surface">
+        {[
+          { to: '/accounts', label: t('accounts.title'), icon: Landmark },
+          { to: '/categories', label: t('categories.title'), icon: Tags },
+        ].map(({ to, label, icon: Icon }) => (
+          <Link key={to} to={to} className="flex min-h-14 items-center gap-3 border-b border-line px-5 last:border-b-0 hover:bg-surface-2">
+            <Icon className="size-5 text-primary" aria-hidden="true" />
+            <span className="flex-1 font-medium">{label}</span>
+            <ChevronRight className="size-5 text-muted" aria-hidden="true" />
+          </Link>
+        ))}
+      </nav>
       <form onSubmit={onSubmit} className="mt-6 rounded-2xl border border-line bg-surface p-5 sm:p-6">
         <h2 className="mb-4 font-semibold">{t('settings.profile')}</h2>
         <PreferencesFields value={value} onChange={setDraft} />

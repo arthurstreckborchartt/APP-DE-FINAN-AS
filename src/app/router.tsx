@@ -7,6 +7,7 @@ import SignupPage from '../features/auth/SignupPage'
 import ForgotPasswordPage from '../features/auth/ForgotPasswordPage'
 import ResetPasswordPage from '../features/auth/ResetPasswordPage'
 import OnboardingPage from '../features/onboarding/OnboardingPage'
+import AccountsPage from '../features/accounts/AccountsPage'
 import SettingsPage from '../features/settings/SettingsPage'
 
 export const router = createBrowserRouter([
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
               { path: '/new', element: <PlaceholderPage titleKey="nav.newTransaction" /> },
               { path: '/cards', element: <PlaceholderPage titleKey="nav.cards" /> },
               { path: '/groups', element: <PlaceholderPage titleKey="nav.groups" /> },
+              { path: '/accounts', element: <AccountsPage /> },
               { path: '/more', element: <SettingsPage /> },
             ],
           },
