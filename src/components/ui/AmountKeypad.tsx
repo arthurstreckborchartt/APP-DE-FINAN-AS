@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from 'react'
+import { useId, type KeyboardEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Delete } from 'lucide-react'
 import { appendDigit, removeDigit } from '../../lib/amount'
@@ -25,9 +25,11 @@ function Key({ children, onClick, label }: { children: ReactNode; onClick: () =>
 
 export function AmountKeypad({ value, onChange, currency, locale, label, error }: Props) {
   const { t } = useTranslation()
+  const errorId = useId()
   const press = (digit: number) => onChange(appendDigit(value, digit))
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return
     if (/^[0-9]$/.test(e.key)) {
       e.preventDefault()
       press(Number(e.key))
@@ -40,12 +42,12 @@ export function AmountKeypad({ value, onChange, currency, locale, label, error }
   return (
     <div className="flex flex-col gap-3">
       <div role="textbox" tabIndex={0} aria-label={label} aria-readonly="true" aria-live="polite"
-        aria-invalid={error ? true : undefined} onKeyDown={onKeyDown}
-        className={`rounded-2xl px-4 py-3 text-center text-4xl font-bold tabular-nums outline-none
+        aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} onKeyDown={onKeyDown}
+        className={`rounded-2xl px-4 py-3 text-center text-3xl sm:text-4xl break-all font-bold tabular-nums outline-none
           focus-visible:ring-2 focus-visible:ring-primary ${value === 0 ? 'text-muted' : 'text-fg'}`}>
         {formatMoney(value, currency, locale)}
       </div>
-      {error && <p className="text-center text-sm text-danger">{error}</p>}
+      {error && <p id={errorId} role="alert" className="text-center text-sm text-danger">{error}</p>}
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => (
           <Key key={d} onClick={() => press(d)}>{d}</Key>
