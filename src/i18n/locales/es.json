@@ -199,7 +199,8 @@
     "errors": {
       "amount": "Introduce un importe mayor que cero.",
       "category": "Elige una categoría.",
-      "account": "Elige una cuenta."
+      "account": "Elige una cuenta.",
+      "date": "Indica la fecha."
     }
   },
   "home": {

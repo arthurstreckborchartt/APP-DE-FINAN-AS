@@ -199,7 +199,8 @@
     "errors": {
       "amount": "Enter an amount greater than zero.",
       "category": "Choose a category.",
-      "account": "Choose an account."
+      "account": "Choose an account.",
+      "date": "Enter a date."
     }
   },
   "home": {

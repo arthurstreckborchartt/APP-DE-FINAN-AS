@@ -199,7 +199,8 @@
     "errors": {
       "amount": "Indique um valor superior a zero.",
       "category": "Escolha uma categoria.",
-      "account": "Escolha uma conta."
+      "account": "Escolha uma conta.",
+      "date": "Indique a data."
     }
   },
   "home": {

@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { monthRange } from '../../lib/dates'
 import { useAuth } from '../auth/auth-context'
@@ -88,13 +88,25 @@ export function useUpdateTransaction() {
   })
 }
 
+const isOneOf = (id: string) => (q: { queryKey: readonly unknown[] }) =>
+  q.queryKey[2] === 'one' && q.queryKey[3] === id
+
+export function afterDeleteTransaction(qc: QueryClient, id: string) {
+  const isDeleted = isOneOf(id)
+  qc.removeQueries({ queryKey: ['transactions'], predicate: isDeleted })
+  return Promise.all([
+    qc.invalidateQueries({ queryKey: ['transactions'], predicate: (q) => !isDeleted(q) }),
+    qc.invalidateQueries({ queryKey: ['accounts'] }),
+  ])
+}
+
 export function useDeleteTransaction() {
-  const invalidate = useInvalidateFinance()
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from('transactions').delete().eq('id', id)
       if (error) throw error
     },
-    onSuccess: invalidate,
+    onSuccess: (_data, id) => afterDeleteTransaction(qc, id),
   })
 }

@@ -30,7 +30,7 @@ type Draft = {
   description: string
 }
 
-type Errors = Partial<Record<'amount' | 'category' | 'account', string>>
+type Errors = Partial<Record<'amount' | 'category' | 'account' | 'date', string>>
 
 export default function TransactionFormPage() {
   const { id } = useParams()
@@ -40,7 +40,9 @@ export default function TransactionFormPage() {
   const { data: profile } = useProfile()
   const accountsQuery = useAccounts()
   const categoriesQuery = useCategories()
-  const { data: recent = [] } = useRecentTransactions()
+  const recentQuery = useRecentTransactions()
+  const recent = useMemo(() => recentQuery.data ?? [], [recentQuery.data])
+  const recentSettled = !recentQuery.isPending
   const existingQuery = useTransaction(id)
   const create = useCreateTransaction()
   const update = useUpdateTransaction()
@@ -63,12 +65,14 @@ export default function TransactionFormPage() {
         accountId: existing.account_id, date: existing.date, description: existing.description,
       }
     }
+    if (!recentSettled) return null
     const activeAccounts = accounts.filter((a) => !a.archived).map((a) => a.id)
     const activeCats = categories.filter((c) => !c.archived && c.kind === 'expense').map((c) => c.id)
     const d = pickDefaults(recent, 'expense', activeAccounts, activeCats)
     return { kind: 'expense', amount: 0, categoryId: d.categoryId, accountId: d.accountId, date: todayISO(), description: '' }
-  }, [id, existing, accounts, categories, recent])
+  }, [id, existing, accounts, categories, recent, recentSettled])
 
+  if (remove.isPending || remove.isSuccess) return <FullScreenSpinner />
   if (accountsQuery.isError || categoriesQuery.isError || existingQuery.isError) {
     return <QueryError onRetry={() => {
       void accountsQuery.refetch()
@@ -96,6 +100,8 @@ export default function TransactionFormPage() {
   function set(patch: Partial<Draft>) {
     setDraft({ ...form, ...patch })
     setSaveError(false)
+    setErrors({})
+    setConfirmDelete(false)
   }
 
   function changeKind(kind: TransactionKind) {
@@ -111,6 +117,7 @@ export default function TransactionFormPage() {
     const next: Errors = {}
     if (form.amount <= 0) next.amount = t('transactions.errors.amount')
     if (!form.categoryId) next.category = t('transactions.errors.category')
+    if (!form.date) next.date = t('transactions.errors.date')
     if (!form.accountId) next.account = t('transactions.errors.account')
     setErrors(next)
     if (Object.keys(next).length > 0) return
@@ -178,8 +185,8 @@ export default function TransactionFormPage() {
           </SelectField>
           {errors.account && <p className="mt-1 text-sm text-danger">{errors.account}</p>}
         </div>
-        <TextField label={t('transactions.date')} type="date" required value={form.date}
-          onChange={(e) => set({ date: e.target.value || todayISO() })} />
+        <TextField label={t('transactions.date')} type="date" value={form.date}
+          onChange={(e) => set({ date: e.target.value })} error={errors.date} />
       </div>
 
       <TextField label={t('transactions.description')} maxLength={140} placeholder={t('transactions.descriptionPlaceholder')}

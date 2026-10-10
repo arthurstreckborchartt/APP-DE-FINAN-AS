@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router'
+import { createBrowserRouter, Navigate, useParams } from 'react-router'
 import { PublicOnly, RequireAuth, RequireOnboarded } from './guards'
 import { AppShell } from './AppShell'
 import PlaceholderPage from './PlaceholderPage'
@@ -11,6 +11,11 @@ import AccountsPage from '../features/accounts/AccountsPage'
 import CategoriesPage from '../features/categories/CategoriesPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import TransactionFormPage from '../features/transactions/TransactionFormPage'
+
+function TransactionFormRoute() {
+  const { id } = useParams()
+  return <TransactionFormPage key={id ?? 'new'} />
+}
 
 export const router = createBrowserRouter([
   {
@@ -34,8 +39,8 @@ export const router = createBrowserRouter([
             children: [
               { path: '/', element: <PlaceholderPage titleKey="nav.home" /> },
               { path: '/transactions', element: <PlaceholderPage titleKey="nav.transactions" /> },
-              { path: '/new', element: <TransactionFormPage /> },
-              { path: '/transactions/:id/edit', element: <TransactionFormPage /> },
+              { path: '/new', element: <TransactionFormRoute /> },
+              { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
               { path: '/cards', element: <PlaceholderPage titleKey="nav.cards" /> },
               { path: '/groups', element: <PlaceholderPage titleKey="nav.groups" /> },
               { path: '/accounts', element: <AccountsPage /> },
