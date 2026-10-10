@@ -23,13 +23,20 @@ export default function SettingsPage() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    await update.mutateAsync({ ...value, name: value.name.trim() })
-    setDraft(null)
+    try {
+      await update.mutateAsync({ ...value, name: value.name.trim() })
+      setDraft(null)
+    } catch {
+      // o erro é exibido via update.isError; o rascunho é mantido
+    }
   }
 
   async function logout() {
-    await supabase.auth.signOut()
-    qc.clear()
+    try {
+      await supabase.auth.signOut({ scope: 'local' })
+    } finally {
+      qc.clear()
+    }
   }
 
   return (
@@ -44,7 +51,7 @@ export default function SettingsPage() {
           {update.isError && <span role="alert" className="text-sm text-danger">{t('common.errorGeneric')}</span>}
         </div>
       </form>
-      <Button variant="danger" className="mt-4" onClick={logout}>
+      <Button variant="danger" className="mt-4" onClick={() => void logout()}>
         <LogOut className="size-5" aria-hidden="true" /> {t('settings.logout')}
       </Button>
     </section>

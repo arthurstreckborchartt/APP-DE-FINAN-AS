@@ -9,8 +9,11 @@ export function ProfileErrorState({ onRetry }: { onRetry: () => void }) {
   const qc = useQueryClient()
 
   async function logout() {
-    await supabase.auth.signOut()
-    qc.clear()
+    try {
+      await supabase.auth.signOut({ scope: 'local' })
+    } finally {
+      qc.clear()
+    }
   }
 
   return (
