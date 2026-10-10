@@ -9,6 +9,19 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.1.0.0 — 2026-10-11
+
+Etapa 2: contas, categorias e lançamentos.
+
+- Contas (dinheiro, conta corrente, poupança, outra) com saldo calculado, saldo inicial, arquivar e excluir (bloqueado se houver lançamentos).
+- Categorias: 19 padrão traduzidas nos 4 idiomas + categorias próprias com ícone e cor.
+- Novo lançamento com teclado numérico grande, receita/despesa, categoria, conta, data e descrição; sugere a conta e a categoria mais usadas.
+- Lista de lançamentos do mês com resumo (entradas, saídas, resultado), busca e filtros por tipo, conta e categoria.
+- Início com saldo das contas, resumo do mês e últimos lançamentos.
+- Assistente de boas-vindas agora cria a primeira conta.
+- Totais sempre separados por moeda; a moeda do lançamento vem da conta.
+- Banco: novas tabelas com regras de segurança e testes automáticos de segurança (`npm run test:db`).
+
 ## Atualização 1.0.0.0 — 2026-10-10
 
 Primeira versão: a base do app (Etapa 1).
