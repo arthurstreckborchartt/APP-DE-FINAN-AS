@@ -22,6 +22,10 @@ create policy profiles_update_own on public.profiles
   using (id = (select auth.uid()))
   with check (id = (select auth.uid()));
 
+-- Privilégios explícitos (o projeto pode não conceder automaticamente)
+revoke all on public.profiles from anon;
+grant select, update (name, locale, currency, theme, onboarded_at) on public.profiles to authenticated;
+
 -- Sem policy de insert/delete: perfis são criados pelo trigger e apagados em cascata.
 
 create function public.set_updated_at() returns trigger
@@ -33,6 +37,8 @@ begin
   return new;
 end;
 $$;
+
+revoke execute on function public.set_updated_at() from public, anon, authenticated;
 
 create trigger profiles_set_updated_at
   before update on public.profiles
@@ -55,6 +61,8 @@ begin
   return new;
 end;
 $$;
+
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
 create trigger on_auth_user_created
   after insert on auth.users
