@@ -1,0 +1,92 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "loading": "Loading…",
+    "comingSoon": "Coming soon to this screen.",
+    "saved": "Changes saved",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "nav": {
+    "home": "Home",
+    "transactions": "Transactions",
+    "new": "New",
+    "newTransaction": "New transaction",
+    "cards": "Cards",
+    "groups": "Groups",
+    "more": "More",
+    "mainMenu": "Main menu"
+  },
+  "auth": {
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "newPassword": "New password",
+      "name": "Your name"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Access your finances on any device.",
+      "submit": "Sign in",
+      "forgot": "Forgot password",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Create account"
+    },
+    "signup": {
+      "title": "Create account",
+      "subtitle": "It takes less than a minute.",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "checkEmailTitle": "Confirm your email",
+      "checkEmailBody": "We sent a confirmation link to {{email}}. Open it to activate your account."
+    },
+    "forgot": {
+      "title": "Reset password",
+      "subtitle": "We'll send you a link to create a new password.",
+      "submit": "Send link",
+      "sent": "If an account exists for that email, the link is on its way.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "New password",
+      "submit": "Save new password"
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailNotConfirmed": "Please confirm your email before signing in.",
+      "userExists": "An account with this email already exists.",
+      "weakPassword": "Password must be at least 8 characters.",
+      "rateLimit": "Too many attempts. Wait a moment and try again.",
+      "generic": "Couldn't complete that. Please try again."
+    }
+  },
+  "onboarding": {
+    "title": "Welcome!",
+    "subtitle": "Let's set the app up your way. You can change this later.",
+    "finish": "Get started"
+  },
+  "preferences": {
+    "name": "Name",
+    "language": "Language",
+    "currency": "Main currency",
+    "theme": "Theme",
+    "themeSystem": "Automatic",
+    "themeLight": "Light",
+    "themeDark": "Dark"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile and preferences",
+    "logout": "Sign out"
+  },
+  "install": {
+    "title": "Install the app",
+    "body": "Open it faster, full screen, right from your home screen.",
+    "button": "Install",
+    "iosHint": "In Safari, tap Share and then \"Add to Home Screen\".",
+    "dismiss": "Not now"
+  }
+}

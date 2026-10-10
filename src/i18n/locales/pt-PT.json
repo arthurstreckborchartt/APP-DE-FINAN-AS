@@ -1,0 +1,92 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "back": "Voltar",
+    "loading": "A carregar…",
+    "comingSoon": "Brevemente neste ecrã.",
+    "saved": "Alterações guardadas",
+    "errorGeneric": "Algo correu mal. Tente novamente."
+  },
+  "nav": {
+    "home": "Início",
+    "transactions": "Movimentos",
+    "new": "Novo",
+    "newTransaction": "Novo movimento",
+    "cards": "Cartões",
+    "groups": "Grupos",
+    "more": "Mais",
+    "mainMenu": "Menu principal"
+  },
+  "auth": {
+    "fields": {
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "newPassword": "Nova palavra-passe",
+      "name": "O seu nome"
+    },
+    "login": {
+      "title": "Entrar",
+      "subtitle": "Aceda às suas finanças em qualquer dispositivo.",
+      "submit": "Entrar",
+      "forgot": "Esqueci-me da palavra-passe",
+      "noAccount": "Ainda não tem conta?",
+      "signupLink": "Criar conta"
+    },
+    "signup": {
+      "title": "Criar conta",
+      "subtitle": "Demora menos de um minuto.",
+      "submit": "Criar conta",
+      "hasAccount": "Já tem conta?",
+      "loginLink": "Entrar",
+      "checkEmailTitle": "Confirme o seu e-mail",
+      "checkEmailBody": "Enviámos um link de confirmação para {{email}}. Abra-o para ativar a sua conta."
+    },
+    "forgot": {
+      "title": "Recuperar palavra-passe",
+      "subtitle": "Vamos enviar-lhe um link para criar uma nova palavra-passe.",
+      "submit": "Enviar link",
+      "sent": "Se existir uma conta com esse e-mail, o link já vai a caminho.",
+      "backToLogin": "Voltar ao início de sessão"
+    },
+    "reset": {
+      "title": "Nova palavra-passe",
+      "submit": "Guardar nova palavra-passe"
+    },
+    "errors": {
+      "invalidCredentials": "E-mail ou palavra-passe incorretos.",
+      "emailNotConfirmed": "Confirme o seu e-mail antes de entrar.",
+      "userExists": "Já existe uma conta com esse e-mail.",
+      "weakPassword": "A palavra-passe tem de ter pelo menos 8 caracteres.",
+      "rateLimit": "Demasiadas tentativas. Aguarde um pouco e tente de novo.",
+      "generic": "Não foi possível concluir. Tente novamente."
+    }
+  },
+  "onboarding": {
+    "title": "Bem-vindo!",
+    "subtitle": "Vamos ajustar a aplicação ao seu gosto. Pode alterar isto depois.",
+    "finish": "Começar"
+  },
+  "preferences": {
+    "name": "Nome",
+    "language": "Idioma",
+    "currency": "Moeda principal",
+    "theme": "Tema",
+    "themeSystem": "Automático",
+    "themeLight": "Claro",
+    "themeDark": "Escuro"
+  },
+  "settings": {
+    "title": "Definições",
+    "profile": "Perfil e preferências",
+    "logout": "Terminar sessão"
+  },
+  "install": {
+    "title": "Instale a aplicação",
+    "body": "Aceda mais depressa, em ecrã inteiro, a partir do ecrã principal.",
+    "button": "Instalar",
+    "iosHint": "No Safari, toque em Partilhar e depois em \"Adicionar ao ecrã principal\".",
+    "dismiss": "Agora não"
+  }
+}

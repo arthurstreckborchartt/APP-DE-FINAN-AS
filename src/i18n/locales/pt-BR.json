@@ -1,0 +1,92 @@
+{
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "back": "Voltar",
+    "loading": "Carregando…",
+    "comingSoon": "Em breve nesta tela.",
+    "saved": "Alterações salvas",
+    "errorGeneric": "Algo deu errado. Tente novamente."
+  },
+  "nav": {
+    "home": "Início",
+    "transactions": "Lançamentos",
+    "new": "Novo",
+    "newTransaction": "Novo lançamento",
+    "cards": "Cartões",
+    "groups": "Grupos",
+    "more": "Mais",
+    "mainMenu": "Menu principal"
+  },
+  "auth": {
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "newPassword": "Nova senha",
+      "name": "Seu nome"
+    },
+    "login": {
+      "title": "Entrar",
+      "subtitle": "Acesse suas finanças em qualquer aparelho.",
+      "submit": "Entrar",
+      "forgot": "Esqueci minha senha",
+      "noAccount": "Ainda não tem conta?",
+      "signupLink": "Criar conta"
+    },
+    "signup": {
+      "title": "Criar conta",
+      "subtitle": "Leva menos de um minuto.",
+      "submit": "Criar conta",
+      "hasAccount": "Já tem conta?",
+      "loginLink": "Entrar",
+      "checkEmailTitle": "Confirme seu e-mail",
+      "checkEmailBody": "Enviamos um link de confirmação para {{email}}. Abra-o para ativar sua conta."
+    },
+    "forgot": {
+      "title": "Recuperar senha",
+      "subtitle": "Enviaremos um link para você criar uma nova senha.",
+      "submit": "Enviar link",
+      "sent": "Se existir uma conta com esse e-mail, o link já está a caminho.",
+      "backToLogin": "Voltar para o login"
+    },
+    "reset": {
+      "title": "Nova senha",
+      "submit": "Salvar nova senha"
+    },
+    "errors": {
+      "invalidCredentials": "E-mail ou senha incorretos.",
+      "emailNotConfirmed": "Confirme seu e-mail antes de entrar.",
+      "userExists": "Já existe uma conta com esse e-mail.",
+      "weakPassword": "A senha precisa ter pelo menos 8 caracteres.",
+      "rateLimit": "Muitas tentativas. Aguarde um pouco e tente de novo.",
+      "generic": "Não foi possível concluir. Tente novamente."
+    }
+  },
+  "onboarding": {
+    "title": "Bem-vindo!",
+    "subtitle": "Vamos ajustar o app do seu jeito. Você pode mudar isso depois.",
+    "finish": "Começar"
+  },
+  "preferences": {
+    "name": "Nome",
+    "language": "Idioma",
+    "currency": "Moeda principal",
+    "theme": "Tema",
+    "themeSystem": "Automático",
+    "themeLight": "Claro",
+    "themeDark": "Escuro"
+  },
+  "settings": {
+    "title": "Configurações",
+    "profile": "Perfil e preferências",
+    "logout": "Sair"
+  },
+  "install": {
+    "title": "Instale o app",
+    "body": "Acesse mais rápido, em tela cheia, direto da tela inicial.",
+    "button": "Instalar",
+    "iosHint": "No Safari, toque em Compartilhar e depois em \"Adicionar à Tela de Início\".",
+    "dismiss": "Agora não"
+  }
+}
