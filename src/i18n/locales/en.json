@@ -167,6 +167,7 @@
     }
   },
   "transactions": {
+    "kindFilter": "Type",
     "title": "Transactions",
     "new": "New transaction",
     "edit": "Edit transaction",

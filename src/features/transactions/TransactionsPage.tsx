@@ -27,8 +27,11 @@ export default function TransactionsPage() {
   const raw = params.get('m')
   const month = isMonth(raw) ? raw : monthOf(todayISO())
   const { data: transactions, isPending, isError, refetch } = useTransactions(month)
-  const { data: accounts = [] } = useAccounts()
-  const { data: categories = [] } = useCategories()
+  const accountsQuery = useAccounts()
+  const categoriesQuery = useCategories()
+  const accounts = accountsQuery.data ?? []
+  const categories = categoriesQuery.data ?? []
+  const refsError = accountsQuery.isError || categoriesQuery.isError
   const [filters, setFilters] = useState<TransactionFilters>({})
 
   const categoriesById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories])
@@ -50,14 +53,18 @@ export default function TransactionsPage() {
 
       {summary.map((s) => (
         <dl key={s.currency} className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-surface p-4 text-center">
-          <div><dt className="text-xs text-muted">{t('transactions.income_total')}</dt>
-            <dd className="font-semibold tabular-nums text-success">{formatMoney(s.income, s.currency, locale)}</dd></div>
-          <div><dt className="text-xs text-muted">{t('transactions.expense_total')}</dt>
-            <dd className="font-semibold tabular-nums text-danger">{formatMoney(s.expense, s.currency, locale)}</dd></div>
-          <div><dt className="text-xs text-muted">{t('transactions.net_total')}</dt>
-            <dd className="font-semibold tabular-nums">{formatMoney(s.net, s.currency, locale)}</dd></div>
+          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.income_total')}</dt>
+            <dd className="break-words text-sm font-semibold tabular-nums text-success sm:text-base">{formatMoney(s.income, s.currency, locale)}</dd></div>
+          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.expense_total')}</dt>
+            <dd className="break-words text-sm font-semibold tabular-nums text-danger sm:text-base">{formatMoney(s.expense, s.currency, locale)}</dd></div>
+          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.net_total')}</dt>
+            <dd className="break-words text-sm font-semibold tabular-nums sm:text-base">{formatMoney(s.net, s.currency, locale)}</dd></div>
         </dl>
       ))}
+
+      {refsError && (
+        <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch() }} />
+      )}
 
       <div className="flex flex-col gap-2">
         <label className="relative">
@@ -67,7 +74,7 @@ export default function TransactionsPage() {
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
             className="h-11 w-full rounded-xl border border-line bg-surface pl-10 pr-3 text-base outline-none focus:border-primary" />
         </label>
-        <SegmentedControl<'all' | TransactionKind> label={t('transactions.title')} value={filters.kind ?? 'all'}
+        <SegmentedControl<'all' | TransactionKind> label={t('transactions.kindFilter')} value={filters.kind ?? 'all'}
           onChange={(v) => setFilters({ ...filters, kind: v === 'all' ? undefined : v })}
           options={[
             { value: 'all', label: t('common.all') },
@@ -83,13 +90,17 @@ export default function TransactionsPage() {
           <select aria-label={t('transactions.category')} className={selectClass} value={filters.categoryId ?? ''}
             onChange={(e) => setFilters({ ...filters, categoryId: e.target.value || undefined })}>
             <option value="">{t('transactions.allCategories')}</option>
-            {categories.map((c) => <option key={c.id} value={c.id}>{categoryLabel(c, t)}</option>)}
+            {(['expense', 'income'] as const).map((kind) => (
+              <optgroup key={kind} label={t(`categories.${kind}`)}>
+                {categories.filter((c) => c.kind === kind).map((c) => <option key={c.id} value={c.id}>{categoryLabel(c, t)}</option>)}
+              </optgroup>
+            ))}
           </select>
         </div>
       </div>
 
       {isPending ? (
-        <FullScreenSpinner />
+        <div className="min-h-[40vh]"><FullScreenSpinner /></div>
       ) : isError ? (
         <QueryError onRetry={() => void refetch()} />
       ) : groups.length === 0 ? (

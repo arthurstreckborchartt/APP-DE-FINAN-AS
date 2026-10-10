@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Wallet } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { AccountForm } from '../accounts/AccountForm'
-import { useCreateAccount } from '../accounts/api'
+import { useAccounts, useCreateAccount } from '../accounts/api'
 import type { AccountInput } from '../accounts/types'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { changeLocale } from '../../i18n'
@@ -21,6 +21,7 @@ export default function OnboardingPage() {
   const update = useUpdateProfile()
   usePreferences(profile)
   const createAccount = useCreateAccount()
+  const accountsQuery = useAccounts()
   const [value, setValue] = useState<PreferencesValue | null>(null)
   const [step, setStep] = useState<'preferences' | 'account'>('preferences')
   const [accountCreated, setAccountCreated] = useState(false)
@@ -54,7 +55,7 @@ export default function OnboardingPage() {
   async function finish(account: AccountInput | null) {
     setFinishError(false)
     try {
-      if (account && !accountCreated) {
+      if (account && !accountCreated && !(accountsQuery.data?.length)) {
         await createAccount.mutateAsync(account)
         setAccountCreated(true)
       }
@@ -88,7 +89,7 @@ export default function OnboardingPage() {
               error={finishError ? t('common.errorGeneric') : null}
               onSubmit={(v) => void finish(v)}
             >
-              <Button type="button" variant="ghost" full onClick={() => void finish(null)}>{t('common.skip')}</Button>
+              <Button type="button" variant="ghost" full disabled={createAccount.isPending || update.isPending} onClick={() => void finish(null)}>{t('common.skip')}</Button>
             </AccountForm>
           </div>
         </div>

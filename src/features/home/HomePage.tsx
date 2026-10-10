@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, Wallet } from 'lucide-react'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
-import { FullScreenSpinner } from '../../components/ui/Spinner'
+import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
 import { monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { formatMoney } from '../../lib/money'
@@ -21,15 +21,18 @@ export default function HomePage() {
   const locale = normalizeLocale(i18n.language)
   const { data: profile } = useProfile()
   const accountsQuery = useAccounts()
-  const { data: categories = [] } = useCategories()
+  const categoriesQuery = useCategories()
+  const categories = categoriesQuery.data ?? []
   const month = monthOf(todayISO())
-  const { data: monthTx = [] } = useTransactions(month)
-  const { data: recent = [] } = useRecentTransactions()
+  const monthQuery = useTransactions(month)
+  const recentQuery = useRecentTransactions()
+  const monthTx = monthQuery.data ?? []
+  const recent = recentQuery.data ?? []
 
   const categoriesById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories])
   const accountsById = useMemo(() => new Map((accountsQuery.data ?? []).map((a) => [a.id, a])), [accountsQuery.data])
 
-  if (accountsQuery.isPending) return <FullScreenSpinner />
+  if (accountsQuery.isPending) return <div className="min-h-[40vh]"><FullScreenSpinner /></div>
   if (accountsQuery.isError) return <QueryError onRetry={() => void accountsQuery.refetch()} />
 
   const accounts = accountsQuery.data
@@ -39,7 +42,7 @@ export default function HomePage() {
 
   return (
     <section className="mx-auto flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">{greeting}</h1>
+      {profile ? <h1 className="text-2xl font-bold tracking-tight">{greeting}</h1> : <div className="h-8" />}
 
       {accounts.filter((a) => !a.archived).length === 0 ? (
         <EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
@@ -54,7 +57,11 @@ export default function HomePage() {
           </Link>
           <div className="rounded-3xl border border-line bg-surface p-5">
             <p className="text-sm text-muted">{t('home.thisMonth')}</p>
-            {summary.length === 0 ? (
+            {monthQuery.isPending ? (
+              <div className="grid place-items-center py-6"><Spinner /></div>
+            ) : monthQuery.isError ? (
+              <div className="mt-2"><QueryError onRetry={() => void monthQuery.refetch()} /></div>
+            ) : summary.length === 0 ? (
               <p className="mt-2 text-sm text-muted">{t('transactions.empty')}</p>
             ) : (
               summary.map((s) => (
@@ -77,7 +84,13 @@ export default function HomePage() {
             {t('home.seeAll')} <ChevronRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        {recent.length === 0 ? (
+        {recentQuery.isPending || categoriesQuery.isPending ? (
+          <div className="grid place-items-center py-6"><Spinner /></div>
+        ) : recentQuery.isError || categoriesQuery.isError ? (
+          <div className="mt-2">
+            <QueryError onRetry={() => { void recentQuery.refetch(); void categoriesQuery.refetch() }} />
+          </div>
+        ) : recent.length === 0 ? (
           <p className="mt-2 text-sm text-muted">{t('transactions.emptyBody')}</p>
         ) : (
           <ul className="mt-2 rounded-2xl border border-line bg-surface p-1">

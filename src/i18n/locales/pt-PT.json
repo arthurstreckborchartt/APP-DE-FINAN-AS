@@ -167,6 +167,7 @@
     }
   },
   "transactions": {
+    "kindFilter": "Tipo",
     "title": "Movimentos",
     "new": "Novo movimento",
     "edit": "Editar movimento",

@@ -167,6 +167,7 @@
     }
   },
   "transactions": {
+    "kindFilter": "Tipo",
     "title": "Lançamentos",
     "new": "Novo lançamento",
     "edit": "Editar lançamento",
