@@ -1,5 +1,7 @@
 {
   "common": {
+    "retry": "Reintentar",
+    "profileLoadError": "No se pudo cargar tu perfil. Revisa tu conexión.",
     "save": "Guardar",
     "cancel": "Cancelar",
     "continue": "Continuar",

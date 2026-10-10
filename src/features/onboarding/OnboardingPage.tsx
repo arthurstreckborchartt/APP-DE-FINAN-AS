@@ -6,18 +6,19 @@ import { Button } from '../../components/ui/Button'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { changeLocale } from '../../i18n'
 import { applyTheme } from '../../lib/theme'
+import { ProfileErrorState } from '../../app/ProfileErrorState'
 import { useProfile, useUpdateProfile } from '../profile/api'
 import { PreferencesFields, type PreferencesValue } from '../profile/PreferencesFields'
 
 export default function OnboardingPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { data: profile, isPending } = useProfile()
+  const { data: profile, isPending, isError, refetch } = useProfile()
   const update = useUpdateProfile()
   const [value, setValue] = useState<PreferencesValue | null>(null)
 
   if (isPending) return <FullScreenSpinner />
-  if (!profile) return <Navigate to="/login" replace />
+  if (isError || !profile) return <ProfileErrorState onRetry={() => void refetch()} />
   if (profile.onboarded_at) return <Navigate to="/" replace />
 
   const current: PreferencesValue = value ?? {
@@ -32,8 +33,12 @@ export default function OnboardingPage() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    await update.mutateAsync({ ...current, name: current.name.trim(), onboarded_at: new Date().toISOString() })
-    navigate('/', { replace: true })
+    try {
+      await update.mutateAsync({ ...current, name: current.name.trim(), onboarded_at: new Date().toISOString() })
+      navigate('/', { replace: true })
+    } catch {
+      // o erro é exibido via update.isError
+    }
   }
 
   return (
@@ -43,7 +48,7 @@ export default function OnboardingPage() {
         <h1 className="mt-4 text-2xl font-bold tracking-tight">{t('onboarding.title')}</h1>
         <p className="mt-1 text-muted">{t('onboarding.subtitle')}</p>
         <div className="mt-6">
-          <PreferencesFields value={current} onChange={onChange} />
+          <PreferencesFields value={current} onChange={onChange} nameRequired />
         </div>
         {update.isError && <p role="alert" className="mt-4 text-sm text-danger">{t('common.errorGeneric')}</p>}
         <Button type="submit" full className="mt-6" loading={update.isPending}>{t('onboarding.finish')}</Button>

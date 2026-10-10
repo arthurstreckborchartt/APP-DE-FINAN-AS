@@ -7,7 +7,7 @@ import type { ThemePreference } from '../../lib/theme'
 
 export type PreferencesValue = { name: string; locale: Locale; currency: CurrencyCode; theme: ThemePreference }
 
-type Props = { value: PreferencesValue; onChange: (v: PreferencesValue) => void }
+type Props = { value: PreferencesValue; onChange: (v: PreferencesValue) => void; nameRequired?: boolean }
 
 const THEMES: { value: ThemePreference; key: string }[] = [
   { value: 'system', key: 'preferences.themeSystem' },
@@ -15,13 +15,13 @@ const THEMES: { value: ThemePreference; key: string }[] = [
   { value: 'dark', key: 'preferences.themeDark' },
 ]
 
-export function PreferencesFields({ value, onChange }: Props) {
+export function PreferencesFields({ value, onChange, nameRequired }: Props) {
   const { t } = useTranslation()
   const set = <K extends keyof PreferencesValue>(k: K, v: PreferencesValue[K]) => onChange({ ...value, [k]: v })
 
   return (
     <div className="flex flex-col gap-4">
-      <TextField label={t('preferences.name')} maxLength={80} autoComplete="name"
+      <TextField label={t('preferences.name')} maxLength={80} autoComplete="name" required={nameRequired}
         value={value.name} onChange={(e) => set('name', e.target.value)} />
       <SelectField label={t('preferences.language')} value={value.locale}
         onChange={(e) => set('locale', e.target.value as Locale)}>

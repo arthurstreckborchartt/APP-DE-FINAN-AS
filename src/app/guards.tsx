@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router'
 import { useAuth } from '../features/auth/auth-context'
 import { useProfile } from '../features/profile/api'
 import { FullScreenSpinner } from '../components/ui/Spinner'
+import { ProfileErrorState } from './ProfileErrorState'
 
 export function RequireAuth() {
   const { session, loading } = useAuth()
@@ -18,8 +19,9 @@ export function PublicOnly() {
 }
 
 export function RequireOnboarded() {
-  const { data: profile, isPending } = useProfile()
+  const { data: profile, isPending, isError, refetch } = useProfile()
   if (isPending) return <FullScreenSpinner />
-  if (!profile?.onboarded_at) return <Navigate to="/onboarding" replace />
+  if (isError) return <ProfileErrorState onRetry={() => void refetch()} />
+  if (profile && !profile.onboarded_at) return <Navigate to="/onboarding" replace />
   return <Outlet />
 }
