@@ -21,7 +21,7 @@ begin
   select id into sys_salary from public.categories where i18n_key = 'salary';
   if sys_food is null or sys_salary is null then raise exception 'FAIL: categorias padrão invisíveis'; end if;
 
-  if (select array_agg(i18n_key order by i18n_key) from public.categories where user_id is null)
+  if (select array_agg(i18n_key order by i18n_key collate "C") from public.categories where user_id is null)
      is distinct from array['education', 'food', 'freelance', 'gifts', 'groceries', 'health', 'housing', 'investments', 'leisure', 'other_expense', 'other_income', 'pets', 'salary', 'shopping', 'subscriptions', 'taxes', 'transport', 'travel', 'utilities']::text[] then
     raise exception 'FAIL: categorias padrão diferentes das 19 esperadas';
   end if;
