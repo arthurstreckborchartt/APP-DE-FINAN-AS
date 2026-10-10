@@ -19,10 +19,15 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-    setLoading(false)
-    if (error) return setError(t(authErrorKey(error.code)))
-    navigate('/', { replace: true })
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      if (error) return setError(t(authErrorKey(error.code)))
+      navigate('/', { replace: true })
+    } catch {
+      setError(t('auth.errors.generic'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -36,7 +41,7 @@ export default function LoginPage() {
         </>
       }
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <TextField label={t('auth.fields.email')} type="email" autoComplete="email" inputMode="email"
           required value={email} onChange={(e) => setEmail(e.target.value)} />
         <TextField label={t('auth.fields.password')} type="password" autoComplete="current-password"

@@ -10,11 +10,11 @@ export function LanguageSelect({ value, onChange }: Props) {
   const { t, i18n } = useTranslation()
   const current = value ?? normalizeLocale(i18n.language)
   return (
-    <label className="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm text-muted hover:bg-surface-2">
+    <label className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 py-1 text-sm text-muted focus-within:ring-2 focus-within:ring-primary hover:bg-surface-2">
       <Languages className="size-4" aria-hidden="true" />
       <span className="sr-only">{t('preferences.language')}</span>
       <select
-        className="bg-transparent text-fg outline-none"
+        className="rounded-md bg-transparent text-base text-fg outline-none focus-visible:ring-2 focus-visible:ring-primary"
         value={current}
         onChange={(e) => {
           const next = normalizeLocale(e.target.value)
@@ -23,7 +23,7 @@ export function LanguageSelect({ value, onChange }: Props) {
         }}
       >
         {SUPPORTED_LOCALES.map((l) => (
-          <option key={l} value={l}>{LOCALE_LABELS[l]}</option>
+          <option key={l} value={l} className="bg-surface text-fg">{LOCALE_LABELS[l]}</option>
         ))}
       </select>
     </label>

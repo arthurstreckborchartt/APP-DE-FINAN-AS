@@ -19,15 +19,20 @@ export default function ResetPasswordPage() {
     if (password.length < 8) return setError(t('auth.errors.weakPassword'))
     setLoading(true)
     setError(null)
-    const { error } = await supabase.auth.updateUser({ password })
-    setLoading(false)
-    if (error) return setError(t(authErrorKey(error.code)))
-    navigate('/', { replace: true })
+    try {
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) return setError(t(authErrorKey(error.code)))
+      navigate('/', { replace: true })
+    } catch {
+      setError(t('auth.errors.generic'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <AuthLayout title={t('auth.reset.title')}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <TextField label={t('auth.fields.newPassword')} type="password" autoComplete="new-password" minLength={8}
           required value={password} onChange={(e) => setPassword(e.target.value)} />
         {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}

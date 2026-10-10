@@ -18,12 +18,17 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
-    })
-    setLoading(false)
-    if (error) return setError(t(authErrorKey(error.code)))
-    setSent(true)
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+      if (error) return setError(t(authErrorKey(error.code)))
+      setSent(true)
+    } catch {
+      setError(t('auth.errors.generic'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -35,7 +40,7 @@ export default function ForgotPasswordPage() {
       {sent ? (
         <p role="status" className="rounded-lg bg-success/10 px-3 py-2 text-success">{t('auth.forgot.sent')}</p>
       ) : (
-        <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+        <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <TextField label={t('auth.fields.email')} type="email" autoComplete="email" inputMode="email"
             required value={email} onChange={(e) => setEmail(e.target.value)} />
           {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}

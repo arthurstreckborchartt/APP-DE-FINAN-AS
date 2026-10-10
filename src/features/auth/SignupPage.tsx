@@ -24,18 +24,23 @@ export default function SignupPage() {
     if (password.length < 8) return setError(t('auth.errors.weakPassword'))
     setLoading(true)
     setError(null)
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      options: {
-        data: { name: name.trim(), locale: normalizeLocale(i18n.language) },
-        emailRedirectTo: `${window.location.origin}/`,
-      },
-    })
-    setLoading(false)
-    if (error) return setError(t(authErrorKey(error.code)))
-    if (data.session) return navigate('/', { replace: true })
-    setSentTo(email.trim())
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { name: name.trim(), locale: normalizeLocale(i18n.language) },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      })
+      if (error) return setError(t(authErrorKey(error.code)))
+      if (data.session) return navigate('/', { replace: true })
+      setSentTo(email.trim())
+    } catch {
+      setError(t('auth.errors.generic'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (sentTo) {
@@ -61,7 +66,7 @@ export default function SignupPage() {
         </>
       }
     >
-      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <TextField label={t('auth.fields.name')} autoComplete="name" maxLength={80}
           required value={name} onChange={(e) => setName(e.target.value)} />
         <TextField label={t('auth.fields.email')} type="email" autoComplete="email" inputMode="email"
