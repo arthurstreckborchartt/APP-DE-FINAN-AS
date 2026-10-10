@@ -21,7 +21,8 @@ export function PublicOnly() {
 export function RequireOnboarded() {
   const { data: profile, isPending, isError, refetch } = useProfile()
   if (isPending) return <FullScreenSpinner />
-  if (isError) return <ProfileErrorState onRetry={() => void refetch()} />
+  // Um refetch em segundo plano que falha mantém os dados em cache: só mostra o erro sem perfil
+  if (isError && !profile) return <ProfileErrorState onRetry={() => void refetch()} />
   if (profile && !profile.onboarded_at) return <Navigate to="/onboarding" replace />
   return <Outlet />
 }

@@ -9,16 +9,19 @@ import { applyTheme } from '../../lib/theme'
 import { ProfileErrorState } from '../../app/ProfileErrorState'
 import { useProfile, useUpdateProfile } from '../profile/api'
 import { PreferencesFields, type PreferencesValue } from '../profile/PreferencesFields'
+import { usePreferences } from '../profile/usePreferences'
 
 export default function OnboardingPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { data: profile, isPending, isError, refetch } = useProfile()
+  const { data: profile, isPending, refetch } = useProfile()
   const update = useUpdateProfile()
+  usePreferences(profile)
   const [value, setValue] = useState<PreferencesValue | null>(null)
 
   if (isPending) return <FullScreenSpinner />
-  if (isError || !profile) return <ProfileErrorState onRetry={() => void refetch()} />
+  // Erro de refetch com perfil em cache não substitui a tela
+  if (!profile) return <ProfileErrorState onRetry={() => void refetch()} />
   if (profile.onboarded_at) return <Navigate to="/" replace />
 
   const current: PreferencesValue = value ?? {
