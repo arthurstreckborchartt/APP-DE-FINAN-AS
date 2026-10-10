@@ -51,7 +51,7 @@ export function AccountForm({ initial, currencyEditable, submitLabel, loading, e
         {!currencyEditable && <p className="mt-1 text-xs text-muted">{t('accounts.currencyLocked')}</p>}
       </div>
       <TextField label={t('accounts.initialBalance')} inputMode="decimal" placeholder={formatAmountPlain(0, locale)}
-        value={balanceText} error={balanceError} onChange={(e) => setBalanceText(e.target.value)} />
+        value={balanceText} error={balanceError} onChange={(e) => { setBalanceText(e.target.value); setBalanceError(undefined) }} />
       {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
       <Button type="submit" full loading={loading}>{submitLabel}</Button>
       {children}

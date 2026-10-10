@@ -42,6 +42,8 @@ export default function AccountsPage() {
   }
 
   async function save(value: AccountInput) {
+    setError(null)
+    setConfirmDelete(false)
     try {
       if (editing === 'new') await create.mutateAsync(value)
       else if (editing) {
@@ -57,6 +59,8 @@ export default function AccountsPage() {
   }
 
   async function toggleArchive(account: AccountWithBalance) {
+    setError(null)
+    setConfirmDelete(false)
     try {
       await update.mutateAsync({ id: account.id, patch: { archived: !account.archived } })
       setEditing(null)
@@ -66,6 +70,7 @@ export default function AccountsPage() {
   }
 
   async function destroy(account: AccountWithBalance) {
+    setError(null)
     if (!confirmDelete) return setConfirmDelete(true)
     try {
       await remove.mutateAsync(account.id)
@@ -89,7 +94,7 @@ export default function AccountsPage() {
             <span className="block truncate font-semibold">{a.name}</span>
             <span className="block text-sm text-muted">{t(`accounts.types.${a.type}`)} · {a.currency}</span>
           </span>
-          <span className={`font-semibold tabular-nums ${a.balance < 0 ? 'text-danger' : ''}`}>
+          <span className={`shrink-0 whitespace-nowrap font-semibold tabular-nums ${a.balance < 0 ? 'text-danger' : ''}`}>
             {formatMoney(a.balance, a.currency, locale)}
           </span>
         </button>
@@ -97,6 +102,7 @@ export default function AccountsPage() {
     )
   }
 
+  const busy = create.isPending || update.isPending || remove.isPending
   const editingAccount = editing && editing !== 'new' ? editing : null
 
   return (
@@ -149,10 +155,10 @@ export default function AccountsPage() {
           >
             {editingAccount && (
               <div className="grid grid-cols-2 gap-2">
-                <Button type="button" variant="secondary" onClick={() => void toggleArchive(editingAccount)}>
+                <Button type="button" variant="secondary" loading={update.isPending} disabled={busy} onClick={() => void toggleArchive(editingAccount)}>
                   {editingAccount.archived ? t('common.unarchive') : t('common.archive')}
                 </Button>
-                <Button type="button" variant="danger" loading={remove.isPending} onClick={() => void destroy(editingAccount)}>
+                <Button type="button" variant="danger" loading={remove.isPending} disabled={busy} onClick={() => void destroy(editingAccount)}>
                   {confirmDelete ? t('common.confirmDelete') : t('common.delete')}
                 </Button>
               </div>

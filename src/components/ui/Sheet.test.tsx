@@ -42,7 +42,7 @@ describe('Sheet', () => {
     expect(last).toHaveFocus()
   })
 
-  test('a armadilha de foco ignora elementos com tabindex -1 nas pontas', async () => {
+  test('Shift+Tab do primeiro vai ao último focalizável, ignorando tabindex -1', async () => {
     render(
       <Sheet open onClose={vi.fn()} title="Title">
         <input aria-label="first" />
@@ -50,8 +50,8 @@ describe('Sheet', () => {
         <button type="button" tabIndex={-1}>skipped</button>
       </Sheet>,
     )
-    screen.getByRole('button', { name: 'last' }).focus()
-    await userEvent.tab()
-    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus()
+    screen.getByRole('button', { name: 'Close' }).focus()
+    await userEvent.tab({ shift: true })
+    expect(screen.getByRole('button', { name: 'last' })).toHaveFocus()
   })
 })
