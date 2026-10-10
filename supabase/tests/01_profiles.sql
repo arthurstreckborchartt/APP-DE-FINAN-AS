@@ -42,5 +42,5 @@ begin
   if not failed then raise exception 'FAIL: anon lê profiles'; end if;
 end $$;
 
-select 'PASS' as result;
 rollback;
+select 'PASS' as result;

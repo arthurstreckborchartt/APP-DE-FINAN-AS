@@ -21,8 +21,10 @@ begin
   select id into sys_salary from public.categories where i18n_key = 'salary';
   if sys_food is null or sys_salary is null then raise exception 'FAIL: categorias padrão invisíveis'; end if;
 
-  select count(*) into n from public.categories where user_id is null;
-  if n <> 19 then raise exception 'FAIL: esperado 19 categorias padrão, veio %', n; end if;
+  if (select array_agg(i18n_key order by i18n_key) from public.categories where user_id is null)
+     is distinct from array['education', 'food', 'freelance', 'gifts', 'groceries', 'health', 'housing', 'investments', 'leisure', 'other_expense', 'other_income', 'pets', 'salary', 'shopping', 'subscriptions', 'taxes', 'transport', 'travel', 'utilities']::text[] then
+    raise exception 'FAIL: categorias padrão diferentes das 19 esperadas';
+  end if;
 
   insert into public.accounts (name, type, currency, initial_balance)
     values ('Carteira A', 'cash', 'EUR', 10000) returning id into acc;
@@ -51,6 +53,13 @@ begin
 
   failed := false;
   begin
+    update public.transactions set kind = 'income' where id = tx;
+  exception when check_violation then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: kind alterado para tipo incompatível com a categoria'; end if;
+
+  failed := false;
+  begin
     update public.accounts set currency = 'BRL' where id = acc;
   exception when insufficient_privilege then failed := true;
   end;
@@ -59,6 +68,7 @@ begin
   failed := false;
   begin
     delete from public.accounts where id = acc;
+    set constraints all immediate;
   exception when foreign_key_violation then failed := true;
   end;
   if not failed then raise exception 'FAIL: conta com lançamentos excluída'; end if;
@@ -72,7 +82,7 @@ end $$;
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b2","role":"authenticated"}';
 do $$
 declare
-  acc_a uuid; cat_a uuid; acc_b uuid; sys_food uuid; n int; failed boolean;
+  acc_a uuid; cat_a uuid; acc_b uuid; tx_b uuid; sys_food uuid; n int; failed boolean;
 begin
   select v into acc_a from ids where k = 'acc';
   select v into cat_a from ids where k = 'cat';
@@ -108,6 +118,30 @@ begin
   exception when check_violation then failed := true;
   end;
   if not failed then raise exception 'FAIL: B usou categoria de A'; end if;
+
+  insert into public.transactions (kind, amount, date, category_id, account_id)
+    values ('expense', 1, current_date, sys_food, acc_b) returning id into tx_b;
+  failed := false;
+  begin
+    update public.transactions set account_id = acc_a where id = tx_b;
+  exception when check_violation then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: B moveu lançamento para conta de A'; end if;
+end $$;
+
+-- Exclusão do usuário A: contas, categorias e lançamentos somem em cascata
+reset role;
+do $$
+declare n int;
+begin
+  delete from auth.users where id = '00000000-0000-0000-0000-0000000000a2';
+  set constraints all immediate;
+  select count(*) into n from public.accounts where user_id = '00000000-0000-0000-0000-0000000000a2';
+  if n <> 0 then raise exception 'FAIL: contas de A restaram após excluir o usuário'; end if;
+  select count(*) into n from public.transactions where user_id = '00000000-0000-0000-0000-0000000000a2';
+  if n <> 0 then raise exception 'FAIL: lançamentos de A restaram após excluir o usuário'; end if;
+  select count(*) into n from public.categories where user_id = '00000000-0000-0000-0000-0000000000a2';
+  if n <> 0 then raise exception 'FAIL: categorias de A restaram após excluir o usuário'; end if;
 end $$;
 
 set local role anon;
@@ -119,7 +153,28 @@ begin
   exception when insufficient_privilege then failed := true;
   end;
   if not failed then raise exception 'FAIL: anon lê contas'; end if;
+
+  failed := false;
+  begin
+    perform 1 from public.transactions;
+  exception when insufficient_privilege then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: anon lê lançamentos'; end if;
+
+  failed := false;
+  begin
+    perform 1 from public.categories;
+  exception when insufficient_privilege then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: anon lê categorias'; end if;
+
+  failed := false;
+  begin
+    perform 1 from public.account_balances;
+  exception when insufficient_privilege then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: anon lê saldos'; end if;
 end $$;
 
-select 'PASS' as result;
 rollback;
+select 'PASS' as result;

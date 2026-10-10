@@ -75,6 +75,8 @@ grant update (name, icon, color, archived) on public.categories to authenticated
 create trigger categories_set_updated_at before update on public.categories
   for each row execute function public.set_updated_at();
 
+create unique index categories_system_key_idx on public.categories (i18n_key) where user_id is null;
+
 -- Categorias padrão (auth.uid() é nulo aqui, então user_id fica nulo)
 insert into public.categories (user_id, kind, i18n_key, icon, color, position) values
   (null, 'expense', 'food',          'utensils',        '#f97316', 1),
@@ -107,9 +109,9 @@ create table public.transactions (
   amount bigint not null check (amount > 0 and amount <= 99999999999),
   currency char(3) not null,
   date date not null check (date between '2000-01-01' and '2100-12-31'),
-  category_id uuid not null references public.categories (id) on delete restrict,
+  category_id uuid not null references public.categories (id) on delete no action deferrable initially deferred,
   description text not null default '' check (char_length(description) <= 140),
-  account_id uuid not null references public.accounts (id) on delete restrict,
+  account_id uuid not null references public.accounts (id) on delete no action deferrable initially deferred,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
