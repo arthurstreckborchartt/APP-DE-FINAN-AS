@@ -24,6 +24,7 @@ create policy profiles_update_own on public.profiles
 
 -- Privilégios explícitos (o projeto pode não conceder automaticamente)
 revoke all on public.profiles from anon;
+revoke all on public.profiles from authenticated;
 grant select, update (name, locale, currency, theme, onboarded_at) on public.profiles to authenticated;
 
 -- Sem policy de insert/delete: perfis são criados pelo trigger e apagados em cascata.
