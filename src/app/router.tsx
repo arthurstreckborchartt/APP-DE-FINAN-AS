@@ -10,6 +10,8 @@ import OnboardingPage from '../features/onboarding/OnboardingPage'
 import AccountsPage from '../features/accounts/AccountsPage'
 import CategoriesPage from '../features/categories/CategoriesPage'
 import SettingsPage from '../features/settings/SettingsPage'
+import HomePage from '../features/home/HomePage'
+import TransactionsPage from '../features/transactions/TransactionsPage'
 import TransactionFormPage from '../features/transactions/TransactionFormPage'
 
 function TransactionFormRoute() {
@@ -37,8 +39,8 @@ export const router = createBrowserRouter([
           {
             element: <AppShell />,
             children: [
-              { path: '/', element: <PlaceholderPage titleKey="nav.home" /> },
-              { path: '/transactions', element: <PlaceholderPage titleKey="nav.transactions" /> },
+              { path: '/', element: <HomePage /> },
+              { path: '/transactions', element: <TransactionsPage /> },
               { path: '/new', element: <TransactionFormRoute /> },
               { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
               { path: '/cards', element: <PlaceholderPage titleKey="nav.cards" /> },
