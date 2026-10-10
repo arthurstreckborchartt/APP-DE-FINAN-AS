@@ -16,10 +16,11 @@ export default defineConfig({
         short_name: 'Finanças',
         description: 'Finanças pessoais e em grupo, no celular e no PC.',
         lang: 'pt-BR',
+        id: '/',
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        orientation: 'portrait',
+        orientation: 'any',
         theme_color: '#0f766e',
         background_color: '#f6f7f9',
         icons: [
