@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Download, Share, X } from 'lucide-react'
-import { isIos, isStandalone } from '../lib/pwa'
+import {
+  clearInstallPromptEvent, getInstallPromptEvent, isIos, isStandalone, subscribeInstallPrompt,
+} from '../lib/pwa'
 import { Button } from './ui/Button'
-
-type BeforeInstallPromptEvent = Event & { prompt: () => Promise<void> }
 
 const DISMISS_KEY = 'install-dismissed'
 
@@ -18,17 +18,8 @@ function readDismissed(): boolean {
 
 export function InstallPrompt() {
   const { t } = useTranslation()
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
+  const deferred = useSyncExternalStore(subscribeInstallPrompt, getInstallPromptEvent, () => null)
   const [dismissed, setDismissed] = useState(readDismissed)
-
-  useEffect(() => {
-    const onPrompt = (e: Event) => {
-      e.preventDefault()
-      setDeferred(e as BeforeInstallPromptEvent)
-    }
-    window.addEventListener('beforeinstallprompt', onPrompt)
-    return () => window.removeEventListener('beforeinstallprompt', onPrompt)
-  }, [])
 
   const standalone = isStandalone(
     (q) => window.matchMedia(q),
@@ -49,8 +40,13 @@ export function InstallPrompt() {
 
   async function install() {
     if (!deferred) return
-    await deferred.prompt()
-    setDeferred(null)
+    try {
+      await deferred.prompt()
+    } catch {
+      // prompt() só pode ser usado uma vez; se falhar, o evento já não serve
+    } finally {
+      clearInstallPromptEvent()
+    }
   }
 
   return (
