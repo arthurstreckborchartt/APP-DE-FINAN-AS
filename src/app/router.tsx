@@ -10,6 +10,7 @@ import OnboardingPage from '../features/onboarding/OnboardingPage'
 import AccountsPage from '../features/accounts/AccountsPage'
 import CategoriesPage from '../features/categories/CategoriesPage'
 import SettingsPage from '../features/settings/SettingsPage'
+import TransactionFormPage from '../features/transactions/TransactionFormPage'
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,8 @@ export const router = createBrowserRouter([
             children: [
               { path: '/', element: <PlaceholderPage titleKey="nav.home" /> },
               { path: '/transactions', element: <PlaceholderPage titleKey="nav.transactions" /> },
-              { path: '/new', element: <PlaceholderPage titleKey="nav.newTransaction" /> },
+              { path: '/new', element: <TransactionFormPage /> },
+              { path: '/transactions/:id/edit', element: <TransactionFormPage /> },
               { path: '/cards', element: <PlaceholderPage titleKey="nav.cards" /> },
               { path: '/groups', element: <PlaceholderPage titleKey="nav.groups" /> },
               { path: '/accounts', element: <AccountsPage /> },

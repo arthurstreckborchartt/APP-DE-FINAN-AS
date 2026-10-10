@@ -1,0 +1,48 @@
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
+import { expect, test } from 'vitest'
+import '../../i18n'
+import type { Category } from '../categories/types'
+import { TransactionRow } from './TransactionRow'
+import type { Transaction } from './types'
+
+const category: Category = {
+  id: 'c1', user_id: 'u', kind: 'expense', name: 'Mercado', i18n_key: null, icon: 'shopping-cart',
+  color: '#22c55e', position: 0, archived: false, created_at: '', updated_at: '',
+}
+const base: Transaction = {
+  id: 'tx1', user_id: 'u', kind: 'expense', amount: 1050, currency: 'BRL', date: '2026-10-10',
+  category_id: 'c1', description: '', account_id: 'a1', created_at: '', updated_at: '',
+}
+
+function renderRow(tx: Transaction) {
+  return render(
+    <MemoryRouter>
+      <TransactionRow transaction={tx} category={category} locale="pt-BR" />
+    </MemoryRouter>,
+  )
+}
+
+test('link leva para a edição', () => {
+  renderRow(base)
+  expect(screen.getByRole('link').getAttribute('href')).toBe('/transactions/tx1/edit')
+})
+
+test('despesa mostra − e valor formatado', () => {
+  renderRow(base)
+  expect(screen.getByText(/^−.*10,50/)).toBeTruthy()
+})
+
+test('receita mostra +', () => {
+  renderRow({ ...base, kind: 'income' })
+  expect(screen.getByText(/^\+.*10,50/)).toBeTruthy()
+})
+
+test('sem descrição usa o rótulo da categoria; com descrição, ela vira o título', () => {
+  const { unmount } = renderRow(base)
+  expect(screen.getByText('Mercado')).toBeTruthy()
+  unmount()
+  renderRow({ ...base, description: 'Feira' })
+  expect(screen.getByText('Feira')).toBeTruthy()
+  expect(screen.getByText(/Mercado ·/)).toBeTruthy()
+})
