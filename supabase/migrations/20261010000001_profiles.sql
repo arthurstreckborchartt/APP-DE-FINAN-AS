@@ -68,3 +68,8 @@ revoke execute on function public.handle_new_user() from public, anon, authentic
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- Backfill: cria perfis para usuários que já existiam antes desta migração
+insert into public.profiles (id)
+select id from auth.users
+on conflict (id) do nothing;
