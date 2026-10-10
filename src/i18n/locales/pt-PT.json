@@ -139,6 +139,8 @@
     "color": "Cor",
     "expense": "Despesas",
     "income": "Receitas",
+    "iconOption": "Ícone {{n}}",
+    "colorOption": "Cor {{n}}",
     "systemHint": "As categorias predefinidas não podem ser editadas.",
     "archivedSection": "Categorias arquivadas",
     "deleteBlocked": "Esta categoria tem movimentos. Arquive-a em vez de a eliminar.",

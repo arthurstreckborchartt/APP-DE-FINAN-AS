@@ -83,7 +83,12 @@ export default function CategoriesPage() {
             enabled:hover:bg-surface-2 disabled:cursor-default">
           <CategoryIcon icon={c.icon} color={c.color} />
           <span className="min-w-0 flex-1 truncate font-medium">{categoryLabel(c, t)}</span>
-          {system && <Lock className="size-4 text-muted" aria-label={t('common.default')} />}
+          {system && (
+            <>
+              <Lock className="size-4 text-muted" aria-hidden="true" />
+              <span className="sr-only">{t('common.default')}</span>
+            </>
+          )}
         </button>
       </li>
     )
@@ -128,7 +133,7 @@ export default function CategoriesPage() {
               ? { name: '', icon: 'tag', color: CATEGORY_COLORS[6] }
               : { name: editing.name ?? '', icon: editing.icon, color: editing.color }}
             submitLabel={t('common.save')}
-            loading={create.isPending || update.isPending}
+            loading={busy}
             error={error}
             onSubmit={(v) => void save(v)}
           >

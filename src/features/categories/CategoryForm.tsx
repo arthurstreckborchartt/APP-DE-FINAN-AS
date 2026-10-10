@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Check } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/TextField'
 import { CategoryIcon } from '../../components/CategoryIcon'
@@ -35,13 +36,14 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
       <fieldset>
         <legend className="mb-2 text-sm font-medium">{t('categories.icon')}</legend>
         <div className="grid grid-cols-6 gap-2 sm:grid-cols-9">
-          {CATEGORY_ICON_NAMES.map((name) => {
+          {CATEGORY_ICON_NAMES.map((name, i) => {
             const Icon = CATEGORY_ICONS[name]
             return (
               <label key={name} className="grid aspect-square cursor-pointer place-items-center rounded-xl border border-line text-muted
-                has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary">
+                has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary
+                has-focus-visible:ring-2 has-focus-visible:ring-primary has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-surface">
                 <input type="radio" name="icon" value={name} className="sr-only" checked={value.icon === name}
-                  onChange={() => setValue({ ...value, icon: name })} aria-label={name} />
+                  onChange={() => setValue({ ...value, icon: name })} aria-label={t('categories.iconOption', { n: i + 1 })} />
                 <Icon className="size-5" aria-hidden="true" />
               </label>
             )
@@ -52,11 +54,12 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
       <fieldset>
         <legend className="mb-2 text-sm font-medium">{t('categories.color')}</legend>
         <div className="flex flex-wrap gap-2">
-          {CATEGORY_COLORS.map((c) => (
+          {CATEGORY_COLORS.map((c, i) => (
             <label key={c} className="grid size-10 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-surface
-              has-checked:ring-2 has-checked:ring-fg" style={{ backgroundColor: c }}>
+              has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="color" value={c} className="sr-only" checked={value.color === c}
-                onChange={() => setValue({ ...value, color: c })} aria-label={c} />
+                onChange={() => setValue({ ...value, color: c })} aria-label={t('categories.colorOption', { n: i + 1 })} />
+                {value.color === c && <Check className="size-5 text-white" aria-hidden="true" />}
             </label>
           ))}
         </div>

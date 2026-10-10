@@ -139,6 +139,8 @@
     "color": "Color",
     "expense": "Expenses",
     "income": "Income",
+    "iconOption": "Icon {{n}}",
+    "colorOption": "Color {{n}}",
     "systemHint": "Default categories can't be edited.",
     "archivedSection": "Archived categories",
     "deleteBlocked": "This category has transactions. Archive it instead of deleting.",
