@@ -13,8 +13,15 @@ function read(): boolean {
 
 let hidden = read()
 
+let revealTimer: ReturnType<typeof setTimeout> | undefined
+
 export function setHideValues(next: boolean): void {
   hidden = next
+  // Liga a animação de revelar os valores só durante a troca (não a cada renderização).
+  const root = document.documentElement
+  root.dataset.revealing = ''
+  clearTimeout(revealTimer)
+  revealTimer = setTimeout(() => delete root.dataset.revealing, 400)
   try {
     localStorage.setItem(KEY, next ? '1' : '0')
   } catch {

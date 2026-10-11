@@ -23,9 +23,11 @@ export function AuthLayout({ title, subtitle, children, footer }: Props) {
           <LanguageSelect />
         </header>
         <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
-          <h1 className="text-[32px] font-extrabold tracking-[-0.03em]">{title}</h1>
-          {subtitle && <p className="mt-2 text-[15px] font-medium text-muted">{subtitle}</p>}
-          <div className="mt-8">{children}</div>
+          <div className="rounded-[28px] bg-surface p-6 shadow-sheet sm:p-8">
+            <h1 className="text-[30px] font-extrabold tracking-[-0.03em]">{title}</h1>
+            {subtitle && <p className="mt-2 text-[15px] font-medium text-muted">{subtitle}</p>}
+            <div className="mt-7">{children}</div>
+          </div>
           {footer && <div className="mt-8 text-center text-sm font-medium text-muted">{footer}</div>}
         </main>
       </div>

@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, Eye, EyeOff, Landmark, Plus, ReceiptText, Tags, Wallet } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, ChevronRight, Ellipsis, Eye, EyeOff, Landmark, Plus, ReceiptText, Tags, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -78,15 +78,15 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="flex flex-col gap-5 lg:gap-6">
+    <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-6">
       {/* Painel de saldo */}
-      <section className="brand-panel rise relative overflow-hidden rounded-[28px] p-6 shadow-float sm:p-8">
+      <section className="brand-panel balance-reveal relative overflow-hidden rounded-[28px] p-6 shadow-float sm:p-8 lg:col-start-1 lg:row-start-1">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[15px] font-semibold text-brand-muted">
               {profile ? (firstName ? t('home.greeting', { name: firstName }) : t('home.greetingNoName')) : ' '}
             </p>
-            <p className="mt-5 text-[13px] font-bold uppercase tracking-[0.08em] text-brand-muted">{t('home.balance')}</p>
+            <p className="mt-5 text-[15px] font-medium text-brand-muted">{t('home.balance')}</p>
           </div>
           <button type="button" onClick={() => setHideValues(!hidden)}
             aria-label={hidden ? t('home.showValues') : t('home.hideValues')} aria-pressed={hidden}
@@ -115,7 +115,7 @@ export default function HomePage() {
       </section>
 
       {/* Atalhos */}
-      <nav aria-label={t('home.quickActions')} className="rise rise-2 grid grid-cols-4 gap-2 sm:max-w-xl">
+      <nav aria-label={t('home.quickActions')} className="grid grid-cols-4 gap-2 sm:max-w-xl lg:hidden">
         {quick.map(({ to, label, icon: Icon, primary }) => (
           <Link key={to} to={to} className="group flex flex-col items-center gap-2 rounded-2xl py-1 text-center">
             <span className={`grid size-14 place-items-center rounded-full transition group-active:scale-95 ${
@@ -128,12 +128,12 @@ export default function HomePage() {
       </nav>
 
       {activeAccounts.length === 0 ? (
-        <EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
-          action={<Link to="/accounts" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('accounts.new')}</Link>} />
+        <div className="lg:col-span-2"><EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
+          action={<Link to="/accounts" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('accounts.new')}</Link>} /></div>
       ) : (
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-6">
+        <>
           {/* Este mês */}
-          <Sheet title={t('home.thisMonth')} className="rise rise-3"
+          <Sheet title={t('home.thisMonth')} className="lg:col-start-2 lg:row-span-2 lg:row-start-1"
             action={<span className="inline-block text-[13px] font-semibold text-muted first-letter:uppercase">{formatMonth(month, locale)}</span>}>
             {monthQuery.isPending ? <Loading /> : monthQuery.isError ? (
               <QueryError onRetry={() => void monthQuery.refetch()} />
@@ -145,6 +145,11 @@ export default function HomePage() {
                   const max = Math.max(s.income, s.expense, 1)
                   return (
                     <dl key={s.currency} className="flex flex-col gap-4">
+                      {summary.length > 1 && (
+                        <span className="self-start rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted">
+                          {s.currency}
+                        </span>
+                      )}
                       {([
                         ['income', s.income, ArrowDownLeft, 'bg-success', 'text-success'],
                         ['expense', s.expense, ArrowUpRight, 'bg-danger', 'text-danger'],
@@ -180,7 +185,7 @@ export default function HomePage() {
           </Sheet>
 
           {/* Para onde foi o dinheiro */}
-          <Sheet title={t('home.byCategory')} className="rise rise-3">
+          <Sheet title={t('home.byCategory')} className="lg:col-start-1 lg:row-span-2 lg:row-start-2">
             {monthQuery.isPending || categoriesQuery.isPending ? <Loading /> : monthQuery.isError || categoriesQuery.isError ? (
               <QueryError onRetry={() => { void monthQuery.refetch(); void categoriesQuery.refetch() }} />
             ) : top.length === 0 ? (
@@ -199,19 +204,22 @@ export default function HomePage() {
                     const cat = categoriesById.get(c.categoryId)
                     const pct = Math.round(c.share * 100)
                     return (
-                      <li key={c.categoryId} className="flex items-center gap-3.5 py-2">
+                      <li key={c.categoryId}>
+                        <Link to={`/transactions?m=${month}&c=${c.categoryId}`}
+                          className="-mx-3 flex items-center gap-3.5 rounded-2xl px-3 py-2 transition hover:bg-surface-2">
                         {cat && <CategoryIcon icon={cat.icon} color={cat.color} size="sm" />}
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[15px] font-bold">{cat ? categoryLabel(cat, t) : ''}</span>
                           <span className="block text-[13px] font-medium text-muted">{t('home.spentOf', { pct })}</span>
                         </span>
                         <Amount cents={c.total} currency={breakdownCurrency!} locale={locale} className="text-[15px] font-bold" />
+                        </Link>
                       </li>
                     )
                   })}
                   {rest > 0 && (
                     <li className="flex items-center gap-3.5 py-2">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-2 text-xs font-extrabold text-muted">+</span>
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-2 text-muted"><Ellipsis className="size-4" aria-hidden="true" /></span>
                       <span className="min-w-0 flex-1 text-[15px] font-bold">{t('common.other')}</span>
                       <Amount cents={rest} currency={breakdownCurrency!} locale={locale} className="text-[15px] font-bold" />
                     </li>
@@ -220,11 +228,11 @@ export default function HomePage() {
               </>
             )}
           </Sheet>
-        </div>
+        </>
       )}
 
       {/* Últimos lançamentos */}
-      <Sheet title={t('home.recent')} className="rise rise-4"
+      <Sheet title={t('home.recent')} className="lg:col-start-2 lg:row-start-3"
         action={
           <Link to="/transactions" className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-primary hover:bg-primary-soft">
             {t('home.seeAll')} <ChevronRight className="size-4" aria-hidden="true" />

@@ -16,9 +16,9 @@ export function Amount({ cents, currency, locale, sign, className = '' }: Props)
   return (
     <span className={`num ${className}`}>
       {hidden ? (
-        <span aria-hidden="true" className="tracking-[0.18em]">••••</span>
+        <span key="hidden" aria-hidden="true" className="reveal inline-block tracking-[0.18em]">••••</span>
       ) : (
-        <>{prefix}{formatMoney(cents, currency, locale)}</>
+        <span key="shown" className="reveal inline-block">{prefix}{formatMoney(cents, currency, locale)}</span>
       )}
     </span>
   )

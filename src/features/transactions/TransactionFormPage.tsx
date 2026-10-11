@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Wallet } from 'lucide-react'
+import { ChevronLeft, Wallet } from 'lucide-react'
 import { AmountKeypad } from '../../components/ui/AmountKeypad'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -149,7 +149,13 @@ export default function TransactionFormPage() {
 
   return (
     <form onSubmit={onSubmit} className="mx-auto flex max-w-5xl flex-col gap-5">
-      <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{id ? t('transactions.edit') : t('transactions.new')}</h1>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={() => navigate(-1)} aria-label={t('common.back')}
+          className="-ml-2 grid size-11 place-items-center rounded-full text-fg transition hover:bg-surface-2">
+          <ChevronLeft className="size-6" aria-hidden="true" />
+        </button>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{id ? t('transactions.edit') : t('transactions.new')}</h1>
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-6">
         <section className="flex flex-col gap-5 rounded-[28px] bg-surface p-5 shadow-sheet sm:p-6 lg:sticky lg:top-10">
@@ -197,7 +203,8 @@ export default function TransactionFormPage() {
 
           {saveError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{t('common.errorGeneric')}</p>}
 
-          <div className="flex flex-col gap-2 sm:flex-row-reverse">
+          <div className="sticky bottom-0 -mx-5 -mb-5 flex flex-col gap-2 rounded-b-[28px] bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-3
+            sm:static sm:mx-0 sm:mb-0 sm:flex-row-reverse sm:rounded-none sm:p-0">
             <Button type="submit" className="sm:flex-1" full loading={create.isPending || update.isPending} disabled={remove.isPending}>{t('transactions.save')}</Button>
             {id && (
               <Button type="button" variant="danger" className="sm:flex-1" full loading={remove.isPending} disabled={create.isPending || update.isPending} onClick={() => void onDelete()}>

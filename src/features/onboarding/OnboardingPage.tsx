@@ -67,9 +67,11 @@ export default function OnboardingPage() {
   }
 
   const indicator = (
-    <p className="text-[13px] font-extrabold uppercase tracking-[0.06em] text-primary">
-      {step === 'preferences' ? `1/2 · ${t('onboarding.stepPreferences')}` : `2/2 · ${t('onboarding.stepAccount')}`}
-    </p>
+    <div className="flex gap-1.5" role="img"
+      aria-label={step === 'preferences' ? `1/2 · ${t('onboarding.stepPreferences')}` : `2/2 · ${t('onboarding.stepAccount')}`}>
+      <span className="h-1.5 flex-1 rounded-full bg-primary" />
+      <span className={`h-1.5 flex-1 rounded-full ${step === 'account' ? 'bg-primary' : 'bg-surface-3'}`} />
+    </div>
   )
 
   if (step === 'account') {

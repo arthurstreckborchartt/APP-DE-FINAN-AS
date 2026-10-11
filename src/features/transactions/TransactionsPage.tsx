@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, Plus, ReceiptText, Search } from 'lucide-react'
+import { ChevronDown, ReceiptText, Search } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { MonthSwitcher } from '../../components/ui/MonthSwitcher'
@@ -32,7 +32,7 @@ export default function TransactionsPage() {
   const accounts = accountsQuery.data ?? []
   const categories = categoriesQuery.data ?? []
   const refsError = accountsQuery.isError || categoriesQuery.isError
-  const [filters, setFilters] = useState<TransactionFilters>({})
+  const [filters, setFilters] = useState<TransactionFilters>(() => ({ categoryId: params.get('c') || undefined }))
 
   const categoriesById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories])
   const accountsById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts])
@@ -62,7 +62,7 @@ export default function TransactionsPage() {
           { value: 'expense', label: t('transactions.expense') },
           { value: 'income', label: t('transactions.income') },
         ]} />
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+      <div className="grid grid-cols-1 gap-2">
         <div className="relative min-w-0">
           <select aria-label={t('transactions.account')} className={`${fieldClass} w-full pl-4 pr-10`} value={filters.accountId ?? ''}
             onChange={(e) => setFilters({ ...filters, accountId: e.target.value || undefined })}>
@@ -89,19 +89,18 @@ export default function TransactionsPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('transactions.title')}</h1>
-        <Link to="/new"
-          className="hidden h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-fg shadow-float hover:bg-primary-strong lg:inline-flex">
-          <Plus className="size-4" aria-hidden="true" /> {t('transactions.new')}
-        </Link>
-      </div>
+      <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('transactions.title')}</h1>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8">
         <aside className="flex flex-col gap-4 lg:sticky lg:top-10 lg:order-2">
           <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />
           {summary.map((s) => (
             <dl key={s.currency} className="grid grid-cols-3 gap-3 rounded-[24px] bg-surface p-5 shadow-sheet lg:grid-cols-1 lg:gap-4">
+              {summary.length > 1 && (
+                <span className="col-span-3 self-start justify-self-start rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted lg:col-span-1">
+                  {s.currency}
+                </span>
+              )}
               {([
                 ['income_total', s.income, 'income', 'text-success'],
                 ['expense_total', s.expense, 'expense', 'text-fg'],

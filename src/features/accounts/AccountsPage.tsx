@@ -115,7 +115,7 @@ export default function AccountsPage() {
 
       {totals.length > 0 && (
         <div className="brand-panel mt-6 rounded-[28px] p-6 shadow-float sm:p-7">
-          <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-brand-muted">{t('accounts.total')}</p>
+          <p className="text-[15px] font-medium text-brand-muted">{t('accounts.total')}</p>
           {totals.map((s, i) => (
             <Amount key={s.currency} cents={s.total} currency={s.currency} locale={locale}
               className={`block ${i === 0 ? 'mt-1 text-[34px] font-extrabold tracking-[-0.03em] sm:text-[40px]' : 'text-lg font-bold text-brand-muted'}`} />

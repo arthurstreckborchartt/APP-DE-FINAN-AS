@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet } from 'react-router'
+import { Link, NavLink, Outlet, useMatch } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Plus, Settings } from 'lucide-react'
 import { BrandMark } from '../components/BrandMark'
@@ -21,6 +21,10 @@ export function AppShell() {
   const { t } = useTranslation()
   const { data: profile } = useProfile()
   usePreferences(profile)
+  // No formulário de lançamento a barra inferior sai do caminho do teclado de valor e do botão Salvar.
+  const newMatch = useMatch('/new')
+  const editMatch = useMatch('/transactions/:id/edit')
+  const onForm = newMatch !== null || editMatch !== null
 
   return (
     <div className="min-h-full lg:grid lg:grid-cols-[17rem_1fr]">
@@ -67,13 +71,13 @@ export function AppShell() {
           </NavLink>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-32 pt-3 lg:px-10 lg:pb-12 lg:pt-10">
+        <main className={`mx-auto w-full max-w-6xl flex-1 px-4 pt-3 lg:px-10 lg:pb-12 lg:pt-10 ${onForm ? 'pb-6' : 'pb-32'}`}>
           <InstallPrompt />
           <Outlet />
         </main>
 
         {/* Barra inferior (celular) */}
-        <nav aria-label={t('nav.mainMenu')}
+        <nav aria-label={t('nav.mainMenu')} hidden={onForm}
           className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-16px_rgb(12_18_34/0.18)] lg:hidden">
           <ul className="mx-auto grid max-w-md grid-cols-5">
             {NAV_ITEMS.map(({ to, labelKey, icon: Icon, primary }) => (
