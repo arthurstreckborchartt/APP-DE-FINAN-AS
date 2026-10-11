@@ -62,6 +62,7 @@ export function useInvoiceItems(invoiceId: string | undefined) {
         .from('installments')
         .select('id, number, amount, transaction:transactions(id, description, category_id, installments_count, date, amount)')
         .eq('invoice_id', invoiceId!)
+        .order('number')
       if (error) throw error
       return (data as unknown as InvoiceItem[]).map((i) => ({
         ...i,

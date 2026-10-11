@@ -83,8 +83,11 @@ export default function TransactionFormPage() {
   if (!base || !accounts || !categories) return <FullScreenSpinner />
 
   const form = draft ?? base
+  // Provisório até a UI de cartão: ao editar uma compra no cartão, ela continua no mesmo cartão
+  // (sem exigir conta), para que salvar nunca a converta em lançamento de conta.
+  const cardPurchase = id && existing?.card_id ? existing : null
   const selectableAccounts = accounts.filter((a) => !a.archived || a.id === form.accountId)
-  if (selectableAccounts.length === 0) {
+  if (selectableAccounts.length === 0 && !cardPurchase) {
     return (
       <EmptyState icon={Wallet} title={t('transactions.noAccounts')}
         action={<Link to="/accounts" className="font-semibold text-primary">{t('transactions.goToAccounts')}</Link>} />
@@ -95,7 +98,7 @@ export default function TransactionFormPage() {
     (c) => c.kind === form.kind && (!c.archived || c.id === form.categoryId),
   )
   const account = accounts.find((a) => a.id === form.accountId)
-  const currency = account?.currency ?? profile?.currency ?? 'BRL'
+  const currency = cardPurchase?.currency ?? account?.currency ?? profile?.currency ?? 'BRL'
 
   function set(patch: Partial<Draft>) {
     setDraft({ ...form, ...patch })
@@ -118,14 +121,16 @@ export default function TransactionFormPage() {
     if (form.amount <= 0) next.amount = t('transactions.errors.amount')
     if (!form.categoryId) next.category = t('transactions.errors.category')
     if (!form.date) next.date = t('transactions.errors.date')
-    if (!form.accountId) next.account = t('transactions.errors.account')
+    if (!form.accountId && !cardPurchase) next.account = t('transactions.errors.account')
     setErrors(next)
     if (Object.keys(next).length > 0) return
 
     const input = {
       kind: form.kind, amount: form.amount, date: form.date, category_id: form.categoryId!,
-      description: form.description.trim(), account_id: form.accountId!,
-      card_id: null, installments_count: 1,
+      description: form.description.trim(),
+      ...(cardPurchase
+        ? { account_id: null, card_id: cardPurchase.card_id, installments_count: cardPurchase.installments_count }
+        : { account_id: form.accountId!, card_id: null, installments_count: 1 }),
     }
     try {
       if (id) await update.mutateAsync({ id, input })
@@ -187,14 +192,14 @@ export default function TransactionFormPage() {
           </fieldset>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <div>
+            {!cardPurchase && <div>
               <SelectField label={t('transactions.account')} value={form.accountId ?? ''}
                 onChange={(e) => set({ accountId: e.target.value || null })}>
                 <option value="" disabled>—</option>
                 {selectableAccounts.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.currency})</option>)}
               </SelectField>
               {errors.account && <p className="mt-1.5 text-[13px] font-medium text-danger">{errors.account}</p>}
-            </div>
+            </div>}
             <TextField label={t('transactions.date')} type="date" value={form.date}
               onChange={(e) => set({ date: e.target.value })} error={errors.date} />
           </div>

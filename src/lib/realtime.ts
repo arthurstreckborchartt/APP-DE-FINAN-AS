@@ -21,8 +21,15 @@ export function useRealtimeSync() {
       for (const queryKey of AFFECTED_KEYS) void qc.invalidateQueries({ queryKey })
     }
     let channel = supabase.channel(`finance-${uid}`)
+    const filter = `user_id=eq.${uid}`
     for (const table of TABLES) {
-      channel = channel.on('postgres_changes', { event: '*', schema: 'public', table, filter: `user_id=eq.${uid}` }, refresh)
+      channel = channel
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table, filter }, refresh)
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table, filter }, refresh)
+        // O Supabase não entrega DELETE com filtro de coluna, então o DELETE é escutado sem filtro.
+        // O evento só traz a chave primária e aqui apenas invalida o cache, então receber exclusões
+        // de outros usuários é inofensivo.
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table }, refresh)
     }
     channel.subscribe()
     return () => {

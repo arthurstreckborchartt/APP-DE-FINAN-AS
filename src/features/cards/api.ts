@@ -58,6 +58,11 @@ export function useDeleteCard() {
       const { error } = await supabase.from('cards').delete().eq('id', id)
       if (error) throw error
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['cards'] }),
+    // Excluir o cartão apaga as faturas dele em cascata.
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: ['cards'] }),
+        qc.invalidateQueries({ queryKey: ['invoices'] }),
+      ]),
   })
 }
