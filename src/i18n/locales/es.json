@@ -205,8 +205,19 @@
       "amount": "Introduce un importe mayor que cero.",
       "category": "Elige una categoría.",
       "account": "Elige una cuenta.",
-      "date": "Indica la fecha."
-    }
+      "date": "Indica la fecha.",
+      "card": "Elige una tarjeta."
+    },
+    "source": "Pagar con",
+    "sourceAccount": "Cuenta",
+    "sourceCard": "Tarjeta",
+    "card": "Tarjeta",
+    "installments": "Cuotas",
+    "inCash": "En un pago",
+    "installmentsOption": "{{count}}x de {{amount}}",
+    "firstInvoice": "La primera cuota entra en el resumen de {{month}}.",
+    "installmentBadge": "{{n}}/{{total}}",
+    "paidLocked": "Este movimiento está en un resumen pagado y no se puede modificar. Deshaz el pago del resumen para editarlo."
   },
   "home": {
     "greeting": "¡Hola, {{name}}!",
@@ -222,6 +233,53 @@
     "accounts_one": "{{count}} cuenta",
     "accounts_other": "{{count}} cuentas",
     "quickActions": "Accesos rápidos",
-    "spentOf": "{{pct}}% de los gastos"
+    "spentOf": "{{pct}}% de los gastos",
+    "cards": "Tus tarjetas",
+    "availableLimit": "Límite disponible"
+  },
+  "cards": {
+    "title": "Tarjetas",
+    "new": "Nueva tarjeta",
+    "edit": "Editar tarjeta",
+    "name": "Nombre de la tarjeta",
+    "limit": "Límite",
+    "invalidLimit": "Indica un límite mayor que cero.",
+    "closingDay": "Día de cierre",
+    "dueDay": "Día de vencimiento",
+    "dayHint": "Usa un día del 1 al 28.",
+    "color": "Color",
+    "available": "Disponible",
+    "used": "Usado",
+    "ofLimit": "de {{limit}}",
+    "closesOn": "Cierra el día {{day}}",
+    "dueOn": "Vence el día {{day}}",
+    "currentInvoice": "Resumen actual",
+    "nextDue": "Próximo vencimiento",
+    "empty": "Aún no hay tarjetas",
+    "emptyBody": "Registra tus tarjetas para seguir resúmenes, cuotas y el límite disponible.",
+    "archivedSection": "Tarjetas archivadas",
+    "deleteBlocked": "Esta tarjeta tiene movimientos. Archívala en lugar de eliminarla."
+  },
+  "invoices": {
+    "title": "Resúmenes",
+    "total": "Total del resumen",
+    "items": "Compras",
+    "status": {
+      "open": "Abierto",
+      "closed": "Cerrado",
+      "paid": "Pagado",
+      "overdue": "Vencido"
+    },
+    "closes": "Cierra el {{date}}",
+    "due": "Vence el {{date}}",
+    "paidOn": "Pagado el {{date}}",
+    "pay": "Pagar resumen",
+    "payTitle": "Pagar resumen de {{month}}",
+    "payFrom": "Pagar desde la cuenta",
+    "payConfirm": "Confirmar pago",
+    "noAccountInCurrency": "No tienes una cuenta en {{currency}} para pagar este resumen.",
+    "reopen": "Deshacer pago",
+    "empty": "No hay compras en este resumen.",
+    "installment": "Cuota {{n}} de {{total}}"
   }
 }

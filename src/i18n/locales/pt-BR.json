@@ -205,8 +205,19 @@
       "amount": "Informe um valor maior que zero.",
       "category": "Escolha uma categoria.",
       "account": "Escolha uma conta.",
-      "date": "Informe a data."
-    }
+      "date": "Informe a data.",
+      "card": "Escolha um cartão."
+    },
+    "source": "Pagar com",
+    "sourceAccount": "Conta",
+    "sourceCard": "Cartão",
+    "card": "Cartão",
+    "installments": "Parcelas",
+    "inCash": "À vista",
+    "installmentsOption": "{{count}}x de {{amount}}",
+    "firstInvoice": "A primeira parcela cai na fatura de {{month}}.",
+    "installmentBadge": "{{n}}/{{total}}",
+    "paidLocked": "Este lançamento está numa fatura paga e não pode ser alterado. Desfaça o pagamento da fatura para editar."
   },
   "home": {
     "greeting": "Olá, {{name}}!",
@@ -222,6 +233,53 @@
     "accounts_one": "{{count}} conta",
     "accounts_other": "{{count}} contas",
     "quickActions": "Atalhos",
-    "spentOf": "{{pct}}% das despesas"
+    "spentOf": "{{pct}}% das despesas",
+    "cards": "Seus cartões",
+    "availableLimit": "Limite disponível"
+  },
+  "cards": {
+    "title": "Cartões",
+    "new": "Novo cartão",
+    "edit": "Editar cartão",
+    "name": "Nome do cartão",
+    "limit": "Limite",
+    "invalidLimit": "Informe um limite maior que zero.",
+    "closingDay": "Dia de fechamento",
+    "dueDay": "Dia de vencimento",
+    "dayHint": "Use um dia de 1 a 28.",
+    "color": "Cor",
+    "available": "Disponível",
+    "used": "Usado",
+    "ofLimit": "de {{limit}}",
+    "closesOn": "Fecha dia {{day}}",
+    "dueOn": "Vence dia {{day}}",
+    "currentInvoice": "Fatura atual",
+    "nextDue": "Próximo vencimento",
+    "empty": "Nenhum cartão ainda",
+    "emptyBody": "Cadastre seus cartões para acompanhar faturas, parcelas e o limite disponível.",
+    "archivedSection": "Cartões arquivados",
+    "deleteBlocked": "Este cartão tem lançamentos. Arquive-o em vez de excluir."
+  },
+  "invoices": {
+    "title": "Faturas",
+    "total": "Total da fatura",
+    "items": "Compras",
+    "status": {
+      "open": "Aberta",
+      "closed": "Fechada",
+      "paid": "Paga",
+      "overdue": "Vencida"
+    },
+    "closes": "Fecha em {{date}}",
+    "due": "Vence em {{date}}",
+    "paidOn": "Paga em {{date}}",
+    "pay": "Pagar fatura",
+    "payTitle": "Pagar fatura de {{month}}",
+    "payFrom": "Pagar com a conta",
+    "payConfirm": "Confirmar pagamento",
+    "noAccountInCurrency": "Você não tem conta em {{currency}} para pagar esta fatura.",
+    "reopen": "Desfazer pagamento",
+    "empty": "Nenhuma compra nesta fatura.",
+    "installment": "Parcela {{n}} de {{total}}"
   }
 }

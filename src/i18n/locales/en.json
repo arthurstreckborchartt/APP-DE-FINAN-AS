@@ -205,8 +205,19 @@
       "amount": "Enter an amount greater than zero.",
       "category": "Choose a category.",
       "account": "Choose an account.",
-      "date": "Enter a date."
-    }
+      "date": "Enter a date.",
+      "card": "Choose a card."
+    },
+    "source": "Pay with",
+    "sourceAccount": "Account",
+    "sourceCard": "Card",
+    "card": "Card",
+    "installments": "Installments",
+    "inCash": "Pay in full",
+    "installmentsOption": "{{count}}x of {{amount}}",
+    "firstInvoice": "The first installment goes on the {{month}} bill.",
+    "installmentBadge": "{{n}}/{{total}}",
+    "paidLocked": "This transaction is on a paid bill and can't be changed. Undo the bill payment to edit it."
   },
   "home": {
     "greeting": "Hi, {{name}}!",
@@ -222,6 +233,53 @@
     "accounts_one": "{{count}} account",
     "accounts_other": "{{count}} accounts",
     "quickActions": "Shortcuts",
-    "spentOf": "{{pct}}% of spending"
+    "spentOf": "{{pct}}% of spending",
+    "cards": "Your cards",
+    "availableLimit": "Available limit"
+  },
+  "cards": {
+    "title": "Cards",
+    "new": "New card",
+    "edit": "Edit card",
+    "name": "Card name",
+    "limit": "Limit",
+    "invalidLimit": "Enter a limit greater than zero.",
+    "closingDay": "Closing day",
+    "dueDay": "Due day",
+    "dayHint": "Use a day from 1 to 28.",
+    "color": "Color",
+    "available": "Available",
+    "used": "Used",
+    "ofLimit": "of {{limit}}",
+    "closesOn": "Closes on the {{day}}",
+    "dueOn": "Due on the {{day}}",
+    "currentInvoice": "Current bill",
+    "nextDue": "Next due date",
+    "empty": "No cards yet",
+    "emptyBody": "Add your cards to follow bills, installments and your available limit.",
+    "archivedSection": "Archived cards",
+    "deleteBlocked": "This card has transactions. Archive it instead of deleting."
+  },
+  "invoices": {
+    "title": "Bills",
+    "total": "Bill total",
+    "items": "Purchases",
+    "status": {
+      "open": "Open",
+      "closed": "Closed",
+      "paid": "Paid",
+      "overdue": "Overdue"
+    },
+    "closes": "Closes {{date}}",
+    "due": "Due {{date}}",
+    "paidOn": "Paid {{date}}",
+    "pay": "Pay bill",
+    "payTitle": "Pay {{month}} bill",
+    "payFrom": "Pay from account",
+    "payConfirm": "Confirm payment",
+    "noAccountInCurrency": "You have no {{currency}} account to pay this bill.",
+    "reopen": "Undo payment",
+    "empty": "No purchases in this bill.",
+    "installment": "Installment {{n}} of {{total}}"
   }
 }

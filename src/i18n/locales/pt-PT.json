@@ -205,8 +205,19 @@
       "amount": "Indique um valor superior a zero.",
       "category": "Escolha uma categoria.",
       "account": "Escolha uma conta.",
-      "date": "Indique a data."
-    }
+      "date": "Indique a data.",
+      "card": "Escolha um cartão."
+    },
+    "source": "Pagar com",
+    "sourceAccount": "Conta",
+    "sourceCard": "Cartão",
+    "card": "Cartão",
+    "installments": "Prestações",
+    "inCash": "A pronto",
+    "installmentsOption": "{{count}}x de {{amount}}",
+    "firstInvoice": "A primeira prestação entra no extrato de {{month}}.",
+    "installmentBadge": "{{n}}/{{total}}",
+    "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar."
   },
   "home": {
     "greeting": "Olá, {{name}}!",
@@ -222,6 +233,53 @@
     "accounts_one": "{{count}} conta",
     "accounts_other": "{{count}} contas",
     "quickActions": "Atalhos",
-    "spentOf": "{{pct}}% das despesas"
+    "spentOf": "{{pct}}% das despesas",
+    "cards": "Os seus cartões",
+    "availableLimit": "Limite disponível"
+  },
+  "cards": {
+    "title": "Cartões",
+    "new": "Novo cartão",
+    "edit": "Editar cartão",
+    "name": "Nome do cartão",
+    "limit": "Limite",
+    "invalidLimit": "Indique um limite superior a zero.",
+    "closingDay": "Dia de fecho",
+    "dueDay": "Dia de pagamento",
+    "dayHint": "Use um dia de 1 a 28.",
+    "color": "Cor",
+    "available": "Disponível",
+    "used": "Utilizado",
+    "ofLimit": "de {{limit}}",
+    "closesOn": "Fecha no dia {{day}}",
+    "dueOn": "Pagamento no dia {{day}}",
+    "currentInvoice": "Extrato atual",
+    "nextDue": "Próximo pagamento",
+    "empty": "Ainda não tem cartões",
+    "emptyBody": "Registe os seus cartões para acompanhar extratos, prestações e o limite disponível.",
+    "archivedSection": "Cartões arquivados",
+    "deleteBlocked": "Este cartão tem movimentos. Arquive-o em vez de eliminar."
+  },
+  "invoices": {
+    "title": "Extratos do cartão",
+    "total": "Total do extrato",
+    "items": "Compras",
+    "status": {
+      "open": "Aberto",
+      "closed": "Fechado",
+      "paid": "Pago",
+      "overdue": "Em atraso"
+    },
+    "closes": "Fecha em {{date}}",
+    "due": "Pagamento em {{date}}",
+    "paidOn": "Pago em {{date}}",
+    "pay": "Pagar extrato",
+    "payTitle": "Pagar extrato de {{month}}",
+    "payFrom": "Pagar com a conta",
+    "payConfirm": "Confirmar pagamento",
+    "noAccountInCurrency": "Não tem nenhuma conta em {{currency}} para pagar este extrato.",
+    "reopen": "Anular pagamento",
+    "empty": "Sem compras neste extrato.",
+    "installment": "Prestação {{n}} de {{total}}"
   }
 }
