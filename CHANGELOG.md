@@ -9,6 +9,17 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.2.0.0 — 2026-10-11
+
+Novo visual: o app passa a se chamar **FINANCE**.
+
+- Visual no padrão de apps de banco (tema claro e escuro), fonte Manrope com números alinhados.
+- Início com painel de saldo, botão de ocultar valores, atalhos, resumo do mês com barras, "Para onde foi o dinheiro" (gastos por categoria, com atalho para o extrato filtrado) e últimos lançamentos.
+- Extrato agrupado por dia com total diário; no PC, resumo e filtros numa coluna lateral.
+- Novo lançamento sem barra inferior no celular, com botão de voltar, "Salvar" fixo e digitação pelo teclado do computador.
+- Contas, Categorias, Configurações, Login e boas-vindas redesenhados; Contas e Categorias no menu principal.
+- Logo e ícones do app renovados; sistema visual documentado em `DESIGN.md`.
+
 ## Atualização 1.1.0.0 — 2026-10-11
 
 Etapa 2: contas, categorias e lançamentos.
