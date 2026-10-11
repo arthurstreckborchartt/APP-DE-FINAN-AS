@@ -73,6 +73,20 @@ const cards = [
   card('k-c6', 'C6 Carbon', '#64748b', 1200000, 25, 5, 640000),
 ]
 
+const ym = (delta) => { const d = new Date(now.getFullYear(), now.getMonth() + delta, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}` }
+const inv = (id, delta, total, items, paid) => ({
+  id, card_id: 'k-nu', reference_month: ym(delta), closing_date: `${ym(delta)}-05`, due_date: `${ym(delta)}-12`,
+  paid_at: paid ? `${ym(delta)}-12T12:00:00Z` : null, payment_account_id: paid ? 'a-nu' : null, payment_amount: paid ? total : null,
+  currency: 'BRL', total, items,
+})
+const invoices = [inv('i1', -3, 184200, 6, true), inv('i2', -2, 96750, 4, false), inv('i3', -1, 152300, 7, false), inv('i4', 0, 215000, 5, false), inv('i5', 1, 48900, 2, false)]
+const installments = [
+  { id: 'n1', number: 3, amount: 33333, transaction: { id: 't3', description: 'Notebook', category_id: 'c-util', installments_count: 6, date: day(40), amount: 200000 } },
+  { id: 'n2', number: 1, amount: 21437, transaction: { id: 't3', description: 'Mercado do mês', category_id: 'c-groc', installments_count: 1, date: day(2), amount: 21437 } },
+  { id: 'n3', number: 1, amount: 3990, transaction: { id: 't7', description: 'Streaming', category_id: 'c-subs', installments_count: 1, date: day(3), amount: 3990 } },
+  { id: 'n4', number: 2, amount: 12000, transaction: { id: 't10', description: 'Cinema e jantar', category_id: 'c-leis', installments_count: 3, date: day(20), amount: 36000 } },
+]
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -92,13 +106,18 @@ async function mock(page) {
     }
     if (path === '/rest/v1/cards') return json(route, cards.map(({ _used, ...c }) => c))
     if (path === '/rest/v1/card_limits') return json(route, cards.map((c) => ({ card_id: c.id, used: c._used, available: c.limit_amount - c._used })))
+    if (path === '/rest/v1/invoice_summaries') {
+      const cid = url.searchParams.get('card_id')
+      return json(route, cid ? invoices.filter((i) => `eq.${i.card_id}` === cid) : invoices.filter((i) => !i.paid_at))
+    }
+    if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
   })
 }
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['categories', '/categories'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

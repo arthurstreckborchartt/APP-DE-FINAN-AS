@@ -10,6 +10,7 @@ import OnboardingPage from '../features/onboarding/OnboardingPage'
 import AccountsPage from '../features/accounts/AccountsPage'
 import CategoriesPage from '../features/categories/CategoriesPage'
 import CardsPage from '../features/cards/CardsPage'
+import CardDetailPage from '../features/cards/CardDetailPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import HomePage from '../features/home/HomePage'
 import TransactionsPage from '../features/transactions/TransactionsPage'
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
               { path: '/new', element: <TransactionFormRoute /> },
               { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
               { path: '/cards', element: <CardsPage /> },
+              { path: '/cards/:id', element: <CardDetailPage /> },
               { path: '/groups', element: <PlaceholderPage titleKey="nav.groups" /> },
               { path: '/accounts', element: <AccountsPage /> },
               { path: '/categories', element: <CategoriesPage /> },
