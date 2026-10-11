@@ -2,6 +2,8 @@
 
 ------------------------------------------------------------
 -- Cartões
+-- Obs.: alterar closing_day/due_day só afeta faturas criadas depois da
+-- alteração; faturas já existentes mantêm suas datas de fechamento/vencimento.
 ------------------------------------------------------------
 create table public.cards (
   id uuid primary key default gen_random_uuid(),
@@ -58,16 +60,26 @@ as $$
 declare
   src_user uuid;
   src_currency char(3);
+  src_archived boolean;
   cat_user uuid;
   cat_kind text;
 begin
   if new.account_id is not null then
     select a.user_id, a.currency into src_user, src_currency from public.accounts a where a.id = new.account_id;
   else
-    select c.user_id, c.currency into src_user, src_currency from public.cards c where c.id = new.card_id;
+    select c.user_id, c.currency, c.archived into src_user, src_currency, src_archived
+      from public.cards c where c.id = new.card_id;
   end if;
   if src_user is null or src_user <> new.user_id then
     raise exception 'origem inválida' using errcode = '23514';
+  end if;
+  -- Compras novas (ou movidas) não podem ir para cartão arquivado.
+  if src_archived then
+    if tg_op = 'INSERT' then
+      raise exception 'cartão arquivado' using errcode = '23514', hint = 'archived_card';
+    elsif new.card_id is distinct from old.card_id then
+      raise exception 'cartão arquivado' using errcode = '23514', hint = 'archived_card';
+    end if;
   end if;
 
   select c.user_id, c.kind into cat_user, cat_kind from public.categories c where c.id = new.category_id;
@@ -173,7 +185,23 @@ revoke execute on function public.transactions_guard_paid() from public, anon, a
 create trigger transactions_guard_paid before update or delete on public.transactions
   for each row execute function public.transactions_guard_paid();
 
+-- Remove faturas em aberto do cartão que ficaram sem nenhuma parcela.
+create function public.card_invoices_cleanup(p_card uuid) returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  delete from public.invoices v
+  where v.card_id = p_card
+    and v.paid_at is null
+    and not exists (select 1 from public.installments i where i.invoice_id = v.id);
+end;
+$$;
+revoke execute on function public.card_invoices_cleanup(uuid) from public, anon, authenticated;
+
 -- Gera as parcelas (e faturas) de uma compra no cartão.
+-- Parcela nunca entra em fatura já paga: pula para a próxima fatura em aberto.
 create function public.transactions_sync_installments() returns trigger
 language plpgsql
 security definer
@@ -182,7 +210,8 @@ as $$
 declare
   v_closing smallint;
   v_month0 date;
-  v_ref0 date;
+  v_ref date;
+  v_paid timestamptz;
   v_base bigint;
   v_rest bigint;
   k int;
@@ -190,32 +219,62 @@ begin
   if tg_op = 'UPDATE' then
     delete from public.installments where transaction_id = new.id;
   end if;
-  if new.card_id is null then
-    return new;
+
+  if new.card_id is not null then
+    select closing_day into v_closing from public.cards where id = new.card_id;
+    v_month0 := date_trunc('month', new.date)::date;
+    v_ref := case when extract(day from new.date) < v_closing then v_month0 else (v_month0 + interval '1 month')::date end;
+    v_base := new.amount / new.installments_count;
+    v_rest := new.amount - v_base * new.installments_count;
+
+    for k in 1..new.installments_count loop
+      if k > 1 then
+        v_ref := (v_ref + interval '1 month')::date;
+      end if;
+      loop
+        select paid_at into v_paid from public.invoices
+          where card_id = new.card_id and reference_month = v_ref
+          for update;
+        exit when not found or v_paid is null;
+        v_ref := (v_ref + interval '1 month')::date;
+      end loop;
+
+      insert into public.installments (user_id, transaction_id, invoice_id, number, amount, competence_month)
+      values (
+        new.user_id, new.id,
+        public.card_invoice_for(new.card_id, v_ref),
+        k,
+        v_base + case when k = 1 then v_rest else 0 end,
+        (v_month0 + make_interval(months => k - 1))::date
+      );
+    end loop;
   end if;
 
-  select closing_day into v_closing from public.cards where id = new.card_id;
-  v_month0 := date_trunc('month', new.date)::date;
-  v_ref0 := case when extract(day from new.date) < v_closing then v_month0 else (v_month0 + interval '1 month')::date end;
-  v_base := new.amount / new.installments_count;
-  v_rest := new.amount - v_base * new.installments_count;
-
-  for k in 1..new.installments_count loop
-    insert into public.installments (user_id, transaction_id, invoice_id, number, amount, competence_month)
-    values (
-      new.user_id, new.id,
-      public.card_invoice_for(new.card_id, (v_ref0 + make_interval(months => k - 1))::date),
-      k,
-      v_base + case when k = 1 then v_rest else 0 end,
-      (v_month0 + make_interval(months => k - 1))::date
-    );
-  end loop;
+  if tg_op = 'UPDATE' and old.card_id is not null then
+    perform public.card_invoices_cleanup(old.card_id);
+  end if;
   return new;
 end;
 $$;
 revoke execute on function public.transactions_sync_installments() from public, anon, authenticated;
 create trigger transactions_sync_installments after insert or update on public.transactions
   for each row execute function public.transactions_sync_installments();
+
+-- Ao excluir uma compra no cartão, remove as faturas em aberto que ficaram vazias.
+create function public.transactions_cleanup_invoices() returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  delete from public.installments where transaction_id = old.id;
+  perform public.card_invoices_cleanup(old.card_id);
+  return old;
+end;
+$$;
+revoke execute on function public.transactions_cleanup_invoices() from public, anon, authenticated;
+create trigger transactions_cleanup_invoices after delete on public.transactions
+  for each row when (old.card_id is not null) execute function public.transactions_cleanup_invoices();
 
 ------------------------------------------------------------
 -- Pagar / desfazer pagamento de fatura
@@ -231,21 +290,28 @@ declare
   v_total bigint;
 begin
   select i.id, i.user_id, i.paid_at, c.currency into v
-    from public.invoices i join public.cards c on c.id = i.card_id where i.id = p_invoice;
+    from public.invoices i join public.cards c on c.id = i.card_id where i.id = p_invoice
+    for update of i;
   if v.id is null or v.user_id <> auth.uid() then
     raise exception 'fatura inválida' using errcode = '23514';
   end if;
   if v.paid_at is not null then
     raise exception 'fatura já paga' using errcode = '23514', hint = 'already_paid';
   end if;
-  select id, user_id, currency into a from public.accounts where id = p_account;
+  select id, user_id, currency, archived into a from public.accounts where id = p_account;
   if a.id is null or a.user_id <> auth.uid() then
     raise exception 'conta inválida' using errcode = '23514';
+  end if;
+  if a.archived then
+    raise exception 'conta arquivada' using errcode = '23514', hint = 'archived_account';
   end if;
   if a.currency <> v.currency then
     raise exception 'moeda diferente' using errcode = '23514', hint = 'currency_mismatch';
   end if;
   select coalesce(sum(amount), 0) into v_total from public.installments where invoice_id = p_invoice;
+  if v_total = 0 then
+    raise exception 'fatura vazia' using errcode = '23514', hint = 'empty_invoice';
+  end if;
   update public.invoices
     set paid_at = now(), payment_account_id = p_account, payment_amount = v_total
     where id = p_invoice;
