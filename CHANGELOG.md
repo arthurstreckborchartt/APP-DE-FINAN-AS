@@ -9,6 +9,14 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.2.0.1 — 2026-10-11
+
+Ajuste de identidade visual: "Equilíbrio".
+
+- Nova logo: dois círculos que se encontram (o que entra e o que sai) com a lente violeta do equilíbrio; ícones do app renovados.
+- Nova paleta violeta serena, no tema claro e no escuro.
+- O motivo dos dois círculos aparece no painel de saldo e na tela de login.
+
 ## Atualização 1.2.0.0 — 2026-10-11
 
 Novo visual: o app passa a se chamar **FINANCE**.

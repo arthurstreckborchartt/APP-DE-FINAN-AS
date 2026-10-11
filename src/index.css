@@ -3,46 +3,46 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* FINANCE — app bancário calmo: cobalto sobre tinta, folhas brancas, números tabulares. */
+/* FINANCE — "Equilíbrio": violeta sereno sobre tinta, folhas claras, números tabulares. */
 :root {
-  --bg: #f2f4f8;
+  --bg: #f4f3f9;
   --surface: #ffffff;
-  --surface-2: #edf0f5;
-  --surface-3: #e2e6ee;
-  --fg: #0c1222;
-  --muted: #5a6477;
-  --line: #e1e5ed;
-  --primary: #2f55d4;
-  --primary-strong: #2445b8;
+  --surface-2: #efedf7;
+  --surface-3: #e3e0f0;
+  --fg: #110e24;
+  --muted: #5d5973;
+  --line: #e5e2ef;
+  --primary: #5b3df5;
+  --primary-strong: #4a2ee0;
   --primary-fg: #ffffff;
-  --primary-soft: #e8edfc;
-  --brand-1: #2c4fd0;
-  --brand-2: #172c86;
+  --primary-soft: #efebff;
+  --brand-1: #5b3df5;
+  --brand-2: #2a1a8a;
   --brand-fg: #ffffff;
-  --brand-muted: #c9d4fb;
+  --brand-muted: #d6ccff;
   --danger: #cc3b31;
   --success: #0f7a55;
-  --shadow-sheet: 0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12);
-  --shadow-float: 0 10px 30px -10px rgb(36 69 184 / 0.55);
+  --shadow-sheet: 0 1px 2px rgb(17 14 36 / 0.04), 0 8px 24px -12px rgb(17 14 36 / 0.12);
+  --shadow-float: 0 10px 30px -10px rgb(74 46 224 / 0.55);
   color-scheme: light;
 }
 
 .dark {
-  --bg: #08090d;
-  --surface: #11141b;
-  --surface-2: #191d26;
-  --surface-3: #232835;
-  --fg: #eef1f7;
-  --muted: #9aa3b5;
-  --line: #222734;
-  --primary: #7393ff;
-  --primary-strong: #8ba5ff;
-  --primary-fg: #0a1230;
-  --primary-soft: #18214a;
-  --brand-1: #2a46b8;
-  --brand-2: #121c55;
+  --bg: #09080f;
+  --surface: #13111d;
+  --surface-2: #1c1929;
+  --surface-3: #272339;
+  --fg: #f1effa;
+  --muted: #a39fb8;
+  --line: #262238;
+  --primary: #a996ff;
+  --primary-strong: #bcadff;
+  --primary-fg: #160a4a;
+  --primary-soft: #231b52;
+  --brand-1: #4a2ee0;
+  --brand-2: #1a0f5c;
   --brand-fg: #ffffff;
-  --brand-muted: #b9c6f5;
+  --brand-muted: #cfc4ff;
   --danger: #ff7b6f;
   --success: #45d19a;
   --shadow-sheet: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7);
@@ -104,10 +104,11 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Painel de saldo: material da marca, não decoração de texto. */
+/* Painel de saldo: o motivo da marca (dois círculos que se encontram) como material do painel. */
 .brand-panel {
   background:
-    radial-gradient(120% 140% at 100% 0%, rgb(255 255 255 / 0.14) 0%, transparent 55%),
+    radial-gradient(circle at calc(100% - 7rem) 3.5rem, rgb(255 255 255 / 0.13) 0 5.5rem, transparent 5.55rem),
+    radial-gradient(circle at calc(100% - 2.5rem) 3.5rem, rgb(201 189 255 / 0.16) 0 5.5rem, transparent 5.55rem),
     linear-gradient(160deg, var(--brand-1) 0%, var(--brand-2) 100%);
   color: var(--brand-fg);
 }

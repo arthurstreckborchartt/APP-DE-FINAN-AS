@@ -1,24 +1,24 @@
 ---
 name: FINANCE
-description: A calm, familiar banking app for personal and shared money, with cobalt on ink, white sheets and tabular figures.
+description: A calm, familiar banking app for personal and shared money, with violet on ink, white sheets and tabular figures.
 colors:
-  primary: "#2f55d4"
-  primary-strong: "#2445b8"
+  primary: "#5b3df5"
+  primary-strong: "#4a2ee0"
   primary-fg: "#ffffff"
-  primary-soft: "#e8edfc"
-  brand-1: "#2c4fd0"
-  brand-2: "#172c86"
+  primary-soft: "#efebff"
+  brand-1: "#5b3df5"
+  brand-2: "#2a1a8a"
   brand-fg: "#ffffff"
-  brand-muted: "#c9d4fb"
+  brand-muted: "#d6ccff"
   success: "#0f7a55"
   danger: "#cc3b31"
-  bg: "#f2f4f8"
+  bg: "#f4f3f9"
   surface: "#ffffff"
-  surface-2: "#edf0f5"
-  surface-3: "#e2e6ee"
-  fg: "#0c1222"
-  muted: "#5a6477"
-  line: "#e1e5ed"
+  surface-2: "#efedf7"
+  surface-3: "#e3e0f0"
+  fg: "#110e24"
+  muted: "#5d5973"
+  line: "#e5e2ef"
 typography:
   display:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
@@ -146,14 +146,14 @@ components:
 
 **Creative North Star: "The Quiet Bank"**
 
-FINANCE looks like the banking app people already trust, done with care. One confident cobalt balance panel carries the brand; everything below it is quiet, white and exact. Content sits on rounded white sheets floating on a cool near-white ground (light theme) or layered graphite on near-black (dark theme). Density is comfortable rather than packed: generous 20–24px sheet padding, 48px controls, 44px minimum targets.
+FINANCE looks like the banking app people already trust, done with care. One confident violet balance panel carries the brand; everything below it is quiet, white and exact. Content sits on rounded white sheets floating on a cool near-white ground (light theme) or layered graphite on near-black (dark theme). Density is comfortable rather than packed: generous 20–24px sheet padding, 48px controls, 44px minimum targets.
 
 The system is conventional on purpose. The owner chose the category standard (the craft level of Nubank, Revolut, Monzo), so the identity lives in finish rather than novelty: Manrope with tabular figures for every amount, one brand hue used sparingly, pill-shaped actions, circular category avatars tinted from each category's own color, and a single authored motion moment where the balance panel settles and values unblur.
 
 It replaces the earlier generic Tailwind-dashboard look (flat white cards, teal accent, default type), which is the confirmed anti-reference.
 
 **Key Characteristics:**
-- One brand surface per screen: the cobalt balance panel (or the auth side panel).
+- One brand surface per screen: the violet balance panel (or the auth side panel).
 - White sheets with soft offset shadows on a cool ground; no borders on cards.
 - Every money value uses tabular figures and is hideable.
 - Green and coral appear only on amounts and their bars, never as decoration.
@@ -162,13 +162,13 @@ It replaces the earlier generic Tailwind-dashboard look (flat white cards, teal 
 
 ## Colors
 
-A calm cobalt on deep ink, set against cool, slightly blue neutrals, with two semantic hues reserved for money.
+A calm violet on deep ink, set against cool, slightly blue neutrals, with two semantic hues reserved for money.
 
 ### Primary
-- **Calm Cobalt** (primary): primary buttons, the + FAB, focus outlines, caret, text selection, active nav text, links such as "See all".
-- **Pressed Cobalt** (primary-strong): hover and pressed state of primary actions.
-- **Cobalt Mist** (primary-soft): active nav pill, avatar initials background, empty-state icon disc, hover tint on quick actions and text links.
-- **Balance Cobalt to Deep Ink Blue** (brand-1 to brand-2): the 160deg gradient of the balance panel and the auth side panel, also the BrandMark monogram. Brand-muted is the secondary text on that panel; brand-fg is its primary text.
+- **Serene Violet** (primary): primary buttons, the + FAB, focus outlines, caret, text selection, active nav text, links such as "See all".
+- **Pressed Violet** (primary-strong): hover and pressed state of primary actions.
+- **Violet Mist** (primary-soft): active nav pill, avatar initials background, empty-state icon disc, hover tint on quick actions and text links.
+- **Balance Violet to Deep Ink Blue** (brand-1 to brand-2): the 160deg gradient of the balance panel and the auth side panel, also the BrandMark monogram. Brand-muted is the secondary text on that panel; brand-fg is its primary text.
 
 ### Secondary
 - **Ledger Green** (success): income amounts, income bars, positive net.
@@ -184,7 +184,7 @@ A calm cobalt on deep ink, set against cool, slightly blue neutrals, with two se
 - **Hairline** (line): sidebar edge, bottom-bar top edge, the divider above a net total.
 
 ### Dark theme
-The same role names remap under `.dark`: bg #08090d, surface #11141b, surface-2 #191d26, surface-3 #232835, fg #eef1f7, muted #9aa3b5, line #222734, primary #7393ff, primary-strong #8ba5ff, primary-fg #0a1230, primary-soft #18214a, brand-1 #2a46b8, brand-2 #121c55, brand-muted #b9c6f5, success #45d19a, danger #ff7b6f. Components only reference role names, never theme-specific values.
+The same role names remap under `.dark`: bg #09080f, surface #13111d, surface-2 #1c1929, surface-3 #272339, fg #f1effa, muted #a39fb8, line #262238, primary #a996ff, primary-strong #bcadff, primary-fg #160a4a, primary-soft #231b52, brand-1 #4a2ee0, brand-2 #1a0f5c, brand-muted #cfc4ff, success #45d19a, danger #ff7b6f. Components only reference role names, never theme-specific values.
 
 ### Named Rules
 **The One Brand Surface Rule.** The brand gradient appears once per screen, on the balance panel (Início, Contas) or the auth side panel. Other sheets stay white.
@@ -229,7 +229,7 @@ Hybrid: tonal layering does most of the work (bg, then surface, then surface-2 f
 
 ### Shadow Vocabulary
 - **Sheet** (`0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12)`): every white sheet, the month switcher, selected segmented option, quick-action discs, dialogs.
-- **Float** (`0 10px 30px -10px rgb(36 69 184 / 0.55)`): cobalt-tinted glow under the balance panel, primary buttons, the FAB and the primary quick action. Dark: `0 10px 30px -10px rgb(0 0 0 / 0.8)`.
+- **Float** (`0 10px 30px -10px rgb(36 69 184 / 0.55)`): violet-tinted glow under the balance panel, primary buttons, the FAB and the primary quick action. Dark: `0 10px 30px -10px rgb(0 0 0 / 0.8)`.
 
 ### Named Rules
 **The Two Shadows Rule.** Only Sheet and Float exist. Sheet means "resting surface"; Float means "brand or primary action". Disabled primaries drop their shadow.
@@ -243,11 +243,11 @@ Soft and rounded throughout, scaled to the object: pills for anything pressable 
 ### Buttons
 Confident, round and heavy.
 - **Shape:** full pill, 48px tall, 24px horizontal padding, 15px bold label with -0.01em track.
-- **Primary:** Calm Cobalt fill, white label, Float shadow; hover to Pressed Cobalt; press scales to 0.98.
+- **Primary:** Serene Violet fill, white label, Float shadow; hover to Pressed Violet; press scales to 0.98.
 - **Secondary:** Fog fill, Ink label; hover to Steel Fog.
 - **Ghost:** transparent, Ink label; hover Fog.
 - **Danger:** transparent, coral label; hover coral at 10%.
-- **Focus / Disabled:** 2px cobalt outline offset 2px; disabled at 50% opacity with no shadow; loading shows an inline spinner.
+- **Focus / Disabled:** 2px violet outline offset 2px; disabled at 50% opacity with no shadow; loading shows an inline spinner.
 
 ### Chips
 - **Currency chip:** Fog pill, 12px extrabold Slate code; tags each per-currency block when more than one currency exists.
@@ -262,12 +262,12 @@ Confident, round and heavy.
 
 ### Inputs / Fields
 - **Style:** Fog fill, transparent 1px border, 16px radius, 48px tall, 16px medium text; 13px semibold Slate label above, 6px gap.
-- **Focus:** fill turns Sheet White, border turns cobalt, 4px cobalt ring at 15%.
+- **Focus:** fill turns Sheet White, border turns violet, 4px violet ring at 15%.
 - **Error / Disabled:** coral border and ring, 13px coral message below; disabled at 60% opacity. Selects share the field and add a muted chevron.
 
 ### Navigation
-- **Mobile bottom bar:** white with hairline top and a soft upward shadow; tabs are 64px tall with an icon in a 48×28 pill (Cobalt Mist when active) over an 11px bold label; active is cobalt, inactive Slate. The center + FAB is a 60px cobalt circle raised 24px, cut out by a 6px bg-colored ring.
-- **Desktop sidebar:** 48px rows at 16px radius, 15px semibold; active is Cobalt Mist with cobalt text, hover Fog. The primary pill sits above the list.
+- **Mobile bottom bar:** white with hairline top and a soft upward shadow; tabs are 64px tall with an icon in a 48×28 pill (Violet Mist when active) over an 11px bold label; active is violet, inactive Slate. The center + FAB is a 60px violet circle raised 24px, cut out by a 6px bg-colored ring.
+- **Desktop sidebar:** 48px rows at 16px radius, 15px semibold; active is Violet Mist with violet text, hover Fog. The primary pill sits above the list.
 
 ### Segmented Control
 Fog pill track with 4px padding; 44px options; selected option is a Sheet White pill with the Sheet shadow and Ink text, others Slate. Behaves as a keyboard radiogroup.

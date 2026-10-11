@@ -11,7 +11,7 @@ export function AuthLayout({ title, subtitle, children, footer }: Props) {
   return (
     <div className="min-h-full lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <aside className="brand-panel relative hidden flex-col justify-between overflow-hidden p-12 lg:flex">
-        <BrandMark size={40} className="text-white" />
+        <BrandMark size={40} inverted className="text-white" />
         <div className="max-w-md">
           <p className="text-[44px] font-extrabold leading-[1.05] tracking-[-0.035em]">{t('auth.tagline')}</p>
         </div>
