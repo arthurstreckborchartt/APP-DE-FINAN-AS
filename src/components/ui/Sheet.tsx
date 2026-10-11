@@ -70,7 +70,7 @@ export function Sheet({ open, onClose, title, children }: Props) {
       }}>
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
         className="max-h-[92dvh] w-full overflow-y-auto rounded-t-[28px] bg-surface p-5 shadow-sheet pb-[calc(env(safe-area-inset-bottom)+1.25rem)]
-          shadow-xl lg:max-w-lg lg:rounded-3xl lg:pb-6">
+          lg:max-w-lg lg:rounded-3xl lg:pb-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 id={titleId} className="text-xl font-extrabold tracking-[-0.02em]">{title}</h2>
           <button type="button" onClick={onClose} aria-label={t('common.close')}
