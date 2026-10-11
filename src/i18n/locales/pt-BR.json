@@ -20,7 +20,8 @@
     "skip": "Pular",
     "create": "Criar",
     "all": "Todos",
-    "default": "Padrão"
+    "default": "Padrão",
+    "other": "Outros"
   },
   "nav": {
     "home": "Início",
@@ -74,7 +75,8 @@
       "weakPassword": "A senha precisa ter pelo menos 8 caracteres.",
       "rateLimit": "Muitas tentativas. Aguarde um pouco e tente de novo.",
       "generic": "Não foi possível concluir. Tente novamente."
-    }
+    },
+    "tagline": "Suas finanças com calma e controle, no celular e no computador."
   },
   "onboarding": {
     "title": "Bem-vindo!",
@@ -98,7 +100,9 @@
   "settings": {
     "title": "Configurações",
     "profile": "Perfil e preferências",
-    "logout": "Sair"
+    "logout": "Sair",
+    "money": "Seu dinheiro",
+    "appearance": "Conta e preferências"
   },
   "install": {
     "title": "Instale o app",
@@ -210,6 +214,14 @@
     "balance": "Saldo nas contas",
     "thisMonth": "Este mês",
     "recent": "Últimos lançamentos",
-    "seeAll": "Ver todos"
+    "seeAll": "Ver todos",
+    "hideValues": "Ocultar valores",
+    "showValues": "Mostrar valores",
+    "byCategory": "Para onde foi o dinheiro",
+    "noExpenses": "Nenhuma despesa neste mês ainda.",
+    "accounts_one": "{{count}} conta",
+    "accounts_other": "{{count}} contas",
+    "quickActions": "Atalhos",
+    "spentOf": "{{pct}}% das despesas"
   }
 }

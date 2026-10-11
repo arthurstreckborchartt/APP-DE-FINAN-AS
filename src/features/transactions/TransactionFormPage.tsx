@@ -148,58 +148,65 @@ export default function TransactionFormPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto flex max-w-xl flex-col gap-5">
-      <h1 className="text-2xl font-bold tracking-tight">{id ? t('transactions.edit') : t('transactions.new')}</h1>
+    <form onSubmit={onSubmit} className="mx-auto flex max-w-5xl flex-col gap-5">
+      <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{id ? t('transactions.edit') : t('transactions.new')}</h1>
 
-      <SegmentedControl label={t('transactions.title')} value={form.kind} onChange={changeKind}
-        options={[
-          { value: 'expense', label: t('transactions.expense') },
-          { value: 'income', label: t('transactions.income') },
-        ]} />
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-6">
+        <section className="flex flex-col gap-5 rounded-[28px] bg-surface p-5 shadow-sheet sm:p-6 lg:sticky lg:top-10">
+          <SegmentedControl label={t('transactions.kindFilter')} value={form.kind} onChange={changeKind}
+            options={[
+              { value: 'expense', label: t('transactions.expense') },
+              { value: 'income', label: t('transactions.income') },
+            ]} />
+          <AmountKeypad value={form.amount} onChange={(amount) => set({ amount })} currency={currency} locale={locale}
+            label={t('transactions.amount')} error={errors.amount} tone={form.kind} />
+        </section>
 
-      <AmountKeypad value={form.amount} onChange={(amount) => set({ amount })} currency={currency} locale={locale}
-        label={t('transactions.amount')} error={errors.amount} />
+        <section className="flex flex-col gap-6 rounded-[28px] bg-surface p-5 shadow-sheet sm:p-6">
+          <fieldset>
+            <legend className="mb-3 text-[13px] font-semibold text-muted">{t('transactions.category')}</legend>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {selectableCategories.map((c) => (
+                <label key={c.id} className="flex cursor-pointer flex-col items-center gap-1.5 rounded-2xl border-2 border-transparent bg-surface-2 px-1.5 py-3 text-center transition
+                  hover:bg-surface-3 has-checked:border-primary has-checked:bg-primary-soft has-focus-visible:ring-4 has-focus-visible:ring-primary/25">
+                  <input type="radio" name="category" className="sr-only" value={c.id} checked={form.categoryId === c.id}
+                    onChange={() => set({ categoryId: c.id })} />
+                  <CategoryIcon icon={c.icon} color={c.color} size="sm" />
+                  <span className="line-clamp-2 text-[12px] font-bold leading-tight">{categoryLabel(c, t)}</span>
+                </label>
+              ))}
+            </div>
+            {errors.category && <p className="mt-2 text-[13px] font-medium text-danger">{errors.category}</p>}
+          </fieldset>
 
-      <fieldset>
-        <legend className="mb-2 text-sm font-medium">{t('transactions.category')}</legend>
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          {selectableCategories.map((c) => (
-            <label key={c.id} className="flex cursor-pointer flex-col items-center gap-1 rounded-2xl border border-line bg-surface p-2 text-center
-              has-checked:border-primary has-checked:bg-primary/10 has-focus-visible:ring-2 has-focus-visible:ring-primary">
-              <input type="radio" name="category" className="sr-only" value={c.id} checked={form.categoryId === c.id}
-                onChange={() => set({ categoryId: c.id })} />
-              <CategoryIcon icon={c.icon} color={c.color} size="sm" />
-              <span className="line-clamp-2 text-xs font-medium">{categoryLabel(c, t)}</span>
-            </label>
-          ))}
-        </div>
-        {errors.category && <p className="mt-1 text-sm text-danger">{errors.category}</p>}
-      </fieldset>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <SelectField label={t('transactions.account')} value={form.accountId ?? ''}
+                onChange={(e) => set({ accountId: e.target.value || null })}>
+                <option value="" disabled>—</option>
+                {selectableAccounts.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.currency})</option>)}
+              </SelectField>
+              {errors.account && <p className="mt-1.5 text-[13px] font-medium text-danger">{errors.account}</p>}
+            </div>
+            <TextField label={t('transactions.date')} type="date" value={form.date}
+              onChange={(e) => set({ date: e.target.value })} error={errors.date} />
+          </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <SelectField label={t('transactions.account')} value={form.accountId ?? ''}
-            onChange={(e) => set({ accountId: e.target.value || null })}>
-            <option value="" disabled>—</option>
-            {selectableAccounts.map((a) => <option key={a.id} value={a.id}>{a.name} ({a.currency})</option>)}
-          </SelectField>
-          {errors.account && <p className="mt-1 text-sm text-danger">{errors.account}</p>}
-        </div>
-        <TextField label={t('transactions.date')} type="date" value={form.date}
-          onChange={(e) => set({ date: e.target.value })} error={errors.date} />
+          <TextField label={t('transactions.description')} maxLength={140} placeholder={t('transactions.descriptionPlaceholder')}
+            value={form.description} onChange={(e) => set({ description: e.target.value })} />
+
+          {saveError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{t('common.errorGeneric')}</p>}
+
+          <div className="flex flex-col gap-2 sm:flex-row-reverse">
+            <Button type="submit" className="sm:flex-1" full loading={create.isPending || update.isPending} disabled={remove.isPending}>{t('transactions.save')}</Button>
+            {id && (
+              <Button type="button" variant="danger" className="sm:flex-1" full loading={remove.isPending} disabled={create.isPending || update.isPending} onClick={() => void onDelete()}>
+                {confirmDelete ? t('common.confirmDelete') : t('common.delete')}
+              </Button>
+            )}
+          </div>
+        </section>
       </div>
-
-      <TextField label={t('transactions.description')} maxLength={140} placeholder={t('transactions.descriptionPlaceholder')}
-        value={form.description} onChange={(e) => set({ description: e.target.value })} />
-
-      {saveError && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{t('common.errorGeneric')}</p>}
-
-      <Button type="submit" full loading={create.isPending || update.isPending} disabled={remove.isPending}>{t('transactions.save')}</Button>
-      {id && (
-        <Button type="button" variant="danger" full loading={remove.isPending} disabled={create.isPending || update.isPending} onClick={() => void onDelete()}>
-          {confirmDelete ? t('common.confirmDelete') : t('common.delete')}
-        </Button>
-      )}
     </form>
   )
 }

@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <TextField label={t('auth.fields.newPassword')} type="password" autoComplete="new-password" minLength={8}
           required value={password} onChange={(e) => setPassword(e.target.value)} />
-        {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+        {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
         <Button type="submit" full loading={loading}>{t('auth.reset.submit')}</Button>
       </form>
     </AuthLayout>

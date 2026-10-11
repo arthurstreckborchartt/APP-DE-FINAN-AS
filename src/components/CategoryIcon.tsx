@@ -5,11 +5,11 @@ type Props = { icon: string; color: string; size?: 'sm' | 'md' }
 
 export function CategoryIcon({ icon, color, size = 'md' }: Props) {
   const Icon = Object.hasOwn(CATEGORY_ICONS, icon) ? CATEGORY_ICONS[icon] : Tag
-  const box = size === 'sm' ? 'size-8' : 'size-10'
+  const box = size === 'sm' ? 'size-9' : 'size-11'
   const glyph = size === 'sm' ? 'size-4' : 'size-5'
   return (
     <span className={`grid ${box} shrink-0 place-items-center rounded-full`}
-      style={{ backgroundColor: `${color}26`, color }}>
+      style={{ backgroundColor: `${color}1f`, color }}>
       <Icon className={glyph} aria-hidden="true" />
     </span>
   )

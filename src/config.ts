@@ -1,1 +1,1 @@
-export const APP_NAME = 'Finanças'
+export const APP_NAME = 'FINANCE'

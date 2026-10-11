@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ReceiptText, Search } from 'lucide-react'
+import { ChevronDown, Plus, ReceiptText, Search } from 'lucide-react'
+import { Amount } from '../../components/Amount'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { MonthSwitcher } from '../../components/ui/MonthSwitcher'
 import { QueryError } from '../../components/ui/QueryError'
@@ -9,7 +10,6 @@ import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { formatDay, isMonth, monthOf, relativeDay, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
-import { formatMoney } from '../../lib/money'
 import { useAccounts } from '../accounts/api'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
@@ -18,7 +18,7 @@ import { filterTransactions, groupByDate, summarizeByCurrency, type TransactionF
 import { TransactionRow } from './TransactionRow'
 import type { TransactionKind } from './types'
 
-const selectClass = 'h-11 min-w-0 rounded-xl border border-line bg-surface px-3 text-base text-fg outline-none focus:border-primary'
+const fieldClass = 'h-12 min-w-0 appearance-none rounded-2xl border border-transparent bg-surface-2 text-[15px] font-semibold text-fg outline-none transition placeholder:font-medium placeholder:text-muted hover:bg-surface-3 focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/15'
 
 export default function TransactionsPage() {
   const { t, i18n } = useTranslation()
@@ -46,48 +46,33 @@ export default function TransactionsPage() {
   const summary = summarizeByCurrency(visible)
   const hasFilters = !!(filters.kind || filters.accountId || filters.categoryId || filters.search)
 
-  return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-4">
-      <h1 className="text-2xl font-bold tracking-tight">{t('transactions.title')}</h1>
-      <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />
-
-      {summary.map((s) => (
-        <dl key={s.currency} className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-surface p-4 text-center">
-          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.income_total')}</dt>
-            <dd className="break-words text-sm font-semibold tabular-nums text-success sm:text-base">{formatMoney(s.income, s.currency, locale)}</dd></div>
-          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.expense_total')}</dt>
-            <dd className="break-words text-sm font-semibold tabular-nums text-danger sm:text-base">{formatMoney(s.expense, s.currency, locale)}</dd></div>
-          <div className="min-w-0"><dt className="text-xs text-muted">{t('transactions.net_total')}</dt>
-            <dd className="break-words text-sm font-semibold tabular-nums sm:text-base">{formatMoney(s.net, s.currency, locale)}</dd></div>
-        </dl>
-      ))}
-
-      {refsError && (
-        <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch() }} />
-      )}
-
-      <div className="flex flex-col gap-2">
-        <label className="relative">
-          <span className="sr-only">{t('transactions.search')}</span>
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden="true" />
-          <input type="search" value={filters.search ?? ''} placeholder={t('transactions.searchPlaceholder')}
-            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            className="h-11 w-full rounded-xl border border-line bg-surface pl-10 pr-3 text-base outline-none focus:border-primary" />
-        </label>
-        <SegmentedControl<'all' | TransactionKind> label={t('transactions.kindFilter')} value={filters.kind ?? 'all'}
-          onChange={(v) => setFilters({ ...filters, kind: v === 'all' ? undefined : v })}
-          options={[
-            { value: 'all', label: t('common.all') },
-            { value: 'expense', label: t('transactions.expense') },
-            { value: 'income', label: t('transactions.income') },
-          ]} />
-        <div className="grid grid-cols-2 gap-2">
-          <select aria-label={t('transactions.account')} className={selectClass} value={filters.accountId ?? ''}
+  const filtersPanel = (
+    <div className="flex flex-col gap-3">
+      <label className="relative">
+        <span className="sr-only">{t('transactions.search')}</span>
+        <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden="true" />
+        <input type="search" value={filters.search ?? ''} placeholder={t('transactions.searchPlaceholder')}
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          className={`${fieldClass} w-full pl-12 pr-4`} />
+      </label>
+      <SegmentedControl<'all' | TransactionKind> label={t('transactions.kindFilter')} value={filters.kind ?? 'all'}
+        onChange={(v) => setFilters({ ...filters, kind: v === 'all' ? undefined : v })}
+        options={[
+          { value: 'all', label: t('common.all') },
+          { value: 'expense', label: t('transactions.expense') },
+          { value: 'income', label: t('transactions.income') },
+        ]} />
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+        <div className="relative min-w-0">
+          <select aria-label={t('transactions.account')} className={`${fieldClass} w-full pl-4 pr-10`} value={filters.accountId ?? ''}
             onChange={(e) => setFilters({ ...filters, accountId: e.target.value || undefined })}>
             <option value="">{t('transactions.allAccounts')}</option>
             {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
-          <select aria-label={t('transactions.category')} className={selectClass} value={filters.categoryId ?? ''}
+          <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+        </div>
+        <div className="relative min-w-0">
+          <select aria-label={t('transactions.category')} className={`${fieldClass} w-full pl-4 pr-10`} value={filters.categoryId ?? ''}
             onChange={(e) => setFilters({ ...filters, categoryId: e.target.value || undefined })}>
             <option value="">{t('transactions.allCategories')}</option>
             {(['expense', 'income'] as const).map((kind) => (
@@ -96,40 +81,91 @@ export default function TransactionsPage() {
               </optgroup>
             ))}
           </select>
+          <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden="true" />
         </div>
       </div>
+    </div>
+  )
 
-      {isPending ? (
-        <div className="min-h-[40vh]"><FullScreenSpinner /></div>
-      ) : isError ? (
-        <QueryError onRetry={() => void refetch()} />
-      ) : groups.length === 0 ? (
-        <EmptyState icon={ReceiptText}
-          title={hasFilters ? t('transactions.noResults') : t('transactions.empty')}
-          description={hasFilters ? undefined : t('transactions.emptyBody')}
-          action={hasFilters ? undefined : <Link to="/new" className="font-semibold text-primary">{t('transactions.new')}</Link>} />
-      ) : (
-        <div className="flex flex-col gap-4">
-          {groups.map((g) => {
-            const rel = relativeDay(g.date, today)
-            return (
-              <section key={g.date} aria-label={formatDay(g.date, locale)}>
-                <h2 className="px-3 pb-1 text-sm font-semibold capitalize text-muted">
-                  {rel ? t(`transactions.${rel}`) : formatDay(g.date, locale)}
-                </h2>
-                <ul className="rounded-2xl border border-line bg-surface p-1">
-                  {g.items.map((tx) => (
-                    <li key={tx.id}>
-                      <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
-                        account={accountsById.get(tx.account_id)} locale={locale} />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )
-          })}
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('transactions.title')}</h1>
+        <Link to="/new"
+          className="hidden h-11 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-fg shadow-float hover:bg-primary-strong lg:inline-flex">
+          <Plus className="size-4" aria-hidden="true" /> {t('transactions.new')}
+        </Link>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8">
+        <aside className="flex flex-col gap-4 lg:sticky lg:top-10 lg:order-2">
+          <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />
+          {summary.map((s) => (
+            <dl key={s.currency} className="grid grid-cols-3 gap-3 rounded-[24px] bg-surface p-5 shadow-sheet lg:grid-cols-1 lg:gap-4">
+              {([
+                ['income_total', s.income, 'income', 'text-success'],
+                ['expense_total', s.expense, 'expense', 'text-fg'],
+                ['net_total', Math.abs(s.net), s.net >= 0 ? 'income' : 'expense', s.net >= 0 ? 'text-success' : 'text-danger'],
+              ] as const).map(([key, value, sign, tone]) => (
+                <div key={key} className="min-w-0 lg:flex lg:items-baseline lg:justify-between lg:gap-3">
+                  <dt className="text-[12px] font-bold uppercase tracking-[0.06em] text-muted">{t(`transactions.${key}`)}</dt>
+                  <dd className="mt-1 lg:mt-0">
+                    <Amount cents={value} currency={s.currency} locale={locale} sign={key === 'net_total' ? sign : undefined}
+                      className={`block break-words text-[15px] font-extrabold sm:text-[17px] ${tone}`} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          ))}
+          <div className="rounded-[24px] bg-surface p-4 shadow-sheet">{filtersPanel}</div>
+        </aside>
+
+        <div className="flex min-w-0 flex-col gap-5 lg:order-1">
+          {refsError && (
+            <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch() }} />
+          )}
+          {isPending ? (
+            <div className="min-h-[40vh]"><FullScreenSpinner /></div>
+          ) : isError ? (
+            <QueryError onRetry={() => void refetch()} />
+          ) : groups.length === 0 ? (
+            <EmptyState icon={ReceiptText}
+              title={hasFilters ? t('transactions.noResults') : t('transactions.empty')}
+              description={hasFilters ? undefined : t('transactions.emptyBody')}
+              action={hasFilters ? undefined : (
+                <Link to="/new" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('transactions.new')}</Link>
+              )} />
+          ) : (
+            groups.map((g) => {
+              const rel = relativeDay(g.date, today)
+              const dayTotals = summarizeByCurrency(g.items)
+              return (
+                <section key={g.date} aria-label={formatDay(g.date, locale)} className="rounded-[24px] bg-surface p-2 shadow-sheet sm:p-3">
+                  <header className="flex items-baseline justify-between gap-3 px-3 pb-1 pt-2">
+                    <h2 className="text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">
+                      {rel ? t(`transactions.${rel}`) : formatDay(g.date, locale)}
+                    </h2>
+                    <span className="flex flex-col items-end">
+                      {dayTotals.map((d) => (
+                        <Amount key={d.currency} cents={Math.abs(d.net)} currency={d.currency} locale={locale}
+                          sign={d.net >= 0 ? 'income' : 'expense'} className="text-[13px] font-bold text-muted" />
+                      ))}
+                    </span>
+                  </header>
+                  <ul className="flex flex-col">
+                    {g.items.map((tx) => (
+                      <li key={tx.id}>
+                        <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
+                          account={accountsById.get(tx.account_id)} locale={locale} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            })
+          )}
         </div>
-      )}
-    </section>
+      </div>
+    </div>
   )
 }

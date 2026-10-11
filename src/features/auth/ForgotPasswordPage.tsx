@@ -38,12 +38,12 @@ export default function ForgotPasswordPage() {
       footer={<Link to="/login" className="font-semibold text-primary">{t('auth.forgot.backToLogin')}</Link>}
     >
       {sent ? (
-        <p role="status" className="rounded-lg bg-success/10 px-3 py-2 text-success">{t('auth.forgot.sent')}</p>
+        <p role="status" className="rounded-2xl bg-success/10 px-4 py-3 font-medium text-success">{t('auth.forgot.sent')}</p>
       ) : (
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <TextField label={t('auth.fields.email')} type="email" autoComplete="email" inputMode="email"
             required value={email} onChange={(e) => setEmail(e.target.value)} />
-          {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+          {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
           <Button type="submit" full loading={loading}>{t('auth.forgot.submit')}</Button>
         </form>
       )}

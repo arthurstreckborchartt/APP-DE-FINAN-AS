@@ -55,3 +55,19 @@ export function summarizeByCurrency(list: Transaction[]): CurrencySummary[] {
   }
   return [...byCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency))
 }
+
+export type CategoryShare = { categoryId: string; total: number; share: number }
+
+/** Despesas de uma moeda somadas por categoria, da maior para a menor, com a fatia de cada uma. */
+export function expensesByCategory(list: Transaction[], currency: string): CategoryShare[] {
+  const totals = new Map<string, number>()
+  let sum = 0
+  for (const tx of list) {
+    if (tx.kind !== 'expense' || tx.currency !== currency) continue
+    totals.set(tx.category_id, (totals.get(tx.category_id) ?? 0) + tx.amount)
+    sum += tx.amount
+  }
+  return [...totals.entries()]
+    .map(([categoryId, total]) => ({ categoryId, total, share: sum ? total / sum : 0 }))
+    .sort((a, b) => b.total - a.total)
+}

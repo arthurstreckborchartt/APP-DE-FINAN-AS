@@ -32,12 +32,12 @@ export function PreferencesFields({ value, onChange, nameRequired }: Props) {
         {CURRENCIES.map((c) => <option key={c} value={c}>{c} — {currencyName(c, value.locale)}</option>)}
       </SelectField>
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="mb-1.5 text-sm font-medium">{t('preferences.theme')}</legend>
+        <legend className="mb-1.5 text-[13px] font-semibold text-muted">{t('preferences.theme')}</legend>
         <div className="grid grid-cols-3 gap-2">
           {THEMES.map((th) => (
             <label key={th.value}
-              className="flex h-12 cursor-pointer items-center justify-center rounded-xl border border-line bg-surface text-sm font-medium
-                has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary">
+              className="flex h-12 cursor-pointer items-center justify-center rounded-full border-2 border-transparent bg-surface-2 text-sm font-bold transition hover:bg-surface-3
+                has-checked:border-primary has-checked:bg-primary-soft has-checked:text-primary has-focus-visible:ring-4 has-focus-visible:ring-primary/25">
               <input type="radio" name="theme" className="sr-only" value={th.value}
                 checked={value.theme === th.value} onChange={() => set('theme', th.value)} />
               {t(th.key)}

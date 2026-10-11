@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Wallet } from 'lucide-react'
+import { BrandMark } from '../../components/BrandMark'
 import { Button } from '../../components/ui/Button'
 import { AccountForm } from '../accounts/AccountForm'
 import { useAccounts, useCreateAccount } from '../accounts/api'
@@ -67,7 +67,7 @@ export default function OnboardingPage() {
   }
 
   const indicator = (
-    <p className="text-sm font-medium text-primary">
+    <p className="text-[13px] font-extrabold uppercase tracking-[0.06em] text-primary">
       {step === 'preferences' ? `1/2 · ${t('onboarding.stepPreferences')}` : `2/2 · ${t('onboarding.stepAccount')}`}
     </p>
   )
@@ -75,11 +75,11 @@ export default function OnboardingPage() {
   if (step === 'account') {
     return (
       <div className="flex min-h-full items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-md rounded-[28px] bg-surface p-6 shadow-sheet sm:p-8">
           {indicator}
-          <Wallet className="mt-4 size-10 text-primary" aria-hidden="true" />
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">{t('onboarding.accountTitle')}</h1>
-          <p className="mt-1 text-muted">{t('onboarding.accountSubtitle')}</p>
+          <BrandMark size={44} withName={false} className="mt-5" />
+          <h1 className="mt-5 text-[28px] font-extrabold tracking-[-0.03em]">{t('onboarding.accountTitle')}</h1>
+          <p className="mt-2 text-[15px] font-medium text-muted">{t('onboarding.accountSubtitle')}</p>
           <div className="mt-6">
             <AccountForm
               initial={{ name: t('onboarding.defaultAccountName'), type: 'cash', currency: profile.currency, initial_balance: 0 }}
@@ -99,11 +99,11 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-8">
-      <form onSubmit={onSubmit} className="w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-sm sm:p-8">
+      <form onSubmit={onSubmit} className="w-full max-w-md rounded-[28px] bg-surface p-6 shadow-sheet sm:p-8">
         {indicator}
-        <Wallet className="mt-4 size-10 text-primary" aria-hidden="true" />
-        <h1 className="mt-4 text-2xl font-bold tracking-tight">{t('onboarding.title')}</h1>
-        <p className="mt-1 text-muted">{t('onboarding.subtitle')}</p>
+        <BrandMark size={44} withName={false} className="mt-5" />
+        <h1 className="mt-5 text-[28px] font-extrabold tracking-[-0.03em]">{t('onboarding.title')}</h1>
+        <p className="mt-2 text-[15px] font-medium text-muted">{t('onboarding.subtitle')}</p>
         <div className="mt-6">
           <PreferencesFields value={current} onChange={onChange} nameRequired />
         </div>

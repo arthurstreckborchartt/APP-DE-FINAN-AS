@@ -20,7 +20,8 @@
     "skip": "Saltar",
     "create": "Criar",
     "all": "Todos",
-    "default": "Predefinição"
+    "default": "Predefinição",
+    "other": "Outros"
   },
   "nav": {
     "home": "Início",
@@ -74,7 +75,8 @@
       "weakPassword": "A palavra-passe tem de ter pelo menos 8 caracteres.",
       "rateLimit": "Demasiadas tentativas. Aguarde um pouco e tente de novo.",
       "generic": "Não foi possível concluir. Tente novamente."
-    }
+    },
+    "tagline": "As suas finanças com calma e controlo, no telemóvel e no computador."
   },
   "onboarding": {
     "title": "Bem-vindo!",
@@ -98,7 +100,9 @@
   "settings": {
     "title": "Definições",
     "profile": "Perfil e preferências",
-    "logout": "Terminar sessão"
+    "logout": "Terminar sessão",
+    "money": "O seu dinheiro",
+    "appearance": "Conta e preferências"
   },
   "install": {
     "title": "Instale a aplicação",
@@ -210,6 +214,14 @@
     "balance": "Saldo nas contas",
     "thisMonth": "Este mês",
     "recent": "Últimos movimentos",
-    "seeAll": "Ver todos"
+    "seeAll": "Ver todos",
+    "hideValues": "Ocultar valores",
+    "showValues": "Mostrar valores",
+    "byCategory": "Para onde foi o dinheiro",
+    "noExpenses": "Ainda não há despesas este mês.",
+    "accounts_one": "{{count}} conta",
+    "accounts_other": "{{count}} contas",
+    "quickActions": "Atalhos",
+    "spentOf": "{{pct}}% das despesas"
   }
 }

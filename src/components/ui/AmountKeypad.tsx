@@ -1,4 +1,4 @@
-import { useId, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Delete } from 'lucide-react'
 import { appendDigit, removeDigit } from '../../lib/amount'
@@ -11,40 +11,55 @@ type Props = {
   locale: string
   label: string
   error?: string
+  /** Cor do valor: verde para receita. */
+  tone?: 'income' | 'expense'
 }
 
 function Key({ children, onClick, label }: { children: ReactNode; onClick: () => void; label?: string }) {
   return (
     <button type="button" onClick={onClick} aria-label={label}
-      className="grid h-14 place-items-center rounded-2xl bg-surface-2 text-2xl font-semibold text-fg transition
-        active:scale-95 hover:bg-line focus-visible:outline-2 focus-visible:outline-primary">
+      className="num grid h-14 place-items-center rounded-2xl bg-surface-2 text-[22px] font-bold text-fg transition duration-100
+        hover:bg-surface-3 active:scale-95 active:bg-primary-soft focus-visible:outline-2 focus-visible:outline-primary">
       {children}
     </button>
   )
 }
 
-export function AmountKeypad({ value, onChange, currency, locale, label, error }: Props) {
+export function AmountKeypad({ value, onChange, currency, locale, label, error, tone }: Props) {
   const { t } = useTranslation()
   const errorId = useId()
   const press = (digit: number) => onChange(appendDigit(value, digit))
 
-  function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    if (e.ctrlKey || e.metaKey || e.altKey) return
-    if (/^[0-9]$/.test(e.key)) {
-      e.preventDefault()
-      press(Number(e.key))
-    } else if (e.key === 'Backspace') {
-      e.preventDefault()
-      onChange(removeDigit(value))
+  const latest = useRef({ value, onChange })
+  useEffect(() => {
+    latest.current = { value, onChange }
+  })
+
+  // Teclado físico (PC): dígitos e Backspace funcionam na tela toda, exceto dentro de outros campos.
+  useEffect(() => {
+    function onKeyDown(e: globalThis.KeyboardEvent) {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented) return
+      const el = e.target as HTMLElement | null
+      if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return
+      const { value: v, onChange: change } = latest.current
+      if (/^[0-9]$/.test(e.key)) {
+        e.preventDefault()
+        change(appendDigit(v, Number(e.key)))
+      } else if (e.key === 'Backspace') {
+        e.preventDefault()
+        change(removeDigit(v))
+      }
     }
-  }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   return (
     <div className="flex flex-col gap-3">
       <div role="textbox" tabIndex={0} aria-label={label} aria-readonly="true" aria-live="polite"
-        aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} onKeyDown={onKeyDown}
-        className={`rounded-2xl px-4 py-3 text-center text-3xl sm:text-4xl break-all font-bold tabular-nums outline-none
-          focus-visible:ring-2 focus-visible:ring-primary ${value === 0 ? 'text-muted' : 'text-fg'}`}>
+        aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined}
+        className={`num rounded-2xl px-2 py-4 text-center text-[36px] leading-tight sm:text-[44px] break-all font-extrabold tracking-[-0.03em] outline-none
+          focus-visible:ring-2 focus-visible:ring-primary ${value === 0 ? 'text-muted' : tone === 'income' ? 'text-success' : 'text-fg'}`}>
         {formatMoney(value, currency, locale)}
       </div>
       {error && <p id={errorId} role="alert" className="text-center text-sm text-danger">{error}</p>}

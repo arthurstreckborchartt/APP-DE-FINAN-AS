@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, Wallet } from 'lucide-react'
+import { Amount } from '../../components/Amount'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
@@ -8,7 +9,6 @@ import { Sheet } from '../../components/ui/Sheet'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { isForeignKeyViolation } from '../../lib/db-errors'
 import { normalizeLocale } from '../../lib/locale'
-import { formatMoney } from '../../lib/money'
 import { useProfile } from '../profile/api'
 import { ACCOUNT_TYPE_ICONS } from './accountTypes'
 import { AccountForm } from './AccountForm'
@@ -86,17 +86,16 @@ export default function AccountsPage() {
     return (
       <li key={a.id}>
         <button type="button" onClick={() => open(a)}
-          className="flex w-full items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-left hover:bg-surface-2">
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+          className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3.5 text-left transition hover:bg-surface-2">
+          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
             <Icon className="size-5" aria-hidden="true" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate font-semibold">{a.name}</span>
-            <span className="block text-sm text-muted">{t(`accounts.types.${a.type}`)} · {a.currency}</span>
+            <span className="block truncate text-[15px] font-bold">{a.name}</span>
+            <span className="block text-[13px] font-medium text-muted">{t(`accounts.types.${a.type}`)} · {a.currency}</span>
           </span>
-          <span className={`shrink-0 whitespace-nowrap font-semibold tabular-nums ${a.balance < 0 ? 'text-danger' : ''}`}>
-            {formatMoney(a.balance, a.currency, locale)}
-          </span>
+          <Amount cents={a.balance} currency={a.currency} locale={locale}
+            className={`shrink-0 whitespace-nowrap text-[15px] font-extrabold ${a.balance < 0 ? 'text-danger' : ''}`} />
         </button>
       </li>
     )
@@ -106,19 +105,20 @@ export default function AccountsPage() {
   const editingAccount = editing && editing !== 'new' ? editing : null
 
   return (
-    <section className="mx-auto max-w-2xl">
+    <section className="mx-auto max-w-3xl">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold tracking-tight">{t('accounts.title')}</h1>
-        <Button className="h-10" onClick={() => open('new')}>
+        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('accounts.title')}</h1>
+        <Button className="h-11" onClick={() => open('new')}>
           <Plus className="size-5" aria-hidden="true" /> {t('accounts.new')}
         </Button>
       </div>
 
       {totals.length > 0 && (
-        <div className="mt-6 rounded-2xl bg-primary p-5 text-primary-fg">
-          <p className="text-sm opacity-80">{t('accounts.total')}</p>
-          {totals.map((s) => (
-            <p key={s.currency} className="text-2xl font-bold tabular-nums">{formatMoney(s.total, s.currency, locale)}</p>
+        <div className="brand-panel mt-6 rounded-[28px] p-6 shadow-float sm:p-7">
+          <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-brand-muted">{t('accounts.total')}</p>
+          {totals.map((s, i) => (
+            <Amount key={s.currency} cents={s.total} currency={s.currency} locale={locale}
+              className={`block ${i === 0 ? 'mt-1 text-[34px] font-extrabold tracking-[-0.03em] sm:text-[40px]' : 'text-lg font-bold text-brand-muted'}`} />
           ))}
         </div>
       )}
@@ -128,14 +128,14 @@ export default function AccountsPage() {
           <EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
             action={<Button className="h-10" onClick={() => open('new')}>{t('accounts.new')}</Button>} />
         ) : (
-          <ul className="flex flex-col gap-2">{active.map(row)}</ul>
+          <ul className="flex flex-col rounded-[24px] bg-surface p-2 shadow-sheet">{active.map(row)}</ul>
         )}
       </div>
 
       {archived.length > 0 && (
         <details className="mt-6">
-          <summary className="cursor-pointer py-2 text-sm font-medium text-muted">{t('accounts.archivedSection')}</summary>
-          <ul className="mt-2 flex flex-col gap-2 opacity-70">{archived.map(row)}</ul>
+          <summary className="cursor-pointer rounded-full px-2 py-2 text-sm font-bold text-muted">{t('accounts.archivedSection')}</summary>
+          <ul className="mt-2 flex flex-col rounded-[24px] bg-surface p-2 opacity-75 shadow-sheet">{archived.map(row)}</ul>
         </details>
       )}
 

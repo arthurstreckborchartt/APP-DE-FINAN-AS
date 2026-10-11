@@ -20,7 +20,8 @@
     "skip": "Omitir",
     "create": "Crear",
     "all": "Todos",
-    "default": "Predeterminado"
+    "default": "Predeterminado",
+    "other": "Otros"
   },
   "nav": {
     "home": "Inicio",
@@ -74,7 +75,8 @@
       "weakPassword": "La contraseña debe tener al menos 8 caracteres.",
       "rateLimit": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
       "generic": "No se pudo completar. Inténtalo de nuevo."
-    }
+    },
+    "tagline": "Tus finanzas con calma y control, en cualquier dispositivo."
   },
   "onboarding": {
     "title": "¡Bienvenido!",
@@ -98,7 +100,9 @@
   "settings": {
     "title": "Ajustes",
     "profile": "Perfil y preferencias",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "money": "Tu dinero",
+    "appearance": "Cuenta y preferencias"
   },
   "install": {
     "title": "Instala la app",
@@ -210,6 +214,14 @@
     "balance": "Saldo en cuentas",
     "thisMonth": "Este mes",
     "recent": "Últimos movimientos",
-    "seeAll": "Ver todos"
+    "seeAll": "Ver todos",
+    "hideValues": "Ocultar importes",
+    "showValues": "Mostrar importes",
+    "byCategory": "A dónde fue el dinero",
+    "noExpenses": "Aún no hay gastos este mes.",
+    "accounts_one": "{{count}} cuenta",
+    "accounts_other": "{{count}} cuentas",
+    "quickActions": "Accesos rápidos",
+    "spentOf": "{{pct}}% de los gastos"
   }
 }

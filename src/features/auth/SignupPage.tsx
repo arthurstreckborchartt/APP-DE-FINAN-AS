@@ -73,7 +73,7 @@ export default function SignupPage() {
           required value={email} onChange={(e) => setEmail(e.target.value)} />
         <TextField label={t('auth.fields.password')} type="password" autoComplete="new-password" minLength={8}
           required value={password} onChange={(e) => setPassword(e.target.value)} />
-        {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+        {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
         <Button type="submit" full loading={loading}>{t('auth.signup.submit')}</Button>
       </form>
     </AuthLayout>

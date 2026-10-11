@@ -20,7 +20,8 @@
     "skip": "Skip",
     "create": "Create",
     "all": "All",
-    "default": "Default"
+    "default": "Default",
+    "other": "Other"
   },
   "nav": {
     "home": "Home",
@@ -74,7 +75,8 @@
       "weakPassword": "Password must be at least 8 characters.",
       "rateLimit": "Too many attempts. Wait a moment and try again.",
       "generic": "Couldn't complete that. Please try again."
-    }
+    },
+    "tagline": "Your finances, calm and in control, on your phone and computer."
   },
   "onboarding": {
     "title": "Welcome!",
@@ -98,7 +100,9 @@
   "settings": {
     "title": "Settings",
     "profile": "Profile and preferences",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "money": "Your money",
+    "appearance": "Account and preferences"
   },
   "install": {
     "title": "Install the app",
@@ -210,6 +214,14 @@
     "balance": "Account balance",
     "thisMonth": "This month",
     "recent": "Recent transactions",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "hideValues": "Hide amounts",
+    "showValues": "Show amounts",
+    "byCategory": "Where the money went",
+    "noExpenses": "No expenses this month yet.",
+    "accounts_one": "{{count}} account",
+    "accounts_other": "{{count}} accounts",
+    "quickActions": "Shortcuts",
+    "spentOf": "{{pct}}% of spending"
   }
 }

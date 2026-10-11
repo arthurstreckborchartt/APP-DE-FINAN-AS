@@ -39,7 +39,7 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
           {CATEGORY_ICON_NAMES.map((name, i) => {
             const Icon = CATEGORY_ICONS[name]
             return (
-              <label key={name} className="grid aspect-square cursor-pointer place-items-center rounded-xl border border-line text-muted
+              <label key={name} className="grid aspect-square cursor-pointer place-items-center rounded-2xl border-2 border-transparent bg-surface-2 text-muted transition hover:bg-surface-3
                 has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary
                 has-focus-visible:ring-2 has-focus-visible:ring-primary has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-surface">
                 <input type="radio" name="icon" value={name} className="sr-only" checked={value.icon === name}
@@ -65,7 +65,7 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
         </div>
       </fieldset>
 
-      {error && <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
       <Button type="submit" full loading={loading}>{submitLabel}</Button>
       {children}
     </form>

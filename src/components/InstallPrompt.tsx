@@ -51,10 +51,10 @@ export function InstallPrompt() {
 
   return (
     <section aria-label={t('install.title')}
-      className="mb-6 flex items-start gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+      className="mb-5 flex items-start gap-3 rounded-[24px] bg-primary-soft p-4">
       <Download className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <p className="font-semibold">{t('install.title')}</p>
+        <p className="font-extrabold">{t('install.title')}</p>
         <p className="mt-0.5 text-sm text-muted">
           {ios && !deferred ? (
             <><Share className="mr-1 inline size-4 align-text-bottom" aria-hidden="true" />{t('install.iosHint')}</>

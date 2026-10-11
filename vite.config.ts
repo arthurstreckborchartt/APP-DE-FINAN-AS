@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Finanças',
-        short_name: 'Finanças',
+        name: 'FINANCE',
+        short_name: 'FINANCE',
         description: 'Finanças pessoais e em grupo, no celular e no PC.',
         lang: 'pt-BR',
         id: '/',
@@ -21,8 +21,8 @@ export default defineConfig({
         scope: '/',
         display: 'standalone',
         orientation: 'any',
-        theme_color: '#0f766e',
-        background_color: '#f6f7f9',
+        theme_color: '#2f55d4',
+        background_color: '#f2f4f8',
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
