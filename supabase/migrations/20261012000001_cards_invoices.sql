@@ -120,7 +120,7 @@ create table public.installments (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
   transaction_id uuid not null references public.transactions (id) on delete cascade,
-  invoice_id uuid not null references public.invoices (id) on delete cascade,
+  invoice_id uuid not null references public.invoices (id) on delete restrict,
   number smallint not null check (number >= 1),
   amount bigint not null check (amount > 0),
   competence_month date not null,
@@ -192,6 +192,9 @@ security definer
 set search_path = ''
 as $$
 begin
+  -- Trava as faturas em aberto antes de decidir; o delete roda em outro comando
+  -- (snapshot novo em READ COMMITTED) e não apaga fatura que recebeu parcela.
+  perform 1 from public.invoices where card_id = p_card and paid_at is null for update;
   delete from public.invoices v
   where v.card_id = p_card
     and v.paid_at is null
