@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Amount } from '../../components/Amount'
 import { Button } from '../../components/ui/Button'
 import { SelectField } from '../../components/ui/SelectField'
+import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
+import { Spinner } from '../../components/ui/Spinner'
 import { formatMonth } from '../../lib/dates'
 import { useAccounts } from '../accounts/api'
 import { usePayInvoice } from './invoicesApi'
@@ -14,7 +16,7 @@ type Props = { invoice: InvoiceSummary; locale: string; open: boolean; onClose: 
 
 export function PayInvoiceSheet({ invoice, locale, open, onClose }: Props) {
   const { t } = useTranslation()
-  const { data: accounts } = useAccounts()
+  const { data: accounts, isPending, isError, refetch } = useAccounts()
   const pay = usePayInvoice()
   const [accountId, setAccountId] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +43,11 @@ export function PayInvoiceSheet({ invoice, locale, open, onClose }: Props) {
   return (
     <Sheet open={open} onClose={close} title={t('invoices.payTitle', { month: formatMonth(invoice.reference_month, locale) })}>
       <div className="flex flex-col gap-4">
-        {eligible.length === 0 ? (
+        {isPending ? (
+          <div className="grid place-items-center py-6"><Spinner /></div>
+        ) : isError || !accounts ? (
+          <QueryError onRetry={() => void refetch()} />
+        ) : eligible.length === 0 ? (
           <div className="rounded-2xl bg-surface-2 px-4 py-3 text-sm font-medium">
             <p>{t('invoices.noAccountInCurrency', { currency: invoice.currency })}</p>
             <Link to="/accounts" className="mt-2 inline-block font-bold text-primary underline-offset-2 hover:underline">{t('accounts.title')}</Link>

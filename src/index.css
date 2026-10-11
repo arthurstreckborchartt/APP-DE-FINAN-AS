@@ -22,6 +22,7 @@
   --brand-muted: #d6ccff;
   --danger: #cc3b31;
   --success: #0f7a55;
+  --warning: #b7791f;
   --shadow-sheet: 0 1px 2px rgb(17 14 36 / 0.04), 0 8px 24px -12px rgb(17 14 36 / 0.12);
   --shadow-float: 0 10px 30px -10px rgb(74 46 224 / 0.55);
   color-scheme: light;
@@ -45,6 +46,7 @@
   --brand-muted: #cfc4ff;
   --danger: #ff7b6f;
   --success: #45d19a;
+  --warning: #f2b84b;
   --shadow-sheet: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7);
   --shadow-float: 0 10px 30px -10px rgb(0 0 0 / 0.8);
   color-scheme: dark;
@@ -68,6 +70,7 @@
   --color-brand-muted: var(--brand-muted);
   --color-danger: var(--danger);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --shadow-sheet: var(--shadow-sheet);
   --shadow-float: var(--shadow-float);
   --font-sans: "Manrope Variable", system-ui, sans-serif;

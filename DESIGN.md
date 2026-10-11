@@ -12,6 +12,7 @@ colors:
   brand-muted: "#d6ccff"
   success: "#0f7a55"
   danger: "#cc3b31"
+  warning: "#b7791f"
   bg: "#f4f3f9"
   surface: "#ffffff"
   surface-2: "#efedf7"
@@ -173,6 +174,7 @@ A calm violet on deep ink, set against cool, slightly blue neutrals, with two se
 ### Secondary
 - **Ledger Green** (success): income amounts, income bars, positive net.
 - **Statement Coral** (danger): expense bars, negative net, destructive buttons, field errors.
+- **Amber Notice** (warning): closed-invoice status dot.
 
 ### Neutral
 - **Cool Paper** (bg): the app ground behind sheets; also the ring that cuts the FAB out of the bottom bar.
@@ -184,7 +186,7 @@ A calm violet on deep ink, set against cool, slightly blue neutrals, with two se
 - **Hairline** (line): sidebar edge, bottom-bar top edge, the divider above a net total.
 
 ### Dark theme
-The same role names remap under `.dark`: bg #09080f, surface #13111d, surface-2 #1c1929, surface-3 #272339, fg #f1effa, muted #a39fb8, line #262238, primary #a996ff, primary-strong #bcadff, primary-fg #160a4a, primary-soft #231b52, brand-1 #4a2ee0, brand-2 #1a0f5c, brand-muted #cfc4ff, success #45d19a, danger #ff7b6f. Components only reference role names, never theme-specific values.
+The same role names remap under `.dark`: bg #09080f, surface #13111d, surface-2 #1c1929, surface-3 #272339, fg #f1effa, muted #a39fb8, line #262238, primary #a996ff, primary-strong #bcadff, primary-fg #160a4a, primary-soft #231b52, brand-1 #4a2ee0, brand-2 #1a0f5c, brand-muted #cfc4ff, success #45d19a, danger #ff7b6f, warning #f2b84b. Components only reference role names, never theme-specific values.
 
 ### Named Rules
 **The One Brand Surface Rule.** The brand gradient appears once per screen, on the balance panel (Início, Contas) or the auth side panel. Other sheets stay white.

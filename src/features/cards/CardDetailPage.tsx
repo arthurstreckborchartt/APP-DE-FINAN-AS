@@ -30,7 +30,7 @@ const STATUS_TEXT: Record<InvoiceStatus, string> = {
 const STATUS_DOT: Record<InvoiceStatus, string> = {
   paid: 'bg-success',
   overdue: 'bg-danger',
-  closed: 'bg-amber-500',
+  closed: 'bg-warning',
   open: 'bg-primary',
 }
 
@@ -100,7 +100,8 @@ export default function CardDetailPage() {
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const [reopenError, setReopenError] = useState(false)
+  const [reopenErrorId, setReopenErrorId] = useState<string | null>(null)
+  const [action, setAction] = useState<'save' | 'archive' | 'delete' | null>(null)
   const pillRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
   if (isPending) return <FullScreenSpinner />
@@ -123,6 +124,7 @@ export default function CardDetailPage() {
   async function save(value: CardInput) {
     setError(null)
     setConfirmDelete(false)
+    setAction('save')
     try {
       await update.mutateAsync({
         id: card!.id,
@@ -137,6 +139,7 @@ export default function CardDetailPage() {
   async function toggleArchive() {
     setError(null)
     setConfirmDelete(false)
+    setAction('archive')
     try {
       await update.mutateAsync({ id: card!.id, patch: { archived: !card!.archived } })
       setEditing(false)
@@ -148,6 +151,7 @@ export default function CardDetailPage() {
   async function destroy() {
     setError(null)
     if (!confirmDelete) return setConfirmDelete(true)
+    setAction('delete')
     try {
       await remove.mutateAsync(card!.id)
       setEditing(false)
@@ -159,11 +163,11 @@ export default function CardDetailPage() {
   }
 
   async function undoPayment(inv: InvoiceSummary) {
-    setReopenError(false)
+    setReopenErrorId(null)
     try {
       await reopen.mutateAsync(inv.id)
     } catch {
-      setReopenError(true)
+      setReopenErrorId(inv.id)
     }
   }
 
@@ -260,7 +264,7 @@ export default function CardDetailPage() {
                 {selected.paid_at ? (
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span className="text-sm font-bold text-success">
-                      {t('invoices.paidOn', { date: dayMonth(selected.paid_at.slice(0, 10)) })}
+                      {t('invoices.paidOn', { date: new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(new Date(selected.paid_at)) })}
                     </span>
                     <Button variant="secondary" className="h-11" loading={reopen.isPending} onClick={() => void undoPayment(selected)}>
                       {t('invoices.reopen')}
@@ -269,7 +273,7 @@ export default function CardDetailPage() {
                 ) : (
                   <Button full onClick={() => setPaying(true)} disabled={selected.total <= 0}>{t('invoices.pay')}</Button>
                 )}
-                {reopenError && (
+                {reopenErrorId === selected.id && (
                   <p role="alert" className="mt-3 rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{t('common.errorGeneric')}</p>
                 )}
               </div>
@@ -294,12 +298,12 @@ export default function CardDetailPage() {
             initial={card}
             currencyEditable={false}
             submitLabel={t('common.save')}
-            loading={update.isPending}
+            loading={update.isPending && action === 'save'}
             error={error}
             onSubmit={(v) => void save(v)}
           >
             <div className="grid grid-cols-2 gap-2">
-              <Button type="button" variant="secondary" loading={update.isPending} disabled={busy} onClick={() => void toggleArchive()}>
+              <Button type="button" variant="secondary" loading={update.isPending && action === 'archive'} disabled={busy} onClick={() => void toggleArchive()}>
                 {card.archived ? t('common.unarchive') : t('common.archive')}
               </Button>
               <Button type="button" variant="danger" loading={remove.isPending} disabled={busy} onClick={() => void destroy()}>
