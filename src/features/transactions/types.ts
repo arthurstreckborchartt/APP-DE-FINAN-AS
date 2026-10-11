@@ -11,9 +11,29 @@ export type Transaction = {
   date: string
   category_id: string
   description: string
-  account_id: string
+  /** Conta do lançamento; nulo quando a compra é no cartão. */
+  account_id: string | null
+  /** Cartão da compra; nulo quando o lançamento é em conta. */
+  card_id: string | null
+  installments_count: number
   created_at: string
   updated_at: string
 }
 
-export type TransactionInput = Pick<Transaction, 'kind' | 'amount' | 'date' | 'category_id' | 'description' | 'account_id'>
+/** Lançamento em conta (`card_id` nulo) ou compra no cartão (`account_id` nulo). */
+export type TransactionInput = Pick<
+  Transaction,
+  'kind' | 'amount' | 'date' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'installments_count'
+>
+
+/**
+ * Uma entrada do mês (competência): o lançamento em conta inteiro ou uma parcela da compra no cartão.
+ * `id` é o do lançamento, `amount` é o valor da parcela e `date` é a data da entrada.
+ */
+export type MonthEntry = Transaction & {
+  entry_id: string
+  transaction_id: string
+  installment_number: number
+  total_amount: number
+  purchase_date: string
+}

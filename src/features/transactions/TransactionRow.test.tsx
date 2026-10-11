@@ -12,7 +12,7 @@ const category: Category = {
 }
 const base: Transaction = {
   id: 'tx1', user_id: 'u', kind: 'expense', amount: 1050, currency: 'BRL', date: '2026-10-10',
-  category_id: 'c1', description: '', account_id: 'a1', created_at: '', updated_at: '',
+  category_id: 'c1', description: '', account_id: 'a1', card_id: null, installments_count: 1, created_at: '', updated_at: '',
 }
 
 function renderRow(tx: Transaction) {

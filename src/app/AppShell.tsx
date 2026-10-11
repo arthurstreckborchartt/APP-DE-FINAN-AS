@@ -5,6 +5,7 @@ import { BrandMark } from '../components/BrandMark'
 import { InstallPrompt } from '../components/InstallPrompt'
 import { useProfile } from '../features/profile/api'
 import { usePreferences } from '../features/profile/usePreferences'
+import { useRealtimeSync } from '../lib/realtime'
 import { NAV_ITEMS } from './nav'
 
 const sideLink = ({ isActive }: { isActive: boolean }) =>
@@ -21,6 +22,7 @@ export function AppShell() {
   const { t } = useTranslation()
   const { data: profile } = useProfile()
   usePreferences(profile)
+  useRealtimeSync()
   // No formulário de lançamento a barra inferior sai do caminho do teclado de valor e do botão Salvar.
   const newMatch = useMatch('/new')
   const editMatch = useMatch('/transactions/:id/edit')

@@ -10,11 +10,11 @@ export type TransactionFilters = {
 const normalize = (s: string) =>
   s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim()
 
-export function filterTransactions(
-  list: Transaction[],
+export function filterTransactions<T extends Transaction>(
+  list: T[],
   filters: TransactionFilters,
   labelOf: (categoryId: string) => string,
-): Transaction[] {
+): T[] {
   const q = filters.search ? normalize(filters.search) : ''
   return list.filter(
     (tx) =>
@@ -25,10 +25,10 @@ export function filterTransactions(
   )
 }
 
-export type DayGroup = { date: string; items: Transaction[] }
+export type DayGroup<T extends Transaction = Transaction> = { date: string; items: T[] }
 
-export function groupByDate(list: Transaction[]): DayGroup[] {
-  const byDate = new Map<string, Transaction[]>()
+export function groupByDate<T extends Transaction>(list: T[]): DayGroup<T>[] {
+  const byDate = new Map<string, T[]>()
   for (const tx of list) {
     const items = byDate.get(tx.date)
     if (items) items.push(tx)

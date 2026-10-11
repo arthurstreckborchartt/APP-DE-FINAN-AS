@@ -247,7 +247,7 @@ export default function HomePage() {
             {recent.slice(0, 6).map((tx) => (
               <li key={tx.id}>
                 <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
-                  account={accountsById.get(tx.account_id)} locale={locale} />
+                  account={tx.account_id ? accountsById.get(tx.account_id) : undefined} locale={locale} />
               </li>
             ))}
           </ul>

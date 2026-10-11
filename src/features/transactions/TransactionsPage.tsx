@@ -153,9 +153,9 @@ export default function TransactionsPage() {
                   </header>
                   <ul className="flex flex-col">
                     {g.items.map((tx) => (
-                      <li key={tx.id}>
+                      <li key={tx.entry_id}>
                         <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
-                          account={accountsById.get(tx.account_id)} locale={locale} />
+                          account={tx.account_id ? accountsById.get(tx.account_id) : undefined} locale={locale} />
                       </li>
                     ))}
                   </ul>

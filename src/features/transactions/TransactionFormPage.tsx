@@ -125,6 +125,7 @@ export default function TransactionFormPage() {
     const input = {
       kind: form.kind, amount: form.amount, date: form.date, category_id: form.categoryId!,
       description: form.description.trim(), account_id: form.accountId!,
+      card_id: null, installments_count: 1,
     }
     try {
       if (id) await update.mutateAsync({ id, input })

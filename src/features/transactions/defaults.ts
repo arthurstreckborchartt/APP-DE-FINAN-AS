@@ -23,7 +23,8 @@ export function pickDefaults(
   activeCategoryIds: string[],
 ): { accountId: string | null; categoryId: string | null } {
   const ofKind = recent.filter((t) => t.kind === kind)
-  const activeAccount = (id: string) => activeAccountIds.includes(id)
+  // Compras no cartão não têm conta e ficam fora da sugestão.
+  const activeAccount = (id: string | null): id is string => id !== null && activeAccountIds.includes(id)
   const accountId =
     mostFrequent(ofKind.map((t) => t.account_id).filter(activeAccount)) ??
     mostFrequent(recent.map((t) => t.account_id).filter(activeAccount)) ??

@@ -1,25 +1,50 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
-import { monthRange } from '../../lib/dates'
 import { useAuth } from '../auth/auth-context'
-import type { Transaction, TransactionInput } from './types'
+import type { MonthEntry, Transaction, TransactionInput } from './types'
+
+/** Linha da view `month_entries` (competência: lançamento em conta ou parcela de cartão). */
+export type MonthEntryRow = Omit<MonthEntry, 'id' | 'updated_at'> & { month: string }
+
+/** Converte uma linha de `month_entries` em entrada: `id` vira o do lançamento. */
+export function toMonthEntry(row: MonthEntryRow): MonthEntry {
+  return {
+    id: row.transaction_id,
+    entry_id: row.entry_id,
+    transaction_id: row.transaction_id,
+    user_id: row.user_id,
+    kind: row.kind,
+    amount: Number(row.amount),
+    currency: row.currency,
+    date: row.date,
+    purchase_date: row.purchase_date,
+    category_id: row.category_id,
+    description: row.description,
+    account_id: row.account_id,
+    card_id: row.card_id,
+    installment_number: row.installment_number,
+    installments_count: row.installments_count,
+    total_amount: Number(row.total_amount),
+    created_at: row.created_at,
+    // A view não expõe updated_at; created_at é o valor mais próximo disponível.
+    updated_at: row.created_at,
+  }
+}
 
 export function useTransactions(month: string) {
   const { user } = useAuth()
   return useQuery({
     queryKey: ['transactions', user?.id, 'month', month],
     enabled: !!user,
-    queryFn: async () => {
-      const { start, end } = monthRange(month)
+    queryFn: async (): Promise<MonthEntry[]> => {
       const { data, error } = await supabase
-        .from('transactions')
+        .from('month_entries')
         .select('*')
-        .gte('date', start)
-        .lte('date', end)
+        .eq('month', `${month}-01`)
         .order('date', { ascending: false })
         .order('created_at', { ascending: false })
       if (error) throw error
-      return data as Transaction[]
+      return (data as MonthEntryRow[]).map(toMonthEntry)
     },
   })
 }
@@ -61,6 +86,8 @@ function useInvalidateFinance() {
     Promise.all([
       qc.invalidateQueries({ queryKey: ['transactions'] }),
       qc.invalidateQueries({ queryKey: ['accounts'] }),
+      qc.invalidateQueries({ queryKey: ['cards'] }),
+      qc.invalidateQueries({ queryKey: ['invoices'] }),
     ])
 }
 
@@ -97,6 +124,8 @@ export function afterDeleteTransaction(qc: QueryClient, id: string) {
   return Promise.all([
     qc.invalidateQueries({ queryKey: ['transactions'], predicate: (q) => !isDeleted(q) }),
     qc.invalidateQueries({ queryKey: ['accounts'] }),
+    qc.invalidateQueries({ queryKey: ['cards'] }),
+    qc.invalidateQueries({ queryKey: ['invoices'] }),
   ])
 }
 

@@ -5,7 +5,7 @@ import { mostFrequent, pickDefaults } from './defaults'
 function tx(p: Partial<Transaction>): Transaction {
   return {
     id: 'id', user_id: 'u', kind: 'expense', amount: 100, currency: 'BRL', date: '2026-10-05',
-    category_id: 'c1', description: '', account_id: 'a1', created_at: '', updated_at: '', ...p,
+    category_id: 'c1', description: '', account_id: 'a1', card_id: null, installments_count: 1, created_at: '', updated_at: '', ...p,
   }
 }
 
@@ -29,4 +29,12 @@ describe('pickDefaults', () => {
   test('sem histórico usa a primeira conta ativa e nenhuma categoria', () =>
     expect(pickDefaults([], 'income', ['a9'], ['i1'])).toEqual({ accountId: 'a9', categoryId: null }))
   test('sem contas', () => expect(pickDefaults([], 'expense', [], [])).toEqual({ accountId: null, categoryId: null }))
+  test('ignora compras no cartão (sem conta) ao sugerir a conta', () => {
+    const withCards = [
+      tx({ account_id: null, card_id: 'k1', category_id: 'c2' }),
+      tx({ account_id: null, card_id: 'k1', category_id: 'c2' }),
+      tx({ account_id: 'a1', category_id: 'c1' }),
+    ]
+    expect(pickDefaults(withCards, 'expense', ['a1', 'a2'], ['c1', 'c2'])).toEqual({ accountId: 'a1', categoryId: 'c2' })
+  })
 })
