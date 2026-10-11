@@ -4,6 +4,7 @@ import { Check } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/TextField'
 import { CategoryIcon } from '../../components/CategoryIcon'
+import { onCardDark } from '../../lib/contrast'
 import { CATEGORY_COLORS, CATEGORY_ICON_NAMES, CATEGORY_ICONS } from './icons'
 
 type Value = { name: string; icon: string; color: string }
@@ -59,7 +60,7 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
               has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="color" value={c} className="sr-only" checked={value.color === c}
                 onChange={() => setValue({ ...value, color: c })} aria-label={t('categories.colorOption', { n: i + 1 })} />
-                {value.color === c && <Check className="size-5 text-white" aria-hidden="true" />}
+                {value.color === c && <Check className={`size-5 ${onCardDark(c) ? 'text-[#110e24]' : 'text-white'}`} aria-hidden="true" />}
             </label>
           ))}
         </div>

@@ -7,6 +7,7 @@ import { TextField } from '../../components/ui/TextField'
 import { formatAmountPlain, parseAmount } from '../../lib/amount'
 import { normalizeLocale } from '../../lib/locale'
 import { CURRENCIES, currencyName, type CurrencyCode } from '../../lib/money'
+import { onCardDark } from '../../lib/contrast'
 import { CATEGORY_COLORS } from '../categories/icons'
 import type { CardInput } from './types'
 
@@ -29,6 +30,7 @@ export function CardForm({ initial, currencyEditable, submitLabel, loading, erro
   const [name, setName] = useState(initial.name)
   const [limitText, setLimitText] = useState(initial.limit_amount ? formatAmountPlain(initial.limit_amount, locale) : '')
   const [limitError, setLimitError] = useState<string | undefined>()
+  const [nameError, setNameError] = useState<string | undefined>()
   const [closingDay, setClosingDay] = useState(initial.closing_day)
   const [dueDay, setDueDay] = useState(initial.due_day)
   const [currency, setCurrency] = useState<CurrencyCode>(initial.currency)
@@ -36,6 +38,8 @@ export function CardForm({ initial, currencyEditable, submitLabel, loading, erro
 
   function submit(e: FormEvent) {
     e.preventDefault()
+    if (!name.trim()) return setNameError(t('cards.invalidName'))
+    setNameError(undefined)
     const cents = parseAmount(limitText)
     if (cents === null || cents <= 0) return setLimitError(t('cards.invalidLimit'))
     setLimitError(undefined)
@@ -44,7 +48,7 @@ export function CardForm({ initial, currencyEditable, submitLabel, loading, erro
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
-      <TextField label={t('cards.name')} required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} />
+      <TextField label={t('cards.name')} required maxLength={40} value={name} error={nameError} onChange={(e) => { setName(e.target.value); setNameError(undefined) }} />
       <TextField label={t('cards.limit')} inputMode="decimal" placeholder={formatAmountPlain(0, locale)}
         value={limitText} error={limitError} onChange={(e) => { setLimitText(e.target.value); setLimitError(undefined) }} />
       <div>
@@ -72,7 +76,7 @@ export function CardForm({ initial, currencyEditable, submitLabel, loading, erro
               has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="color" value={c} className="sr-only" checked={color === c}
                 onChange={() => setColor(c)} aria-label={t('categories.colorOption', { n: i + 1 })} />
-              {color === c && <Check className="size-5 text-white" aria-hidden="true" />}
+              {color === c && <Check className={`size-5 ${onCardDark(c) ? 'text-[#110e24]' : 'text-white'}`} aria-hidden="true" />}
             </label>
           ))}
         </div>

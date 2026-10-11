@@ -244,6 +244,7 @@
     "name": "Card name",
     "limit": "Limit",
     "invalidLimit": "Enter a limit greater than zero.",
+    "invalidName": "Enter a name.",
     "closingDay": "Closing day",
     "dueDay": "Due day",
     "dayHint": "Use a day from 1 to 28.",

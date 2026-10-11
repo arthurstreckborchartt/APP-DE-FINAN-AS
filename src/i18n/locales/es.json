@@ -244,6 +244,7 @@
     "name": "Nombre de la tarjeta",
     "limit": "Límite",
     "invalidLimit": "Indica un límite mayor que cero.",
+    "invalidName": "Indica un nombre.",
     "closingDay": "Día de cierre",
     "dueDay": "Día de vencimiento",
     "dayHint": "Usa un día del 1 al 28.",

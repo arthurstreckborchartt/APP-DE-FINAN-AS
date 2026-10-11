@@ -244,6 +244,7 @@
     "name": "Nome do cartão",
     "limit": "Limite",
     "invalidLimit": "Indique um limite superior a zero.",
+    "invalidName": "Indique um nome.",
     "closingDay": "Dia de fecho",
     "dueDay": "Dia de pagamento",
     "dayHint": "Use um dia de 1 a 28.",
