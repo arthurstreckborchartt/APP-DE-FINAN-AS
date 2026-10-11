@@ -65,6 +65,14 @@ const transactions = [
   tx(7, 'expense', 2450, 'c-food', 'a-eur', 'Pastéis de Belém', 'EUR'),
 ]
 
+const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
+const cards = [
+  card('k-nu', 'Nubank Ultravioleta', '#5b3df5', 800000, 5, 12, 215000),
+  card('k-iti', 'Itaú Click', '#eab308', 350000, 20, 27, 90000),
+  card('k-inter', 'Inter Black', '#f97316', 500000, 10, 17, 0),
+  card('k-c6', 'C6 Carbon', '#64748b', 1200000, 25, 5, 640000),
+]
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -82,13 +90,15 @@ async function mock(page) {
       if (id) return json(route, single ? transactions.find((t) => `eq.${t.id}` === id) : [])
       return json(route, transactions)
     }
+    if (path === '/rest/v1/cards') return json(route, cards.map(({ _used, ...c }) => c))
+    if (path === '/rest/v1/card_limits') return json(route, cards.map((c) => ({ card_id: c.id, used: c._used, available: c.limit_amount - c._used })))
     return json(route, [])
   })
 }
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['categories', '/categories'], ['settings', '/more'],
+  ['cards', '/cards'], ['categories', '/categories'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

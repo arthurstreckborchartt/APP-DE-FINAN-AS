@@ -82,7 +82,7 @@ export function AppShell() {
         <nav aria-label={t('nav.mainMenu')} hidden={onForm}
           className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-16px_rgb(12_18_34/0.18)] lg:hidden">
           <ul className="mx-auto grid max-w-md grid-cols-5">
-            {NAV_ITEMS.map(({ to, labelKey, icon: Icon, primary }) => (
+            {NAV_ITEMS.filter((i) => !i.sidebarOnly).map(({ to, labelKey, icon: Icon, primary }) => (
               <li key={to} className="flex justify-center">
                 {primary ? (
                   <NavLink to={to} aria-label={t('nav.newTransaction')}
