@@ -285,10 +285,10 @@
     "empty": "No hay compras en este resumen.",
     "installment": "Cuota {{n}} de {{total}}",
     "errors": {
-      "alreadyPaid": "Esta factura ya fue pagada.",
+      "alreadyPaid": "Este resumen ya fue pagado.",
       "currencyMismatch": "La cuenta debe estar en la misma moneda que la tarjeta.",
       "archivedAccount": "Esta cuenta está archivada.",
-      "emptyInvoice": "Esta factura no tiene compras."
+      "emptyInvoice": "Este resumen no tiene compras."
     }
   }
 }

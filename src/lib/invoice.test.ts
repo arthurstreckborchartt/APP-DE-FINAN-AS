@@ -37,8 +37,8 @@ describe('status da fatura', () => {
 
 test('firstUnpaidInvoiceMonth pula faturas pagas', () => {
   const inv = [
-    { reference_month: '2026-11', paid_at: '2026-11-10' },
-    { reference_month: '2026-12', paid_at: '2026-12-10' },
+    { reference_month: '2026-11-01', paid_at: '2026-11-10' },
+    { reference_month: '2026-12-01', paid_at: '2026-12-10' },
   ]
   expect(firstUnpaidInvoiceMonth('2026-10-20', 15, inv)).toBe('2027-01')
   expect(firstUnpaidInvoiceMonth('2026-10-05', 15, inv)).toBe('2026-10')

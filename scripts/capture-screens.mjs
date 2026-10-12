@@ -84,7 +84,7 @@ const cards = [
 
 const ym = (delta) => { const d = new Date(now.getFullYear(), now.getMonth() + delta, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}` }
 const inv = (id, delta, total, items, paid) => ({
-  id, card_id: 'k-nu', reference_month: ym(delta), closing_date: `${ym(delta)}-05`, due_date: `${ym(delta)}-12`,
+  id, card_id: 'k-nu', reference_month: `${ym(delta)}-01`, closing_date: `${ym(delta)}-05`, due_date: `${ym(delta)}-12`,
   paid_at: paid ? `${ym(delta)}-12T12:00:00Z` : null, payment_account_id: paid ? 'a-nu' : null, payment_amount: paid ? total : null,
   currency: 'BRL', total, items,
 })

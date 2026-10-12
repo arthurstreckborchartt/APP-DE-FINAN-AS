@@ -102,6 +102,7 @@ export default function CardDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [reopenErrorId, setReopenErrorId] = useState<string | null>(null)
   const [action, setAction] = useState<'save' | 'archive' | 'delete' | null>(null)
+  const stripRef = useRef<HTMLDivElement | null>(null)
   const pillRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
   const today = todayISO()
@@ -114,7 +115,12 @@ export default function CardDetailPage() {
   const selectedId = selected?.id
 
   useEffect(() => {
-    if (selectedId) pillRefs.current[selectedId]?.scrollIntoView?.({ inline: 'center', block: 'nearest' })
+    const strip = stripRef.current
+    const pill = selectedId ? pillRefs.current[selectedId] : null
+    if (!strip || !pill) return
+    const s = strip.getBoundingClientRect()
+    const p = pill.getBoundingClientRect()
+    strip.scrollTo?.({ left: strip.scrollLeft + (p.left - s.left) - (s.width - p.width) / 2, behavior: 'smooth' })
   }, [selectedId])
 
   if (isPending) return <FullScreenSpinner />
@@ -227,7 +233,7 @@ export default function CardDetailPage() {
         <p className="mt-3 rounded-2xl bg-surface-2 px-4 py-6 text-center text-sm font-medium text-muted">{t('invoices.empty')}</p>
       ) : (
         <>
-          <div role="radiogroup" aria-label={t('invoices.title')}
+          <div ref={stripRef} role="radiogroup" aria-label={t('invoices.title')}
             className="-mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0">
             {invoices.map((inv, index) => {
               const st = invoiceStatus(inv, today)
