@@ -283,6 +283,12 @@
     "noAccountInCurrency": "You have no {{currency}} account to pay this bill.",
     "reopen": "Undo payment",
     "empty": "No purchases in this bill.",
-    "installment": "Installment {{n}} of {{total}}"
+    "installment": "Installment {{n}} of {{total}}",
+    "errors": {
+      "alreadyPaid": "This invoice has already been paid.",
+      "currencyMismatch": "The account must use the same currency as the card.",
+      "archivedAccount": "This account is archived.",
+      "emptyInvoice": "This invoice has no purchases."
+    }
   }
 }

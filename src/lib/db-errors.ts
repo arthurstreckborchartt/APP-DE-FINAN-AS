@@ -13,3 +13,8 @@ export function isPaidInvoiceError(error: unknown): boolean {
   const e = asDbError(error)
   return e?.code === '23514' && e.hint === 'paid_invoice'
 }
+
+/** Erro do Postgres com o `hint` informado (ex.: os das funções de pagamento de fatura). */
+export function isRpcHint(error: unknown, hint: string): boolean {
+  return asDbError(error)?.hint === hint
+}

@@ -7,10 +7,18 @@ import { SelectField } from '../../components/ui/SelectField'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
 import { Spinner } from '../../components/ui/Spinner'
+import { isRpcHint } from '../../lib/db-errors'
 import { formatMonth } from '../../lib/dates'
 import { useAccounts } from '../accounts/api'
 import { usePayInvoice } from './invoicesApi'
 import type { InvoiceSummary } from './types'
+
+const PAY_ERRORS = [
+  ['already_paid', 'invoices.errors.alreadyPaid'],
+  ['currency_mismatch', 'invoices.errors.currencyMismatch'],
+  ['archived_account', 'invoices.errors.archivedAccount'],
+  ['empty_invoice', 'invoices.errors.emptyInvoice'],
+] as const
 
 type Props = { invoice: InvoiceSummary; locale: string; open: boolean; onClose: () => void }
 
@@ -30,8 +38,9 @@ export function PayInvoiceSheet({ invoice, locale, open, onClose }: Props) {
     try {
       await pay.mutateAsync({ invoiceId: invoice.id, accountId: selected })
       onClose()
-    } catch {
-      setError(t('common.errorGeneric'))
+    } catch (e) {
+      const key = PAY_ERRORS.find(([hint]) => isRpcHint(e, hint))?.[1]
+      setError(key ? t(key) : t('common.errorGeneric'))
     }
   }
 

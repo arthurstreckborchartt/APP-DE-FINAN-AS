@@ -283,6 +283,12 @@
     "noAccountInCurrency": "Você não tem conta em {{currency}} para pagar esta fatura.",
     "reopen": "Desfazer pagamento",
     "empty": "Nenhuma compra nesta fatura.",
-    "installment": "Parcela {{n}} de {{total}}"
+    "installment": "Parcela {{n}} de {{total}}",
+    "errors": {
+      "alreadyPaid": "Esta fatura já foi paga.",
+      "currencyMismatch": "A conta precisa ser na mesma moeda do cartão.",
+      "archivedAccount": "Esta conta está arquivada.",
+      "emptyInvoice": "Esta fatura não tem compras."
+    }
   }
 }

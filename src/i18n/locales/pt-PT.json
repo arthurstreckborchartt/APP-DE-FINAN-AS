@@ -283,6 +283,12 @@
     "noAccountInCurrency": "Não tem nenhuma conta em {{currency}} para pagar este extrato.",
     "reopen": "Anular pagamento",
     "empty": "Sem compras neste extrato.",
-    "installment": "Prestação {{n}} de {{total}}"
+    "installment": "Prestação {{n}} de {{total}}",
+    "errors": {
+      "alreadyPaid": "Esta fatura já foi paga.",
+      "currencyMismatch": "A conta tem de ser na mesma moeda do cartão.",
+      "archivedAccount": "Esta conta está arquivada.",
+      "emptyInvoice": "Esta fatura não tem compras."
+    }
   }
 }
