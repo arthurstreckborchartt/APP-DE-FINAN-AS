@@ -139,7 +139,7 @@ export default function TransactionsPage() {
 
         <div className="flex min-w-0 flex-col gap-5 lg:order-1">
           {refsError && (
-            <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch() }} />
+            <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch(); void cardsQuery.refetch() }} />
           )}
           {isPending ? (
             <div className="min-h-[40vh]"><FullScreenSpinner /></div>

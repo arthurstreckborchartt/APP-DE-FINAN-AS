@@ -44,3 +44,13 @@ export function invoiceStatus(inv: { paid_at: string | null; closing_date: strin
   if (today > inv.due_date) return 'overdue'
   return 'closed'
 }
+
+/** Mês da fatura que vai receber a compra: pula faturas já pagas (como o banco faz). */
+export function firstUnpaidInvoiceMonth(
+  dateISO: string, closingDay: number, invoices: { reference_month: string; paid_at: string | null }[],
+): string {
+  const paid = new Set(invoices.filter((i) => i.paid_at).map((i) => i.reference_month))
+  let month = invoiceMonthFor(dateISO, closingDay)
+  for (let guard = 0; paid.has(month) && guard < 600; guard++) month = shiftMonth(month, 1)
+  return month
+}

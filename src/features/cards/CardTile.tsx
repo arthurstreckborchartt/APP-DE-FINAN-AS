@@ -22,7 +22,7 @@ export function CardTile({ card, locale }: { card: CardWithLimit; locale: string
           ].join(','),
         }}>
         {card.archived && (
-          <span className="absolute bottom-12 left-5 rounded-full bg-black/25 px-2.5 py-0.5 text-[11px] font-bold text-white">{t('common.archived')}</span>
+          <span className={`absolute bottom-12 left-5 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${dark ? 'bg-white/70 text-[#110e24]' : 'bg-black/45 text-white'}`}>{t('common.archived')}</span>
         )}
         <span className="block max-w-[75%] truncate text-lg font-extrabold tracking-[-0.01em]">{card.name}</span>
         <span className="mt-1 block text-[13px] font-bold">{card.currency}</span>

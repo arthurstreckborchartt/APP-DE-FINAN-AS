@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Pencil } from 'lucide-react'
@@ -104,15 +104,24 @@ export default function CardDetailPage() {
   const [action, setAction] = useState<'save' | 'archive' | 'delete' | null>(null)
   const pillRefs = useRef<Record<string, HTMLButtonElement | null>>({})
 
+  const today = todayISO()
+  const invoices: InvoiceSummary[] = invoicesQuery.data ?? []
+  // Padrão: a fatura não paga mais antiga com valor (vencidas primeiro), senão a próxima a fechar, senão a última.
+  const fallback = invoices.find((i) => !i.paid_at && i.total > 0)
+    ?? invoices.find((i) => !i.paid_at && i.closing_date >= today)
+    ?? invoices[invoices.length - 1]
+  const selected = invoices.find((i) => i.id === chosenId) ?? fallback
+  const selectedId = selected?.id
+
+  useEffect(() => {
+    if (selectedId) pillRefs.current[selectedId]?.scrollIntoView?.({ inline: 'center', block: 'nearest' })
+  }, [selectedId])
+
   if (isPending) return <FullScreenSpinner />
   if (isError || !cards) return <QueryError onRetry={() => void refetch()} />
   const card = cards.find((c) => c.id === id)
   if (!card) return <Navigate to="/cards" replace />
 
-  const today = todayISO()
-  const invoices: InvoiceSummary[] = invoicesQuery.data ?? []
-  const fallback = invoices.find((i) => !i.paid_at && i.closing_date >= today) ?? invoices[invoices.length - 1]
-  const selected = invoices.find((i) => i.id === chosenId) ?? fallback
   const busy = update.isPending || remove.isPending
 
   function openEdit() {

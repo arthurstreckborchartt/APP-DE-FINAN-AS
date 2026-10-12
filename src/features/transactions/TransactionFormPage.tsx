@@ -14,11 +14,12 @@ import { CategoryIcon } from '../../components/CategoryIcon'
 import { formatMonth, monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { isPaidInvoiceError } from '../../lib/db-errors'
-import { invoiceMonthFor, splitInstallments } from '../../lib/invoice'
+import { firstUnpaidInvoiceMonth, splitInstallments } from '../../lib/invoice'
 import { formatMoney } from '../../lib/money'
 import { useHideValues } from '../../lib/privacy'
 import { useAccounts } from '../accounts/api'
 import { useCards } from '../cards/api'
+import { useCardInvoices } from '../cards/invoicesApi'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useProfile } from '../profile/api'
@@ -92,6 +93,9 @@ export default function TransactionFormPage() {
       date: todayISO(), description: '',
     }
   }, [id, existing, accounts, categories, cards, recent, recentSettled])
+
+  const previewCardId = (draft ?? base)?.cardId
+  const cardInvoicesQuery = useCardInvoices(previewCardId ?? undefined)
 
   if (remove.isPending || remove.isSuccess) return <FullScreenSpinner />
   if (accountsQuery.isError || cardsQuery.isError || categoriesQuery.isError || existingQuery.isError) {
@@ -279,7 +283,7 @@ export default function TransactionFormPage() {
               </SelectField>
               {form.date && (
                 <p className="text-[13px] font-medium text-muted">
-                  {t('transactions.firstInvoice', { month: formatMonth(invoiceMonthFor(form.date, card.closing_day), locale) })}
+                  {t('transactions.firstInvoice', { month: formatMonth(firstUnpaidInvoiceMonth(form.date, card.closing_day, cardInvoicesQuery.data ?? []), locale) })}
                 </p>
               )}
             </div>

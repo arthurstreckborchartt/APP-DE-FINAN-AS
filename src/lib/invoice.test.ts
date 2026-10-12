@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { closingDateOf, dueDateOf, installmentSchedule, invoiceMonthFor, invoiceStatus, splitInstallments } from './invoice'
+import { closingDateOf, firstUnpaidInvoiceMonth, dueDateOf, installmentSchedule, invoiceMonthFor, invoiceStatus, splitInstallments } from './invoice'
 
 describe('fatura da compra', () => {
   test('antes do fechamento: fatura do mesmo mês', () => expect(invoiceMonthFor('2026-03-05', 10)).toBe('2026-03'))
@@ -33,4 +33,14 @@ describe('status da fatura', () => {
   test('fechada até o vencimento', () => expect(invoiceStatus(inv, '2026-03-17')).toBe('closed'))
   test('vencida', () => expect(invoiceStatus(inv, '2026-03-18')).toBe('overdue'))
   test('paga', () => expect(invoiceStatus({ ...inv, paid_at: '2026-03-15T10:00:00Z' }, '2026-04-01')).toBe('paid'))
+})
+
+test('firstUnpaidInvoiceMonth pula faturas pagas', () => {
+  const inv = [
+    { reference_month: '2026-11', paid_at: '2026-11-10' },
+    { reference_month: '2026-12', paid_at: '2026-12-10' },
+  ]
+  expect(firstUnpaidInvoiceMonth('2026-10-20', 15, inv)).toBe('2027-01')
+  expect(firstUnpaidInvoiceMonth('2026-10-05', 15, inv)).toBe('2026-10')
+  expect(firstUnpaidInvoiceMonth('2026-10-20', 15, [])).toBe('2026-11')
 })

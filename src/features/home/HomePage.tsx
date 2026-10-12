@@ -125,6 +125,7 @@ export default function HomePage() {
 
   const accounts = accountsQuery.data
   const activeAccounts = accounts.filter((a) => !a.archived)
+  const showMonth = activeAccounts.length > 0 || monthTx.length > 0
   const balances = balancesByCurrency(accounts)
   const summary = summarizeByCurrency(monthTx)
   const breakdownCurrency =
@@ -197,7 +198,7 @@ export default function HomePage() {
         <div className="max-lg:order-3"><EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
           action={<Link to="/accounts" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('accounts.new')}</Link>} /></div>
       )}
-      {activeAccounts.length > 0 && (
+      {showMonth && (
         <>
       {/* Para onde foi o dinheiro */}
       <Sheet title={t('home.byCategory')} className="max-lg:order-4">
@@ -263,7 +264,7 @@ export default function HomePage() {
       </div>
 
       <div className="max-lg:contents lg:flex lg:flex-col lg:gap-6">
-      {activeAccounts.length > 0 && (
+      {showMonth && (
         <>
       {/* Este mês */}
       <Sheet title={t('home.thisMonth')} className="max-lg:order-3"
