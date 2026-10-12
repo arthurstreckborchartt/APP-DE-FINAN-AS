@@ -274,6 +274,7 @@
     },
     "closes": "Cierra el {{date}}",
     "due": "Vence el {{date}}",
+    "wasDue": "Venció el {{date}}",
     "paidOn": "Pagado el {{date}}",
     "pay": "Pagar resumen",
     "payTitle": "Pagar resumen de {{month}}",

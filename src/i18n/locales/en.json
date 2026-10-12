@@ -274,6 +274,7 @@
     },
     "closes": "Closes {{date}}",
     "due": "Due {{date}}",
+    "wasDue": "Was due {{date}}",
     "paidOn": "Paid {{date}}",
     "pay": "Pay bill",
     "payTitle": "Pay {{month}} bill",

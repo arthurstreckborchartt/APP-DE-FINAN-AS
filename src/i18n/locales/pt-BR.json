@@ -274,6 +274,7 @@
     },
     "closes": "Fecha em {{date}}",
     "due": "Vence em {{date}}",
+    "wasDue": "Venceu em {{date}}",
     "paidOn": "Paga em {{date}}",
     "pay": "Pagar fatura",
     "payTitle": "Pagar fatura de {{month}}",

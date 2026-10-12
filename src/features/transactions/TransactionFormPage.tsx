@@ -83,7 +83,9 @@ export default function TransactionFormPage() {
     const d = pickDefaults(recent, 'expense', activeAccounts, activeCats)
     // Se a última despesa foi no cartão (ativo), começa em "Cartão" com esse cartão.
     const lastExpense = recent.find((r) => r.kind === 'expense')
-    const lastCard = lastExpense?.card_id ? cards.find((c) => c.id === lastExpense.card_id && !c.archived) : undefined
+    const lastCard = lastExpense?.card_id
+      ? cards.find((c) => c.id === lastExpense.card_id && !c.archived)
+      : activeAccounts.length === 0 ? cards.find((c) => !c.archived) : undefined
     return {
       kind: 'expense', amount: 0, categoryId: d.categoryId, accountId: d.accountId,
       source: lastCard ? 'card' : 'account', cardId: lastCard?.id ?? null, installments: 1,
@@ -265,7 +267,7 @@ export default function TransactionFormPage() {
               <SelectField label={t('transactions.installments')} value={String(form.installments)}
                 onChange={(e) => set({ installments: Number(e.target.value) })}>
                 <option value="1">{t('transactions.inCash')}</option>
-                {Array.from({ length: 47 }, (_, i) => i + 2).map((n) => (
+                {Array.from({ length: 47 }, (_, i) => i + 2).filter((n) => n <= form.amount || n === form.installments).map((n) => (
                   <option key={n} value={n}>
                     {hidden
                       ? t('transactions.installmentsHidden', { count: n })

@@ -57,3 +57,9 @@ test('parcela de cartão mostra o selo n/total e o nome do cartão', () => {
   expect(screen.getByText('3/6')).toBeTruthy()
   expect(screen.getByText('Nubank')).toBeTruthy()
 })
+
+test('compra crua parcelada (sem installment_number) mostra só Nx', () => {
+  renderRow({ ...base, account_id: null, card_id: 'k1', installments_count: 6 })
+  expect(screen.getByText('6x')).toBeTruthy()
+  expect(screen.queryByText('1/6')).toBeNull()
+})

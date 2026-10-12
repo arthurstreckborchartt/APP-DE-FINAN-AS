@@ -30,7 +30,9 @@ export function TransactionRow({ transaction: tx, category, account, card, local
       </span>
       {installment && (
         <span className="shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-extrabold text-muted num">
-          {t('transactions.installmentBadge', { n: tx.installment_number ?? 1, total: tx.installments_count })}
+          {tx.installment_number !== undefined
+            ? t('transactions.installmentBadge', { n: tx.installment_number, total: tx.installments_count })
+            : t('transactions.installmentsHidden', { count: tx.installments_count })}
         </span>
       )}
       <Amount cents={tx.amount} currency={tx.currency} locale={locale} sign={tx.kind}

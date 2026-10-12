@@ -274,6 +274,7 @@
     },
     "closes": "Fecha em {{date}}",
     "due": "Pagamento em {{date}}",
+    "wasDue": "Venceu em {{date}}",
     "paidOn": "Pago em {{date}}",
     "pay": "Pagar extrato",
     "payTitle": "Pagar extrato de {{month}}",
