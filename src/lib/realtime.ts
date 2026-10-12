@@ -4,6 +4,7 @@ import { useAuth } from '../features/auth/auth-context'
 import { supabase } from './supabase'
 
 const TABLES = ['transactions', 'invoices', 'cards'] as const
+const DEBOUNCE_MS = 300
 const AFFECTED_KEYS = [['transactions'], ['accounts'], ['cards'], ['invoices']] as const
 
 /**
@@ -17,8 +18,13 @@ export function useRealtimeSync() {
 
   useEffect(() => {
     if (!uid) return
+    // Uma rajada de eventos (ex.: compra parcelada) gera uma única atualização.
+    let timer: ReturnType<typeof setTimeout> | undefined
     const refresh = () => {
-      for (const queryKey of AFFECTED_KEYS) void qc.invalidateQueries({ queryKey })
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        for (const queryKey of AFFECTED_KEYS) void qc.invalidateQueries({ queryKey })
+      }, DEBOUNCE_MS)
     }
     let channel = supabase.channel(`finance-${uid}`)
     const filter = `user_id=eq.${uid}`
@@ -33,6 +39,7 @@ export function useRealtimeSync() {
     }
     channel.subscribe()
     return () => {
+      clearTimeout(timer)
       void supabase.removeChannel(channel)
     }
   }, [uid, qc])
