@@ -3,9 +3,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../features/auth/auth-context'
 import { supabase } from './supabase'
 
-const TABLES = ['transactions', 'invoices', 'cards'] as const
+const TABLES = ['transactions', 'invoices', 'cards', 'recurring'] as const
 const DEBOUNCE_MS = 300
-const AFFECTED_KEYS = [['transactions'], ['accounts'], ['cards'], ['invoices']] as const
+const AFFECTED_KEYS = [['transactions'], ['accounts'], ['cards'], ['invoices'], ['recurring']] as const
 
 /**
  * Mantém os dados em dia entre aparelhos: qualquer mudança em lançamentos, faturas ou cartões
