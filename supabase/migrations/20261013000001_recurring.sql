@@ -119,7 +119,7 @@ begin
     if new.frequency is distinct from old.frequency then
       v_d := old.start_date;
       v_i := 0;
-      while v_d < old.next_date and v_i < 1000 loop
+      while v_d < old.next_date and v_i < 6000 loop
         v_d := public.recurring_next(v_d, new.frequency, old.start_date);
         v_i := v_i + 1;
       end loop;
@@ -129,7 +129,7 @@ begin
     if old.paused and not new.paused then
       v_d := new.next_date;
       v_i := 0;
-      while v_d < current_date and v_i < 1000 loop
+      while v_d < current_date and v_i < 6000 loop
         v_d := public.recurring_next(v_d, new.frequency, old.start_date);
         v_i := v_i + 1;
       end loop;
@@ -205,8 +205,8 @@ begin
       update public.recurring set next_date = v_next where id = r.id;
       v_created := v_created + v_count;
     exception when others then
-      -- uma recorrente com problema não interrompe as demais (o bloco desfaz só o que ela fez)
-      null;
+      -- uma recorrente com problema não interrompe as demais (o bloco desfaz só o que ela fez), mas fica registrada
+      raise warning 'recorrente %: %', r.id, sqlerrm;
     end;
   end loop;
   return v_created;

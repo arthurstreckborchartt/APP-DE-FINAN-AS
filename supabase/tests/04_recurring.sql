@@ -299,6 +299,27 @@ begin
 end $$;
 
 reset role;
+-- Troca de frequência em recorrente antiga: sem retroativo gigante
+do $$
+declare
+  a uuid := '00000000-0000-0000-0000-0000000000a4';
+  acc uuid; housing uuid; rid uuid; old_next date; new_next date;
+begin
+  select v into acc from ids where k = 'acc';
+  select id into housing from public.categories where i18n_key = 'housing';
+  insert into public.recurring (user_id, kind, amount, category_id, account_id, frequency, start_date)
+    values (a, 'expense', 100, housing, acc, 'monthly', '2000-01-03') returning id into rid;
+  perform public.generate_recurring_for(a, current_date);
+  select next_date into old_next from public.recurring where id = rid;
+  if old_next < current_date then raise exception 'FAIL: next_date antigo não alcançou hoje (%)', old_next; end if;
+  update public.recurring set frequency = 'weekly' where id = rid;
+  select next_date into new_next from public.recurring where id = rid;
+  if new_next < old_next or new_next > old_next + 7 then
+    raise exception 'FAIL: troca para semanal: next % fora de [%, %+7]', new_next, old_next, old_next;
+  end if;
+  update cnt set n = (select count(*) from public.transactions where user_id = a);
+end $$;
+
 do $$
 declare n bigint; c bigint;
 begin
