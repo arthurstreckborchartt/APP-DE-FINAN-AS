@@ -16,7 +16,7 @@ set local role authenticated;
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a4","role":"authenticated"}';
 do $$
 declare
-  acc uuid; acc2 uuid; acc_arch uuid; card uuid; housing uuid; salary uuid;
+  acc uuid; acc_arch uuid; card uuid; housing uuid; salary uuid;
   rec_m uuid; rec_w uuid; rec_c uuid; rec_p uuid; rec_x uuid;
   r record; failed boolean; h text;
 begin
@@ -125,7 +125,7 @@ do $$
 declare
   a uuid := '00000000-0000-0000-0000-0000000000a4';
   rec_m uuid; rec_w uuid; rec_c uuid; rec_p uuid; rec_x uuid; card uuid;
-  n int; dates date[]; r record;
+  n int; dates date[]; r record; acc_b uuid; rec_f uuid;
 begin
   select v into rec_m from ids where k = 'rec_m';
   select v into rec_w from ids where k = 'rec_w';
@@ -133,6 +133,10 @@ begin
   select v into rec_p from ids where k = 'rec_p';
   select v into rec_x from ids where k = 'rec_x';
   select v into card from ids where k = 'card';
+
+  insert into public.accounts (user_id, name, type, currency)
+    values ('00000000-0000-0000-0000-0000000000b4', 'Banco B', 'checking', 'BRL') returning id into acc_b;
+  insert into ids values ('acc_b', acc_b);
 
   -- Até 15/04: mensal (3) + semanal (3) + cartão (05/03 e 05/04 = 2) = 8
   n := public.generate_recurring_for(a, '2026-04-15');
@@ -154,13 +158,21 @@ begin
   select count(*) into n from public.transactions where recurring_id = rec_w;
   if n <> 3 then raise exception 'FAIL: semanal com fim gerou % (esperado 3)', n; end if;
 
+  -- Recorrente encerrada é ignorada pelo gerador
+  select next_date, updated_at into r from public.recurring where id = rec_w;
+  if r.next_date <> '2026-03-23' then raise exception 'FAIL: next_date da encerrada %', r.next_date; end if;
+  perform public.generate_recurring_for(a, '2026-12-31');
+  if exists (select 1 from public.recurring where id = rec_w and (next_date <> r.next_date or updated_at <> r.updated_at)) then
+    raise exception 'FAIL: recorrente encerrada foi alterada pelo gerador';
+  end if;
+
   -- Cartão: compra com 1 parcela e a fatura correspondente
   select count(*) into n from public.transactions where recurring_id = rec_c and installments_count = 1 and card_id = card;
-  if n < 2 then raise exception 'FAIL: compras do cartão recorrente (%)', n; end if;
+  if n <> 10 then raise exception 'FAIL: compras do cartão recorrente (% <> 10)', n; end if;
   select count(*) into n from public.installments i join public.transactions t on t.id = i.transaction_id
     where t.recurring_id = rec_c and i.number = 1 and i.invoice_id is not null;
-  if n <> (select count(*) from public.transactions where recurring_id = rec_c) then
-    raise exception 'FAIL: parcela/fatura do cartão recorrente';
+  if n <> 10 then
+    raise exception 'FAIL: parcela/fatura do cartão recorrente (% <> 10)', n;
   end if;
   if not exists (select 1 from public.invoices where card_id = card and reference_month = '2026-03-01') then
     raise exception 'FAIL: fatura de março do cartão não criada';
@@ -176,13 +188,24 @@ begin
   if not (select paused from public.recurring where id = rec_x) then
     raise exception 'FAIL: recorrente de conta arquivada não foi pausada';
   end if;
+
+  -- Semanal para o teste de troca de frequência (gerada só até 10/03: próxima = 14/03)
+  insert into public.recurring (user_id, kind, amount, category_id, account_id, frequency, start_date, currency, next_date)
+    select a, 'expense', 20, c.id, (select v from ids where k = 'acc'), 'weekly', '2026-01-31', 'BRL', '2026-01-31'
+    from public.categories c where c.i18n_key = 'housing' returning id into rec_f;
+  insert into ids values ('rec_f', rec_f);
+  perform public.generate_recurring_for(a, '2026-03-10');
+  select next_date into r from public.recurring where id = rec_f;
+  if r.next_date <> '2026-03-14' then raise exception 'FAIL: next_date semanal %', r.next_date; end if;
+  delete from public.transactions where recurring_id = rec_f;
 end $$;
 
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a4","role":"authenticated"}';
 do $$
 declare
-  rec_m uuid; rec_d uuid; acc uuid; housing uuid; n int; n2 int;
+  rec_m uuid; rec_d uuid; rec_r uuid; rec_f uuid; acc uuid; acc_b uuid; acc_arch uuid; housing uuid;
+  n int; n2 int; d date; failed boolean; h text;
 begin
   select v into rec_m from ids where k = 'rec_m';
   select v into acc from ids where k = 'acc';
@@ -197,6 +220,48 @@ begin
   select count(*) into n2 from public.transactions
     where recurring_id is null and description = 'Aluguel' and amount = 5000;
   if n2 <> 12 then raise exception 'FAIL: lançamentos após excluir recorrente (%)', n2; end if;
+
+  -- Troca de frequência semanal -> mensal: próxima data na âncora (31, ajustado)
+  select v into rec_f from ids where k = 'rec_f';
+  update public.recurring set frequency = 'monthly' where id = rec_f;
+  select next_date into d from public.recurring where id = rec_f;
+  if d <> '2026-03-31' then raise exception 'FAIL: next_date após trocar frequência %', d; end if;
+
+  -- Retomada não gera retroativo: pausada há 3 meses
+  insert into public.recurring (kind, amount, category_id, account_id, frequency, start_date)
+    values ('expense', 10, housing, acc, 'monthly', current_date - 100) returning id into rec_r;
+  update public.recurring set paused = true where id = rec_r;
+  update public.recurring set paused = false where id = rec_r;
+  select next_date into d from public.recurring where id = rec_r;
+  if d < current_date or d >= current_date + 32 then raise exception 'FAIL: next_date após retomar %', d; end if;
+  if extract(day from d) <> least(extract(day from current_date - 100),
+       extract(day from (date_trunc('month', d) + interval '1 month' - interval '1 day'))) then
+    raise exception 'FAIL: dia da recorrência retomada fora da âncora %', d;
+  end if;
+  reset role;
+  perform public.generate_recurring_for('00000000-0000-0000-0000-0000000000a4', current_date);
+  set local role authenticated;
+  set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a4","role":"authenticated"}';
+  select count(*) into n from public.transactions where recurring_id = rec_r and date < current_date;
+  if n <> 0 then raise exception 'FAIL: retomada gerou % retroativos', n; end if;
+
+  -- Reapontar origem: conta de B e conta arquivada
+  select v into acc_b from ids where k = 'acc_b';
+  select v into acc_arch from ids where k = 'acc_arch';
+  failed := false;
+  begin
+    update public.recurring set account_id = acc_b where id = rec_r;
+  exception when check_violation then failed := true;
+  end;
+  if not failed then raise exception 'FAIL: recorrente reapontada para conta de B'; end if;
+  failed := false;
+  begin
+    update public.recurring set account_id = acc_arch where id = rec_r;
+  exception when check_violation then
+    get stacked diagnostics h = pg_exception_hint;
+    failed := h = 'archived_source';
+  end;
+  if not failed then raise exception 'FAIL: recorrente reapontada para conta arquivada'; end if;
 
   -- Recorrente anual para a exclusão do usuário
   insert into public.recurring (kind, amount, category_id, account_id, frequency, start_date)

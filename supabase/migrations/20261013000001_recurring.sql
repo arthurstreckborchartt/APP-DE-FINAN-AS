@@ -84,6 +84,8 @@ declare
   src_archived boolean;
   cat_user uuid;
   cat_kind text;
+  v_d date;
+  v_i integer;
 begin
   if new.account_id is not null then
     select a.user_id, a.currency, a.archived into src_user, src_currency, src_archived
@@ -112,6 +114,27 @@ begin
   new.currency := src_currency;
   if tg_op = 'INSERT' then
     new.next_date := new.start_date;
+  else
+    -- Troca de frequência: primeira ocorrência da nova agenda (ancorada no início) a partir da próxima data
+    if new.frequency is distinct from old.frequency then
+      v_d := old.start_date;
+      v_i := 0;
+      while v_d < old.next_date and v_i < 1000 loop
+        v_d := public.recurring_next(v_d, new.frequency, old.start_date);
+        v_i := v_i + 1;
+      end loop;
+      new.next_date := v_d;
+    end if;
+    -- Retomada: não gera o período pausado; avança até hoje
+    if old.paused and not new.paused then
+      v_d := new.next_date;
+      v_i := 0;
+      while v_d < current_date and v_i < 1000 loop
+        v_d := public.recurring_next(v_d, new.frequency, old.start_date);
+        v_i := v_i + 1;
+      end loop;
+      new.next_date := v_d;
+    end if;
   end if;
   return new;
 end;
@@ -139,61 +162,75 @@ declare
   v_next date;
   v_archived boolean;
   v_created integer := 0;
+  v_count integer;
   v_guard integer;
 begin
   for r in
     select * from public.recurring
-    where not paused and next_date <= p_until and (p_user is null or user_id = p_user)
+    where not paused and next_date <= p_until
+      and (end_date is null or next_date <= end_date)
+      and (p_user is null or user_id = p_user)
+    order by id
     for update skip locked
   loop
-    if r.account_id is not null then
-      select archived into v_archived from public.accounts where id = r.account_id;
-    else
-      select archived into v_archived from public.cards where id = r.card_id;
-    end if;
-    if v_archived then
-      update public.recurring set paused = true where id = r.id;
-      continue;
-    end if;
-
-    v_next := r.next_date;
-    v_guard := 0;
-    while v_next <= p_until and (r.end_date is null or v_next <= r.end_date) and v_guard < 500 loop
-      insert into public.transactions
-        (user_id, kind, amount, date, category_id, description, account_id, card_id, installments_count,
-         recurring_id, recurring_date)
-      values
-        (r.user_id, r.kind, r.amount, v_next, r.category_id, r.description, r.account_id, r.card_id, 1,
-         r.id, v_next)
-      on conflict (recurring_id, recurring_date) where recurring_id is not null do nothing;
-      if found then
-        v_created := v_created + 1;
+    begin
+      v_count := 0;
+      if r.account_id is not null then
+        select archived into v_archived from public.accounts where id = r.account_id;
+      else
+        select archived into v_archived from public.cards where id = r.card_id;
       end if;
-      v_next := public.recurring_next(v_next, r.frequency, r.start_date);
-      v_guard := v_guard + 1;
-    end loop;
+      if v_archived then
+        update public.recurring set paused = true where id = r.id;
+        continue;
+      end if;
 
-    update public.recurring set next_date = v_next where id = r.id;
+      v_next := r.next_date;
+      v_guard := 0;
+      while v_next <= p_until and (r.end_date is null or v_next <= r.end_date) and v_guard < 500 loop
+        insert into public.transactions
+          (user_id, kind, amount, date, category_id, description, account_id, card_id, installments_count,
+           recurring_id, recurring_date)
+        values
+          (r.user_id, r.kind, r.amount, v_next, r.category_id, r.description, r.account_id, r.card_id, 1,
+           r.id, v_next)
+        on conflict (recurring_id, recurring_date) where recurring_id is not null do nothing;
+        if found then
+          v_count := v_count + 1;
+        end if;
+        v_next := public.recurring_next(v_next, r.frequency, r.start_date);
+        v_guard := v_guard + 1;
+      end loop;
+
+      update public.recurring set next_date = v_next where id = r.id;
+      v_created := v_created + v_count;
+    exception when others then
+      -- uma recorrente com problema não interrompe as demais (o bloco desfaz só o que ela fez)
+      null;
+    end;
   end loop;
   return v_created;
 end;
 $$;
 revoke execute on function public.generate_recurring_for(uuid, date) from public, anon, authenticated;
 
-create function public.generate_my_recurring() returns integer
+-- p_today: data local do usuário; limitada a ontem..amanhã para não gerar o futuro.
+create function public.generate_my_recurring(p_today date default null) returns integer
 language plpgsql
 security definer
 set search_path = ''
 as $$
+declare
+  v_day date := least(greatest(coalesce(p_today, current_date), current_date - 1), current_date + 1);
 begin
   if auth.uid() is null then
     raise exception 'sem usuário' using errcode = '42501';
   end if;
-  return public.generate_recurring_for(auth.uid(), current_date);
+  return public.generate_recurring_for(auth.uid(), v_day);
 end;
 $$;
-revoke execute on function public.generate_my_recurring() from public, anon;
-grant execute on function public.generate_my_recurring() to authenticated;
+revoke execute on function public.generate_my_recurring(date) from public, anon;
+grant execute on function public.generate_my_recurring(date) to authenticated;
 
 ------------------------------------------------------------
 -- Competência: expõe recurring_id
