@@ -215,6 +215,7 @@
     "installments": "Prestações",
     "inCash": "A pronto",
     "installmentsOption": "{{count}}x de {{amount}}",
+    "installmentsHidden": "{{count}}x",
     "firstInvoice": "A primeira prestação entra no extrato de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar."

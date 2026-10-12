@@ -215,6 +215,7 @@
     "installments": "Parcelas",
     "inCash": "À vista",
     "installmentsOption": "{{count}}x de {{amount}}",
+    "installmentsHidden": "{{count}}x",
     "firstInvoice": "A primeira parcela cai na fatura de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este lançamento está numa fatura paga e não pode ser alterado. Desfaça o pagamento da fatura para editar."

@@ -215,6 +215,7 @@
     "installments": "Installments",
     "inCash": "Pay in full",
     "installmentsOption": "{{count}}x of {{amount}}",
+    "installmentsHidden": "{{count}}x",
     "firstInvoice": "The first installment goes on the {{month}} bill.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "This transaction is on a paid bill and can't be changed. Undo the bill payment to edit it."
