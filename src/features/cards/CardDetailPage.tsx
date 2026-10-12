@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Pencil } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
+import { MoneyLineChart } from '../../components/MoneyLineChart'
 import { Button } from '../../components/ui/Button'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -83,6 +84,12 @@ function InvoiceItems({ invoiceId, currency, locale }: { invoiceId: string; curr
       })}
     </ul>
   )
+}
+
+/** "out. 26" — mês curto e ano de dois dígitos, para o eixo do histórico. */
+function monthShort(referenceMonth: string, locale: string): string {
+  const [y, m] = referenceMonth.split('-').map(Number)
+  return new Intl.DateTimeFormat(locale, { month: 'short', year: '2-digit' }).format(new Date(y, m - 1, 1))
 }
 
 export default function CardDetailPage() {
@@ -222,6 +229,15 @@ export default function CardDetailPage() {
           <Amount cents={card.used} currency={card.currency} locale={locale} className="text-[15px] font-extrabold" />
         </div>
       </div>
+
+      {invoices.length > 1 && (
+        <section className="mx-auto mt-6 max-w-md rounded-[24px] bg-surface p-5 shadow-sheet">
+          <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{t('cards.invoiceHistory')}</h2>
+          <MoneyLineChart values={invoices.map((i) => i.total)} currency={card.currency} locale={locale}
+            labels={invoices.map((i) => monthShort(i.reference_month, locale))} name={t('invoices.total')}
+            color={card.color} />
+        </section>
+      )}
 
       <h2 className="mt-8 text-lg font-extrabold tracking-[-0.02em]">{t('invoices.title')}</h2>
 

@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Amount } from '../../components/Amount'
+import { TiltCard } from '@/components/ui/TiltCard'
 import { onCardDark } from '../../lib/contrast'
 import type { CardWithLimit } from './types'
 
@@ -12,8 +13,9 @@ export function CardTile({ card, locale }: { card: CardWithLimit; locale: string
   const motif = dark ? '17 14 36' : '255 255 255'
   return (
     <div>
+      <TiltCard tiltLimit={10} scale={1.03} className="rounded-[22px] shadow-sheet">
       <Link to={`/cards/${card.id}`}
-        className={`relative block aspect-[1.586] overflow-hidden rounded-[22px] p-5 shadow-sheet transition active:scale-[0.99] ${dark ? 'text-[#110e24]' : 'text-white'}`}
+        className={`relative block aspect-[1.586] overflow-hidden rounded-[22px] p-5 transition active:scale-[0.99] ${dark ? 'text-[#110e24]' : 'text-white'}`}
         style={{
           backgroundColor: card.color,
           backgroundImage: [
@@ -30,6 +32,7 @@ export function CardTile({ card, locale }: { card: CardWithLimit; locale: string
           {t('cards.closesOn', { day: card.closing_day })} · {t('cards.dueOn', { day: card.due_day })}
         </span>
       </Link>
+      </TiltCard>
       <div className="mt-3 px-1">
         <div className="h-2 overflow-hidden rounded-full bg-surface-2" role="img"
           aria-label={`${t('cards.used')}: ${Math.round(pct)}%`}>

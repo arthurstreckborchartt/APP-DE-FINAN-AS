@@ -33,6 +33,27 @@ export function useCardInvoices(cardId: string | undefined) {
   })
 }
 
+/** Faturas pagas dentro de um mês (pagamentos saem do saldo das contas). */
+export function usePaidInvoicesInMonth(month: string) {
+  const { user } = useAuth()
+  return useQuery({
+    queryKey: ['invoices', user?.id, 'paid', month],
+    enabled: !!user,
+    queryFn: async () => {
+      const [y, m] = month.split('-').map(Number)
+      const start = new Date(y, m - 1, 1).toISOString()
+      const end = new Date(y, m, 1).toISOString()
+      const { data, error } = await supabase
+        .from('invoice_summaries')
+        .select(SUMMARY_COLUMNS)
+        .gte('paid_at', start)
+        .lt('paid_at', end)
+      if (error) throw error
+      return (data as unknown as InvoiceSummary[]).map(toInvoiceSummary)
+    },
+  })
+}
+
 /** Faturas ainda não pagas de todos os cartões (para o Início). */
 export function useAllOpenInvoices() {
   const { user } = useAuth()

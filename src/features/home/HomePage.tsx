@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowDownLeft, ArrowUpRight, ChevronRight, Ellipsis, Eye, EyeOff, Landmark, Plus, ReceiptText, Tags, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
+import { dayLabels, MoneyLineChart } from '../../components/MoneyLineChart'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
@@ -14,13 +15,14 @@ import { setHideValues, useHideValues } from '../../lib/privacy'
 import { useAccounts } from '../accounts/api'
 import { balancesByCurrency } from '../accounts/totals'
 import { useCards } from '../cards/api'
-import { useAllOpenInvoices } from '../cards/invoicesApi'
+import { useAllOpenInvoices, usePaidInvoicesInMonth } from '../cards/invoicesApi'
 import type { CardWithLimit, InvoiceSummary } from '../cards/types'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useProfile } from '../profile/api'
 import { useRecentTransactions, useTransactions } from '../transactions/api'
 import { expensesByCategory, summarizeByCurrency } from '../transactions/filters'
+import { cumulative, dailyBalance, dailyExpenses, daysInMonth } from '../transactions/series'
 import { TransactionRow } from '../transactions/TransactionRow'
 
 const TOP_CATEGORIES = 5
@@ -103,6 +105,7 @@ export default function HomePage() {
   const recentQuery = useRecentTransactions()
   const cardsQuery = useCards()
   const invoicesQuery = useAllOpenInvoices()
+  const paidQuery = usePaidInvoicesInMonth(month)
   const monthTx = monthQuery.data ?? []
   const recent = recentQuery.data ?? []
 
@@ -136,6 +139,27 @@ export default function HomePage() {
   const rest = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.total, 0)
   const restShare = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.share, 0)
   const firstName = profile?.name?.trim().split(/\s+/)[0]
+
+  // Gráficos do mês: só até hoje (o resto do mês ainda não aconteceu).
+  const todayDay = Number(today.slice(8, 10))
+  const labels = dayLabels(month, daysInMonth(month), locale).slice(0, todayDay)
+  const balanceCurrency = balances.find((b) => b.currency === profile?.currency)?.currency ?? balances[0]?.currency
+  const balanceSeries = balanceCurrency && monthQuery.isSuccess && paidQuery.isSuccess
+    ? dailyBalance({
+        currentBalance: balances.find((b) => b.currency === balanceCurrency)!.total,
+        month,
+        currency: balanceCurrency,
+        entries: monthTx,
+        payments: (paidQuery.data ?? []).map((i) => ({
+          date: todayISO(new Date(i.paid_at!)),
+          amount: i.payment_amount ?? 0,
+          currency: i.currency,
+        })),
+      }).slice(0, todayDay)
+    : []
+  const spendingSeries = breakdownCurrency
+    ? cumulative(dailyExpenses(monthTx, month, breakdownCurrency)).slice(0, todayDay)
+    : []
 
   const quick = [
     { to: '/new', label: t('nav.new'), icon: Plus, primary: true },
@@ -185,6 +209,13 @@ export default function HomePage() {
                     ? 'text-[38px] font-extrabold leading-tight tracking-[-0.03em] sm:text-[46px]'
                     : 'text-xl font-bold tracking-[-0.02em] text-brand-muted'} />
               ))}
+            </div>
+          )}
+          {balanceSeries.length > 1 && (
+            <div className="-mx-1 mt-4">
+              <MoneyLineChart values={balanceSeries} labels={labels} currency={balanceCurrency!} locale={locale}
+                name={t('home.balanceTrend')} color="#ffffff" showXAxis={false}
+                className="[--spell-badge:rgb(255_255_255/0.16)] [--spell-line:rgb(255_255_255/0.4)] dark:[--spell-badge:rgb(255_255_255/0.16)] dark:[--spell-line:rgb(255_255_255/0.4)]" />
             </div>
           )}
           <Link to="/accounts"
@@ -314,6 +345,13 @@ export default function HomePage() {
                 </dl>
               )
             })}
+            {spendingSeries.length > 1 && (
+              <div className="border-t border-line pt-4">
+                <p className="mb-3 text-[13px] font-semibold text-muted">{t('home.spentSoFar')}</p>
+                <MoneyLineChart values={spendingSeries} labels={labels} currency={breakdownCurrency!} locale={locale}
+                  name={t('home.spentSoFar')} />
+              </div>
+            )}
           </div>
         )}
       </Sheet>

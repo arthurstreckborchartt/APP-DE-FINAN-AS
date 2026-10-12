@@ -218,7 +218,8 @@
     "installmentsHidden": "{{count}}x",
     "firstInvoice": "A primeira prestação entra no extrato de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
-    "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar."
+    "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar.",
+    "dailySpending": "Despesas por dia"
   },
   "home": {
     "greeting": "Olá, {{name}}!",
@@ -236,7 +237,9 @@
     "quickActions": "Atalhos",
     "spentOf": "{{pct}}% das despesas",
     "cards": "Os seus cartões",
-    "availableLimit": "Limite disponível"
+    "availableLimit": "Limite disponível",
+    "balanceTrend": "Saldo",
+    "spentSoFar": "Despesas acumuladas no mês"
   },
   "cards": {
     "title": "Cartões",
@@ -260,7 +263,8 @@
     "empty": "Ainda não tem cartões",
     "emptyBody": "Registe os seus cartões para acompanhar extratos, prestações e o limite disponível.",
     "archivedSection": "Cartões arquivados",
-    "deleteBlocked": "Este cartão tem movimentos. Arquive-o em vez de eliminar."
+    "deleteBlocked": "Este cartão tem movimentos. Arquive-o em vez de eliminar.",
+    "invoiceHistory": "Histórico de extratos"
   },
   "invoices": {
     "title": "Extratos do cartão",

@@ -9,6 +9,18 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.4.0.0 — 2026-10-12
+
+Gráficos e cartões animados.
+
+- Gráficos de linha (componente `@spell/chart`) com balão que acompanha o dedo ou o mouse:
+  - Início: saldo das contas ao longo do mês (dentro do painel de saldo) e gastos acumulados no mês.
+  - Lançamentos: gastos por dia do mês escolhido (respeita os filtros).
+  - Cartão: histórico do total das faturas mês a mês.
+- Cartões com efeito 3D de inclinação e brilho ao passar o mouse (componente `@spell/tilt-card`); no celular o cartão não inclina para não atrapalhar a rolagem.
+- Valores no balão dos gráficos também ficam ocultos quando o "olho" está fechado.
+- Projeto preparado para componentes shadcn (`components.json`, atalho `@/`).
+
 ## Atualização 1.3.0.0 — 2026-10-12
 
 Etapa 3: cartões de crédito, faturas e parcelas.

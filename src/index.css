@@ -73,6 +73,9 @@
   --color-warning: var(--warning);
   --shadow-sheet: var(--shadow-sheet);
   --shadow-float: var(--shadow-float);
+  --color-background: var(--surface);
+  --color-foreground: var(--fg);
+  --color-muted-foreground: var(--muted);
   --font-sans: "Manrope Variable", system-ui, sans-serif;
 }
 

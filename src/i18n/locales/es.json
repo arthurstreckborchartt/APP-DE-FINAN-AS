@@ -218,7 +218,8 @@
     "installmentsHidden": "{{count}}x",
     "firstInvoice": "La primera cuota entra en el resumen de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
-    "paidLocked": "Este movimiento está en un resumen pagado y no se puede modificar. Deshaz el pago del resumen para editarlo."
+    "paidLocked": "Este movimiento está en un resumen pagado y no se puede modificar. Deshaz el pago del resumen para editarlo.",
+    "dailySpending": "Gastos por día"
   },
   "home": {
     "greeting": "¡Hola, {{name}}!",
@@ -236,7 +237,9 @@
     "quickActions": "Accesos rápidos",
     "spentOf": "{{pct}}% de los gastos",
     "cards": "Tus tarjetas",
-    "availableLimit": "Límite disponible"
+    "availableLimit": "Límite disponible",
+    "balanceTrend": "Saldo",
+    "spentSoFar": "Gastos acumulados del mes"
   },
   "cards": {
     "title": "Tarjetas",
@@ -260,7 +263,8 @@
     "empty": "Aún no hay tarjetas",
     "emptyBody": "Registra tus tarjetas para seguir resúmenes, cuotas y el límite disponible.",
     "archivedSection": "Tarjetas archivadas",
-    "deleteBlocked": "Esta tarjeta tiene movimientos. Archívala en lugar de eliminarla."
+    "deleteBlocked": "Esta tarjeta tiene movimientos. Archívala en lugar de eliminarla.",
+    "invoiceHistory": "Historial de resúmenes"
   },
   "invoices": {
     "title": "Resúmenes",

@@ -218,7 +218,8 @@
     "installmentsHidden": "{{count}}x",
     "firstInvoice": "A primeira parcela cai na fatura de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
-    "paidLocked": "Este lançamento está numa fatura paga e não pode ser alterado. Desfaça o pagamento da fatura para editar."
+    "paidLocked": "Este lançamento está numa fatura paga e não pode ser alterado. Desfaça o pagamento da fatura para editar.",
+    "dailySpending": "Gastos por dia"
   },
   "home": {
     "greeting": "Olá, {{name}}!",
@@ -236,7 +237,9 @@
     "quickActions": "Atalhos",
     "spentOf": "{{pct}}% das despesas",
     "cards": "Seus cartões",
-    "availableLimit": "Limite disponível"
+    "availableLimit": "Limite disponível",
+    "balanceTrend": "Saldo",
+    "spentSoFar": "Gastos acumulados no mês"
   },
   "cards": {
     "title": "Cartões",
@@ -260,7 +263,8 @@
     "empty": "Nenhum cartão ainda",
     "emptyBody": "Cadastre seus cartões para acompanhar faturas, parcelas e o limite disponível.",
     "archivedSection": "Cartões arquivados",
-    "deleteBlocked": "Este cartão tem lançamentos. Arquive-o em vez de excluir."
+    "deleteBlocked": "Este cartão tem lançamentos. Arquive-o em vez de excluir.",
+    "invoiceHistory": "Histórico de faturas"
   },
   "invoices": {
     "title": "Faturas",

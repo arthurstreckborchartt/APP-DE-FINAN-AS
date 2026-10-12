@@ -218,7 +218,8 @@
     "installmentsHidden": "{{count}}x",
     "firstInvoice": "The first installment goes on the {{month}} bill.",
     "installmentBadge": "{{n}}/{{total}}",
-    "paidLocked": "This transaction is on a paid bill and can't be changed. Undo the bill payment to edit it."
+    "paidLocked": "This transaction is on a paid bill and can't be changed. Undo the bill payment to edit it.",
+    "dailySpending": "Spending per day"
   },
   "home": {
     "greeting": "Hi, {{name}}!",
@@ -236,7 +237,9 @@
     "quickActions": "Shortcuts",
     "spentOf": "{{pct}}% of spending",
     "cards": "Your cards",
-    "availableLimit": "Available limit"
+    "availableLimit": "Available limit",
+    "balanceTrend": "Balance",
+    "spentSoFar": "Spending so far this month"
   },
   "cards": {
     "title": "Cards",
@@ -260,7 +263,8 @@
     "empty": "No cards yet",
     "emptyBody": "Add your cards to follow bills, installments and your available limit.",
     "archivedSection": "Archived cards",
-    "deleteBlocked": "This card has transactions. Archive it instead of deleting."
+    "deleteBlocked": "This card has transactions. Archive it instead of deleting.",
+    "invoiceHistory": "Bill history"
   },
   "invoices": {
     "title": "Bills",

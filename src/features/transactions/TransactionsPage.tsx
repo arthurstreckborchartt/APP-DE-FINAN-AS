@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, ReceiptText, Search } from 'lucide-react'
 import { Amount } from '../../components/Amount'
+import { dayLabels, MoneyLineChart } from '../../components/MoneyLineChart'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { MonthSwitcher } from '../../components/ui/MonthSwitcher'
 import { QueryError } from '../../components/ui/QueryError'
@@ -16,6 +17,7 @@ import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useTransactions } from './api'
 import { filterTransactions, groupByDate, summarizeByCurrency, type TransactionFilters } from './filters'
+import { dailyExpenses, daysInMonth } from './series'
 import { TransactionRow } from './TransactionRow'
 import type { TransactionKind } from './types'
 
@@ -48,6 +50,10 @@ export default function TransactionsPage() {
   })
   const groups = groupByDate(visible)
   const summary = summarizeByCurrency(visible)
+  // Gastos por dia do mês escolhido (respeita os filtros); no mês atual, só até hoje.
+  const chartCurrency = summary.find((s) => s.expense > 0)?.currency
+  const lastDay = month === monthOf(todayISO()) ? Number(todayISO().slice(8, 10)) : daysInMonth(month)
+  const dailySeries = chartCurrency ? dailyExpenses(visible, month, chartCurrency).slice(0, lastDay) : []
   const hasFilters = !!(filters.kind || filters.accountId || filters.cardId || filters.categoryId || filters.search)
 
   const filtersPanel = (
@@ -140,6 +146,13 @@ export default function TransactionsPage() {
         <div className="flex min-w-0 flex-col gap-5 lg:order-1">
           {refsError && (
             <QueryError onRetry={() => { void accountsQuery.refetch(); void categoriesQuery.refetch(); void cardsQuery.refetch() }} />
+          )}
+          {!isPending && dailySeries.length > 1 && (
+            <section className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6">
+              <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{t('transactions.dailySpending')}</h2>
+              <MoneyLineChart values={dailySeries} labels={dayLabels(month, lastDay, locale)} currency={chartCurrency!}
+                locale={locale} name={t('transactions.dailySpending')} />
+            </section>
           )}
           {isPending ? (
             <div className="min-h-[40vh]"><FullScreenSpinner /></div>
