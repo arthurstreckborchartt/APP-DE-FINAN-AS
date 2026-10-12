@@ -9,6 +9,21 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.3.0.0 — 2026-10-12
+
+Etapa 3: cartões de crédito, faturas e parcelas.
+
+- Cartões com limite, dia de fechamento e vencimento, moeda e cor; o cartão aparece como um "cartão de verdade" na tela.
+- Compras no cartão à vista ou parceladas (até 48x); a primeira parcela cai na fatura certa conforme o fechamento, com prévia no formulário.
+- Faturas por mês (aberta, fechada, paga, vencida), com a lista de compras e parcelas de cada uma.
+- Pagar fatura a partir de uma conta da mesma moeda (libera o limite e desconta o saldo da conta); dá para desfazer o pagamento.
+- Limite disponível atualiza na hora em todos os aparelhos (tempo real).
+- Compra lançada depois de a fatura ser paga vai automaticamente para a próxima fatura em aberto.
+- Lançamentos de fatura paga ficam protegidos contra edição.
+- Relatórios do mês contam cada parcela no seu mês; o extrato mostra "2/10" nas parcelas.
+- Início com "Seus cartões": limite disponível e fatura atual de cada cartão.
+- Banco: novas tabelas e regras com testes automáticos de segurança.
+
 ## Atualização 1.2.0.1 — 2026-10-11
 
 Ajuste de identidade visual: "Equilíbrio".
