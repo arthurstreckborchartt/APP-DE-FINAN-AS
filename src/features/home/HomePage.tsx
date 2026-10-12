@@ -9,9 +9,13 @@ import { QueryError } from '../../components/ui/QueryError'
 import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
 import { formatMonth, monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
+import { invoiceStatus, type InvoiceStatus } from '../../lib/invoice'
 import { setHideValues, useHideValues } from '../../lib/privacy'
 import { useAccounts } from '../accounts/api'
 import { balancesByCurrency } from '../accounts/totals'
+import { useCards } from '../cards/api'
+import { useAllOpenInvoices } from '../cards/invoicesApi'
+import type { CardWithLimit, InvoiceSummary } from '../cards/types'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useProfile } from '../profile/api'
@@ -33,6 +37,54 @@ function Sheet({ title, action, children, className = '' }: { title: string; act
   )
 }
 
+const STATUS_DOT: Record<InvoiceStatus, string> = {
+  paid: 'bg-success', overdue: 'bg-danger', closed: 'bg-warning', open: 'bg-primary',
+}
+
+function dayMonth(iso: string, locale: string): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(new Date(y, m - 1, d))
+}
+
+/** Cartão compacto no Início: disponível com barra e a fatura atual. */
+function CardSummary({ card, invoice, today, locale }: { card: CardWithLimit; invoice?: InvoiceSummary; today: string; locale: string }) {
+  const { t } = useTranslation()
+  const pct = card.limit_amount > 0 ? Math.min(100, Math.max(0, (card.used / card.limit_amount) * 100)) : 0
+  const status = invoice ? invoiceStatus(invoice, today) : null
+  return (
+    <Link to={`/cards/${card.id}`}
+      className="-mx-3 block rounded-2xl px-3 py-3 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
+      <span className="flex items-center gap-2.5">
+        <span className="size-3.5 shrink-0 rounded-full" style={{ backgroundColor: card.color }} aria-hidden="true" />
+        <span className="min-w-0 flex-1 truncate text-[15px] font-bold tracking-[-0.01em]">{card.name}</span>
+        <ChevronRight className="size-4 shrink-0 text-muted" aria-hidden="true" />
+      </span>
+      <span className="mt-2.5 block h-2 overflow-hidden rounded-full bg-surface-2" role="img"
+        aria-label={`${t('cards.used')}: ${Math.round(pct)}%`}>
+        <span className="block h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: card.color }} />
+      </span>
+      <span className="mt-2 flex items-baseline justify-between gap-3">
+        <span className="text-[13px] font-semibold text-muted">{t('home.availableLimit')}</span>
+        <Amount cents={card.available} currency={card.currency} locale={locale} className="text-[15px] font-extrabold" />
+      </span>
+      {invoice && status && (
+        <span className="mt-1.5 flex items-baseline justify-between gap-3">
+          <span className="flex min-w-0 items-center gap-1.5 text-[13px] font-semibold text-muted">
+            <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[status]}`} aria-hidden="true" />
+            <span className="truncate">{t('cards.currentInvoice')} · {t(`invoices.status.${status}`)}</span>
+          </span>
+          <Amount cents={invoice.total} currency={invoice.currency} locale={locale} className="shrink-0 text-[15px] font-bold" />
+        </span>
+      )}
+      {invoice && status && (
+        <span className="mt-0.5 block pl-3.5 text-[13px] font-medium text-muted">
+          {t('invoices.due', { date: dayMonth(invoice.due_date, locale) })}
+        </span>
+      )}
+    </Link>
+  )
+}
+
 function Loading() {
   return <div className="grid place-items-center py-8 text-primary"><Spinner /></div>
 }
@@ -48,11 +100,24 @@ export default function HomePage() {
   const month = monthOf(todayISO())
   const monthQuery = useTransactions(month)
   const recentQuery = useRecentTransactions()
+  const cardsQuery = useCards()
+  const invoicesQuery = useAllOpenInvoices()
   const monthTx = monthQuery.data ?? []
   const recent = recentQuery.data ?? []
 
   const categoriesById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories])
   const accountsById = useMemo(() => new Map((accountsQuery.data ?? []).map((a) => [a.id, a])), [accountsQuery.data])
+  const activeCards = useMemo(() => (cardsQuery.data ?? []).filter((c) => !c.archived), [cardsQuery.data])
+  const cardsById = useMemo(() => new Map((cardsQuery.data ?? []).map((c) => [c.id, c])), [cardsQuery.data])
+  const today = todayISO()
+  // Fatura atual de cada cartão: a mais antiga não paga com valor; senão a próxima a fechar.
+  const currentInvoice = useMemo(() => {
+    const open = invoicesQuery.data ?? []
+    return new Map(activeCards.map((c) => {
+      const own = open.filter((i) => i.card_id === c.id)
+      return [c.id, own.find((i) => i.total > 0) ?? own.find((i) => i.closing_date >= today)] as const
+    }))
+  }, [activeCards, invoicesQuery.data, today])
 
   if (accountsQuery.isPending) return <div className="min-h-[40vh]"><FullScreenSpinner /></div>
   if (accountsQuery.isError) return <QueryError onRetry={() => void accountsQuery.refetch()} />
@@ -185,7 +250,7 @@ export default function HomePage() {
           </Sheet>
 
           {/* Para onde foi o dinheiro */}
-          <Sheet title={t('home.byCategory')} className="lg:col-start-1 lg:row-span-2 lg:row-start-2">
+          <Sheet title={t('home.byCategory')} className="lg:col-start-1 lg:row-start-2">
             {monthQuery.isPending || categoriesQuery.isPending ? <Loading /> : monthQuery.isError || categoriesQuery.isError ? (
               <QueryError onRetry={() => { void monthQuery.refetch(); void categoriesQuery.refetch() }} />
             ) : top.length === 0 ? (
@@ -231,6 +296,22 @@ export default function HomePage() {
         </>
       )}
 
+      {/* Seus cartões */}
+      {activeCards.length > 0 && (
+        <Sheet title={t('home.cards')} className="lg:col-start-1 lg:row-start-3"
+          action={
+            <Link to="/cards" className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-primary hover:bg-primary-soft">
+              {t('home.seeAll')} <ChevronRight className="size-4" aria-hidden="true" />
+            </Link>
+          }>
+          <ul className="flex flex-col">
+            {activeCards.map((c) => (
+              <li key={c.id}><CardSummary card={c} invoice={currentInvoice.get(c.id)} today={today} locale={locale} /></li>
+            ))}
+          </ul>
+        </Sheet>
+      )}
+
       {/* Últimos lançamentos */}
       <Sheet title={t('home.recent')} className="lg:col-start-2 lg:row-start-3"
         action={
@@ -247,7 +328,8 @@ export default function HomePage() {
             {recent.slice(0, 6).map((tx) => (
               <li key={tx.id}>
                 <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
-                  account={tx.account_id ? accountsById.get(tx.account_id) : undefined} locale={locale} />
+                  account={tx.account_id ? accountsById.get(tx.account_id) : undefined}
+                  card={tx.card_id ? cardsById.get(tx.card_id) : undefined} locale={locale} />
               </li>
             ))}
           </ul>

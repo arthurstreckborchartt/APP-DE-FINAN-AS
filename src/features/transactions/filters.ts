@@ -3,6 +3,7 @@ import type { Transaction, TransactionKind } from './types'
 export type TransactionFilters = {
   kind?: TransactionKind
   accountId?: string
+  cardId?: string
   categoryId?: string
   search?: string
 }
@@ -20,6 +21,7 @@ export function filterTransactions<T extends Transaction>(
     (tx) =>
       (!filters.kind || tx.kind === filters.kind) &&
       (!filters.accountId || tx.account_id === filters.accountId) &&
+      (!filters.cardId || tx.card_id === filters.cardId) &&
       (!filters.categoryId || tx.category_id === filters.categoryId) &&
       (!q || normalize(tx.description).includes(q) || normalize(labelOf(tx.category_id)).includes(q)),
   )

@@ -8,12 +8,16 @@ import { categoryLabel } from '../categories/label'
 import type { Category } from '../categories/types'
 import type { Transaction } from './types'
 
-type Props = { transaction: Transaction; category?: Category; account?: Account; card?: Card; locale: string }
+/** Lançamento ou entrada do mês; `installment_number` só existe nas parcelas de cartão. */
+type Entry = Transaction & { installment_number?: number }
+
+type Props = { transaction: Entry; category?: Category; account?: Account; card?: Card; locale: string }
 
 export function TransactionRow({ transaction: tx, category, account, card, locale }: Props) {
   const { t } = useTranslation()
   const label = category ? categoryLabel(category, t) : ''
   const income = tx.kind === 'income'
+  const installment = tx.installments_count > 1
   return (
     <Link to={`/transactions/${tx.id}/edit`}
       className="group flex items-center gap-3.5 rounded-2xl px-3 py-3 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
@@ -24,6 +28,11 @@ export function TransactionRow({ transaction: tx, category, account, card, local
           {tx.description ? `${label} · ` : ''}{account?.name ?? card?.name ?? ''}
         </span>
       </span>
+      {installment && (
+        <span className="shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-extrabold text-muted num">
+          {t('transactions.installmentBadge', { n: tx.installment_number ?? 1, total: tx.installments_count })}
+        </span>
+      )}
       <Amount cents={tx.amount} currency={tx.currency} locale={locale} sign={tx.kind}
         className={`shrink-0 text-[15px] font-bold ${income ? 'text-success' : 'text-fg'}`} />
     </Link>

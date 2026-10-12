@@ -11,6 +11,7 @@ import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { formatDay, isMonth, monthOf, relativeDay, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { useAccounts } from '../accounts/api'
+import { useCards } from '../cards/api'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useTransactions } from './api'
@@ -29,13 +30,16 @@ export default function TransactionsPage() {
   const { data: transactions, isPending, isError, refetch } = useTransactions(month)
   const accountsQuery = useAccounts()
   const categoriesQuery = useCategories()
+  const cardsQuery = useCards()
   const accounts = accountsQuery.data ?? []
   const categories = categoriesQuery.data ?? []
-  const refsError = accountsQuery.isError || categoriesQuery.isError
+  const cards = cardsQuery.data ?? []
+  const refsError = accountsQuery.isError || categoriesQuery.isError || cardsQuery.isError
   const [filters, setFilters] = useState<TransactionFilters>(() => ({ categoryId: params.get('c') || undefined }))
 
   const categoriesById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories])
   const accountsById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts])
+  const cardsById = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards])
 
   const today = todayISO()
   const visible = filterTransactions(transactions ?? [], filters, (id) => {
@@ -44,7 +48,7 @@ export default function TransactionsPage() {
   })
   const groups = groupByDate(visible)
   const summary = summarizeByCurrency(visible)
-  const hasFilters = !!(filters.kind || filters.accountId || filters.categoryId || filters.search)
+  const hasFilters = !!(filters.kind || filters.accountId || filters.cardId || filters.categoryId || filters.search)
 
   const filtersPanel = (
     <div className="flex flex-col gap-3">
@@ -64,10 +68,24 @@ export default function TransactionsPage() {
         ]} />
       <div className="grid grid-cols-1 gap-2">
         <div className="relative min-w-0">
-          <select aria-label={t('transactions.account')} className={`${fieldClass} w-full pl-4 pr-10`} value={filters.accountId ?? ''}
-            onChange={(e) => setFilters({ ...filters, accountId: e.target.value || undefined })}>
+          <select aria-label={t('transactions.account')} className={`${fieldClass} w-full pl-4 pr-10`} value={filters.accountId ? `a:${filters.accountId}` : filters.cardId ? `c:${filters.cardId}` : ''}
+            onChange={(e) => {
+              const v = e.target.value
+              setFilters({
+                ...filters,
+                accountId: v.startsWith('a:') ? v.slice(2) : undefined,
+                cardId: v.startsWith('c:') ? v.slice(2) : undefined,
+              })
+            }}>
             <option value="">{t('transactions.allAccounts')}</option>
-            {accounts.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+            <optgroup label={t('transactions.sourceAccount')}>
+              {accounts.map((a) => <option key={a.id} value={`a:${a.id}`}>{a.name}</option>)}
+            </optgroup>
+            {cards.length > 0 && (
+              <optgroup label={t('transactions.sourceCard')}>
+                {cards.map((c) => <option key={c.id} value={`c:${c.id}`}>{c.name}</option>)}
+              </optgroup>
+            )}
           </select>
           <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted" aria-hidden="true" />
         </div>
@@ -155,7 +173,8 @@ export default function TransactionsPage() {
                     {g.items.map((tx) => (
                       <li key={tx.entry_id}>
                         <TransactionRow transaction={tx} category={categoriesById.get(tx.category_id)}
-                          account={tx.account_id ? accountsById.get(tx.account_id) : undefined} locale={locale} />
+                          account={tx.account_id ? accountsById.get(tx.account_id) : undefined}
+                          card={tx.card_id ? cardsById.get(tx.card_id) : undefined} locale={locale} />
                       </li>
                     ))}
                   </ul>

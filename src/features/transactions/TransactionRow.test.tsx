@@ -46,3 +46,14 @@ test('sem descrição usa o rótulo da categoria; com descrição, ela vira o t�
   expect(screen.getByText('Feira')).toBeTruthy()
   expect(screen.getByText(/Mercado ·/)).toBeTruthy()
 })
+
+test('parcela de cartão mostra o selo n/total e o nome do cartão', () => {
+  render(
+    <MemoryRouter>
+      <TransactionRow transaction={{ ...base, account_id: null, card_id: 'k1', installments_count: 6, installment_number: 3 }}
+        category={category} card={{ id: 'k1', name: 'Nubank' } as never} locale="pt-BR" />
+    </MemoryRouter>,
+  )
+  expect(screen.getByText('3/6')).toBeTruthy()
+  expect(screen.getByText('Nubank')).toBeTruthy()
+})

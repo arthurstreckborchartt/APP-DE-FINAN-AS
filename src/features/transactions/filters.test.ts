@@ -52,3 +52,8 @@ describe('summarizeByCurrency', () => {
     ])
   })
 })
+
+test('filtro por cartão', () => {
+  const list = [tx({ id: '1', account_id: null, card_id: 'k1' }), tx({ id: '2' })]
+  expect(filterTransactions(list, { cardId: 'k1' }, () => '').map((t) => t.id)).toEqual(['1'])
+})

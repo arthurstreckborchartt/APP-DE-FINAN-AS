@@ -47,8 +47,8 @@ const accounts = [
   acc('a-eur', 'Conta em Lisboa', 'checking', 'EUR', 120000, 98760),
 ]
 let n = 0
-const tx = (d, kind, amount, category_id, account_id, description = '', currency = 'BRL') => ({
-  id: `t${++n}`, user_id: USER_ID, kind, amount, currency, date: day(d), category_id, description, account_id, created_at: `2026-10-0${n % 9}T10:00:00Z`, updated_at: '',
+const tx = (d, kind, amount, category_id, account_id, description = '', currency = 'BRL', card_id = null, installments_count = 1) => ({
+  id: `t${++n}`, user_id: USER_ID, kind, amount, currency, date: day(d), category_id, description, account_id, card_id, installments_count, created_at: `2026-10-0${n % 9}T10:00:00Z`, updated_at: '',
 })
 const transactions = [
   tx(0, 'expense', 3850, 'c-food', 'a-nu', 'Almoço com a equipe'),
@@ -63,7 +63,16 @@ const transactions = [
   tx(6, 'expense', 12000, 'c-leis', 'a-cash', 'Cinema e jantar'),
   tx(6, 'income', 120000, 'c-free', 'a-nu', 'Projeto freelance'),
   tx(7, 'expense', 2450, 'c-food', 'a-eur', 'Pastéis de Belém', 'EUR'),
+  tx(0, 'expense', 120000, 'c-util', null, 'Notebook', 'BRL', 'k-nu', 6),
+  tx(1, 'expense', 8450, 'c-leis', null, 'Ingressos', 'BRL', 'k-iti', 1),
 ]
+// Entradas de competência do mês: lançamento em conta inteiro ou a parcela do mês no cartão.
+const monthEntries = transactions.map((t) => ({
+  month: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`, entry_id: `e-${t.id}`, transaction_id: t.id, user_id: USER_ID, kind: t.kind,
+  amount: t.installments_count > 1 ? Math.floor(t.amount / t.installments_count) : t.amount, currency: t.currency, date: t.date,
+  purchase_date: t.date, category_id: t.category_id, description: t.description, account_id: t.account_id, card_id: t.card_id,
+  installment_number: 1, installments_count: t.installments_count, total_amount: t.amount, created_at: t.created_at,
+}))
 
 const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
 const cards = [
@@ -99,6 +108,7 @@ async function mock(page) {
     if (path === '/rest/v1/accounts') return json(route, accounts.map(({ _balance, ...a }) => a))
     if (path === '/rest/v1/account_balances') return json(route, accounts.map((a) => ({ account_id: a.id, balance: a._balance })))
     if (path === '/rest/v1/categories') return json(route, categories)
+    if (path === '/rest/v1/month_entries') return json(route, monthEntries)
     if (path === '/rest/v1/transactions') {
       const id = url.searchParams.get('id')
       if (id) return json(route, single ? transactions.find((t) => `eq.${t.id}` === id) : [])
