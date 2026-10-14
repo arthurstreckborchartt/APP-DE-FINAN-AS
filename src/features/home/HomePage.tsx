@@ -8,7 +8,7 @@ import { dayLabels, MoneyLineChart } from '../../components/MoneyLineChart'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
-import { formatMonth, monthOf, todayISO } from '../../lib/dates'
+import { addDaysISO, dateFromISO, formatMonth, monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { invoiceStatus, type InvoiceStatus } from '../../lib/invoice'
 import { setHideValues, useHideValues } from '../../lib/privacy'
@@ -17,13 +17,16 @@ import { balancesByCurrency } from '../accounts/totals'
 import { useCards } from '../cards/api'
 import { useAllOpenInvoices, usePaidInvoicesInMonth } from '../cards/invoicesApi'
 import type { CardWithLimit, InvoiceSummary } from '../cards/types'
+import type { Category } from '../categories/types'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
+import { useRecurring } from '../recurring/api'
 import { useProfile } from '../profile/api'
 import { useRecentTransactions, useTransactions } from '../transactions/api'
 import { expensesByCategory, summarizeByCurrency } from '../transactions/filters'
 import { cumulative, dailyBalance, dailyExpenses, daysInMonth } from '../transactions/series'
 import { TransactionRow } from '../transactions/TransactionRow'
+import { buildUpcoming, type UpcomingItem } from './upcoming'
 
 const TOP_CATEGORIES = 5
 
@@ -44,9 +47,53 @@ const STATUS_DOT: Record<InvoiceStatus, string> = {
 }
 
 function dayMonth(iso: string, locale: string): string {
-  const [y, m, d] = iso.split('-').map(Number)
-  const withYear = y !== new Date().getFullYear()
-  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', ...(withYear ? { year: 'numeric' } : {}) }).format(new Date(y, m - 1, d))
+  const date = dateFromISO(iso)
+  const withYear = date.getFullYear() !== new Date().getFullYear()
+  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', ...(withYear ? { year: 'numeric' } : {}) }).format(date)
+}
+
+/** Linha de "Próximos vencimentos": recorrente ou fatura de cartão. */
+function UpcomingRow({ item, category, card, today, locale }: {
+  item: UpcomingItem
+  category?: Category
+  card?: CardWithLimit
+  today: string
+  locale: string
+}) {
+  const { t } = useTranslation()
+  const overdue = item.type === 'invoice' && item.overdue
+  const when = item.date === today ? t('transactions.today')
+    : item.date === addDaysISO(today, 1) ? t('common.tomorrow')
+    : dayMonth(item.date, locale)
+  const rowClass = '-mx-3 flex items-center gap-3.5 rounded-2xl px-3 py-2.5 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary'
+  const dateClass = `block truncate text-[13px] font-medium ${overdue ? 'font-bold text-danger' : 'text-muted'}`
+  if (item.type === 'recurring') {
+    const r = item.recurring
+    return (
+      <Link to="/recurring" className={rowClass}>
+        {category && <CategoryIcon icon={category.icon} color={category.color} />}
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[15px] font-bold tracking-[-0.01em]">{r.description || (category ? categoryLabel(category, t) : '')}</span>
+          <span className={dateClass}>{when}</span>
+        </span>
+        <Amount cents={r.amount} currency={r.currency} locale={locale} sign={r.kind}
+          className={`shrink-0 whitespace-nowrap text-[15px] font-bold ${r.kind === 'income' ? 'text-success' : 'text-fg'}`} />
+      </Link>
+    )
+  }
+  const inv = item.invoice
+  return (
+    <Link to={`/cards/${inv.card_id}`} className={rowClass}>
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-surface-2" aria-hidden="true">
+        <span className="size-3.5 rounded-full" style={{ backgroundColor: card?.color }} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[15px] font-bold tracking-[-0.01em]">{t('home.invoiceOf', { card: card?.name ?? '' })}</span>
+        <span className={dateClass}>{overdue ? t('invoices.wasDue', { date: dayMonth(item.date, locale) }) : when}</span>
+      </span>
+      <Amount cents={inv.total} currency={inv.currency} locale={locale} className="shrink-0 whitespace-nowrap text-[15px] font-bold" />
+    </Link>
+  )
 }
 
 /** Cartão compacto no Início: disponível com barra e a fatura atual. */
@@ -106,6 +153,7 @@ export default function HomePage() {
   const cardsQuery = useCards()
   const invoicesQuery = useAllOpenInvoices()
   const paidQuery = usePaidInvoicesInMonth(month)
+  const recurringQuery = useRecurring()
   const monthTx = monthQuery.data ?? []
   const recent = recentQuery.data ?? []
 
@@ -122,6 +170,11 @@ export default function HomePage() {
       return [c.id, own.find((i) => i.total > 0) ?? own.find((i) => i.closing_date >= today)] as const
     }))
   }, [activeCards, invoicesQuery.data, today])
+
+  const upcoming = useMemo(
+    () => buildUpcoming(recurringQuery.data ?? [], invoicesQuery.data ?? [], today),
+    [recurringQuery.data, invoicesQuery.data, today],
+  )
 
   if (accountsQuery.isPending) return <div className="min-h-[40vh]"><FullScreenSpinner /></div>
   if (accountsQuery.isError) return <QueryError onRetry={() => void accountsQuery.refetch()} />
@@ -357,8 +410,26 @@ export default function HomePage() {
       </Sheet>
         </>
       )}
+      {/* Próximos vencimentos */}
+      <Sheet title={t('home.upcoming')} className="max-lg:order-6">
+        {recurringQuery.isPending || invoicesQuery.isPending ? <Loading /> : recurringQuery.isError || invoicesQuery.isError ? (
+          <QueryError onRetry={() => { void recurringQuery.refetch(); void invoicesQuery.refetch() }} />
+        ) : upcoming.length === 0 ? (
+          <p className="py-4 text-sm font-medium text-muted">{t('home.upcomingEmpty')}</p>
+        ) : (
+          <ul className="flex flex-col">
+            {upcoming.map((item) => (
+              <li key={item.key}>
+                <UpcomingRow item={item} today={today} locale={locale}
+                  category={item.type === 'recurring' ? categoriesById.get(item.recurring.category_id) : undefined}
+                  card={item.type === 'invoice' ? cardsById.get(item.invoice.card_id) : undefined} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Sheet>
       {/* Últimos lançamentos */}
-      <Sheet title={t('home.recent')} className="max-lg:order-6"
+      <Sheet title={t('home.recent')} className="max-lg:order-7"
         action={
           <Link to="/transactions" className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-primary hover:bg-primary-soft">
             {t('home.seeAll')} <ChevronRight className="size-4" aria-hidden="true" />

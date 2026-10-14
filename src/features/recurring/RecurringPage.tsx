@@ -9,6 +9,7 @@ import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { isRpcHint } from '../../lib/db-errors'
+import { dateFromISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { useAccounts } from '../accounts/api'
 import { useCards } from '../cards/api'
@@ -17,11 +18,6 @@ import { categoryLabel } from '../categories/label'
 import { useCreateRecurring, useDeleteRecurring, useRecurring, useUpdateRecurring } from './api'
 import { RecurringForm } from './RecurringForm'
 import type { Recurring, RecurringInput } from './types'
-
-const dateOf = (iso: string) => {
-  const [y, m, d] = iso.split('-').map(Number)
-  return new Date(y, m - 1, d)
-}
 
 export default function RecurringPage() {
   const { t, i18n } = useTranslation()
@@ -50,7 +46,7 @@ export default function RecurringPage() {
   const sorted = [...items.filter((r) => !r.paused), ...items.filter((r) => r.paused)]
 
   function frequencyText(r: Recurring) {
-    const start = dateOf(r.start_date)
+    const start = dateFromISO(r.start_date)
     if (r.frequency === 'weekly') {
       return t('recurring.everyWeek', { weekday: new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(start) })
     }
@@ -59,7 +55,7 @@ export default function RecurringPage() {
   }
 
   function nextText(r: Recurring) {
-    const d = dateOf(r.next_date)
+    const d = dateFromISO(r.next_date)
     const date = new Intl.DateTimeFormat(locale, {
       day: 'numeric', month: 'short', ...(d.getFullYear() !== thisYear ? { year: 'numeric' as const } : {}),
     }).format(d)

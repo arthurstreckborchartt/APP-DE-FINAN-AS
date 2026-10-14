@@ -45,3 +45,15 @@ export function relativeDay(dateISO: string, today: string): 'today' | 'yesterda
   const [y, m, d] = parts(today)
   return dateISO === todayISO(new Date(y, m - 1, d - 1)) ? 'yesterday' : null
 }
+
+/** Data local (meia-noite) a partir de "YYYY-MM-DD", sem passar por UTC. */
+export function dateFromISO(dateISO: string): Date {
+  const [y, m, d] = parts(dateISO)
+  return new Date(y, m - 1, d)
+}
+
+/** "YYYY-MM-DD" daqui a `days` dias (ou antes, se negativo). */
+export function addDaysISO(dateISO: string, days: number): string {
+  const [y, m, d] = parts(dateISO)
+  return todayISO(new Date(y, m - 1, d + days))
+}
