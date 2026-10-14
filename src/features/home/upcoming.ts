@@ -21,6 +21,8 @@ export function buildUpcoming(
   const items: UpcomingItem[] = []
   for (const r of recurring) {
     for (const date of upcomingOccurrences(r, until, limit)) {
+      // Datas passadas ainda não geradas (antes da geração ao abrir) não são vencimentos futuros.
+      if (date < today) continue
       items.push({ type: 'recurring', key: `r-${r.id}-${date}`, date, recurring: r })
     }
   }

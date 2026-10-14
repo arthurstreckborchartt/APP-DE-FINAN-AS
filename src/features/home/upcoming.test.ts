@@ -31,6 +31,11 @@ describe('buildUpcoming', () => {
     expect(out[0]).toMatchObject({ type: 'invoice', overdue: true })
   })
 
+  it('ignora ocorrências recorrentes já passadas', () => {
+    const weekly = rec('w', '2026-10-06', { frequency: 'weekly', end_date: null })
+    expect(buildUpcoming([weekly], [], today)[0].date).toBe('2026-10-13')
+  })
+
   it('limita a 6 itens', () => {
     const weekly = rec('w', '2026-10-13', { frequency: 'weekly', end_date: null })
     expect(buildUpcoming([weekly, rec('m', '2026-10-14')], [inv('f', '2026-10-15', 1)], today)).toHaveLength(6)
