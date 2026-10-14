@@ -365,6 +365,7 @@
     "activeInvites": "Enlaces activos",
     "revoke": "Revocar",
     "newInvite": "Generar nuevo enlace",
+    "revokeConfirm": "¿Revocar este enlace? Quien aún no haya entrado ya no podrá usarlo.",
     "settings": "Ajustes del grupo",
     "save": "Guardar",
     "delete": "Eliminar grupo",

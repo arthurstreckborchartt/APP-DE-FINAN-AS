@@ -112,6 +112,38 @@ const groups = [
   { id: 'g-lis', name: 'Viagem Lisboa', currency: 'EUR', icon: 'plane', role: 'member', members: 4, created_at: '2026-10-02T00:00:00Z' },
 ]
 
+const BRUNO = '00000000-0000-4000-8000-000000000002'
+const CARLA = '00000000-0000-4000-8000-000000000003'
+const groupMembers = [
+  { user_id: USER_ID, name: 'Ana Souza', role: 'admin', joined_at: '2026-10-01T00:00:00Z', left_at: null },
+  { user_id: BRUNO, name: 'Bruno Lima', role: 'member', joined_at: '2026-10-02T00:00:00Z', left_at: null },
+  { user_id: CARLA, name: 'Carla Dias', role: 'member', joined_at: '2026-10-02T00:00:00Z', left_at: day(2) + 'T12:00:00Z' },
+]
+let gn = 0
+const gEntry = (user_id, d, amount, catId, description = '', extra = {}) => {
+  const c = categories.find((x) => x.id === catId)
+  gn += 1
+  return {
+    entry_id: `ge${gn}`, transaction_id: user_id === USER_ID ? `t${gn}` : `x${gn}`, user_id, kind: c.kind, amount, currency: 'BRL', date: day(d),
+    category_id: c.id, category_name: c.name, category_key: c.i18n_key, category_icon: c.icon, category_color: c.color, description,
+    is_card: false, installment_number: 1, installments_count: 1, created_at: `2026-10-0${gn % 9}T10:00:00Z`, ...extra,
+  }
+}
+const groupEntries = [
+  gEntry(USER_ID, 0, 21437, 'c-groc', 'Mercado do mês'),
+  gEntry(BRUNO, 0, 15600, 'c-util', 'Conta de luz'),
+  gEntry(USER_ID, 1, 20000, 'c-util', 'Geladeira nova', { is_card: true, installment_number: 2, installments_count: 10 }),
+  gEntry(BRUNO, 1, 9800, 'c-food', 'Pizza de sexta'),
+  gEntry(CARLA, 3, 6400, 'c-groc', 'Feira'),
+  gEntry(USER_ID, 3, 180000, 'c-home', 'Aluguel'),
+  gEntry(BRUNO, 4, 11990, 'c-util', 'Internet', { is_card: true }),
+  gEntry(USER_ID, 5, 1290, 'c-cafe', ''),
+  gEntry(BRUNO, 6, 4500, 'c-tran', 'Uber da feira'),
+]
+const groupInvites = [
+  { id: 'gi1', group_id: 'g-casa', token: 'k3f9Qx2LmP7aZt0R', expires_at: new Date(Date.now() + 6 * 864e5).toISOString(), revoked_at: null, created_at: new Date(Date.now() - 864e5).toISOString() },
+]
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -137,6 +169,9 @@ async function mock(page) {
       return json(route, cid ? invoices.filter((i) => `eq.${i.card_id}` === cid) : invoices.filter((i) => !i.paid_at))
     }
     if (path === '/rest/v1/rpc/my_groups') return json(route, groups)
+    if (path === '/rest/v1/rpc/group_member_list') return json(route, groupMembers)
+    if (path === '/rest/v1/rpc/group_month_entries') return json(route, groupEntries)
+    if (path === '/rest/v1/group_invites') return json(route, groupInvites)
     if (path === '/rest/v1/recurring') return json(route, recurring)
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
@@ -145,7 +180,7 @@ async function mock(page) {
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['groups', '/groups'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')
