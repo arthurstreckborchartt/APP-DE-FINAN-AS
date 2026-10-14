@@ -364,7 +364,102 @@ begin
   if e <> '42501:not_admin' then raise exception 'FAIL: membro removeu admin (%)', e; end if;
   e := pg_temp.err(format($q$select public.transfer_admin(%L, '00000000-0000-0000-0000-0000000000b5')$q$, g));
   if e <> '42501:not_admin' then raise exception 'FAIL: membro transferiu admin (%)', e; end if;
+
+  -- Recorrente de B no grupo (para conferir a remoção)
+  with x as (
+    insert into public.recurring (kind, amount, category_id, account_id, frequency, start_date, group_id)
+      values ('expense', 300, (select v from ids where k = 'cat_b'), (select v from ids where k = 'acc_b'),
+              'monthly', current_date + 400, g)
+      returning id)
+  insert into ids select 'rec_b3', x.id from x;
 end $$;
+
+------------------------------------------------------------
+-- Removido pelo admin só volta com link novo
+------------------------------------------------------------
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a5","role":"authenticated"}';
+do $$
+declare
+  g uuid;
+begin
+  select v into g from ids where k = 'g';
+  perform public.remove_member(g, '00000000-0000-0000-0000-0000000000b5');
+  if exists (select 1 from public.group_member_list(g) m
+             where m.user_id = '00000000-0000-0000-0000-0000000000b5' and m.left_at is null) then
+    raise exception 'FAIL: B continua ativo após remoção';
+  end if;
+end $$;
+
+reset role;
+do $$
+declare
+  g uuid := (select v from ids where k = 'g');
+begin
+  if not (select removed from public.group_members
+          where group_id = g and user_id = '00000000-0000-0000-0000-0000000000b5') then
+    raise exception 'FAIL: remoção não marcou removed';
+  end if;
+  if (select removed from public.group_members
+      where group_id = g and user_id = '00000000-0000-0000-0000-0000000000a5') then
+    raise exception 'FAIL: admin marcado como removido';
+  end if;
+  -- Tudo roda na mesma transação (now() fixo): afasta no tempo o convite antigo e a remoção,
+  -- para que um convite criado agora seja "depois da remoção".
+  update public.group_invites set created_at = now() - interval '2 hours' where id = (select v from ids where k = 'inv');
+  update public.group_members set left_at = now() - interval '1 hour'
+    where group_id = g and user_id = '00000000-0000-0000-0000-0000000000b5';
+end $$;
+set local role authenticated;
+
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b5","role":"authenticated"}';
+do $$
+declare
+  g uuid; tok text; e text; r record;
+begin
+  select v into g from ids where k = 'g';
+  select v into tok from toks where k = 'inv';
+
+  -- Recorrente do removido sai do grupo
+  if (select group_id from public.recurring where id = (select v from ids where k = 'rec_b3')) is not null then
+    raise exception 'FAIL: recorrente do removido continua no grupo';
+  end if;
+
+  e := pg_temp.err(format($q$select public.join_group(%L)$q$, tok));
+  if e <> '23514:removed_from_group' then raise exception 'FAIL: removido voltou com link antigo (%)', e; end if;
+  select * into r from public.group_invite_preview(tok);
+  if r.status is distinct from 'removed' then raise exception 'FAIL: preview do removido %', r.status; end if;
+end $$;
+
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a5","role":"authenticated"}';
+do $$
+declare
+  inv3 public.group_invites;
+begin
+  inv3 := public.create_group_invite((select v from ids where k = 'g'));
+  insert into toks values ('inv3', inv3.token);
+end $$;
+
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b5","role":"authenticated"}';
+do $$
+declare
+  g uuid; r record;
+begin
+  select v into g from ids where k = 'g';
+  select * into r from public.group_invite_preview((select v from toks where k = 'inv3'));
+  if r.status is distinct from 'valid' then raise exception 'FAIL: preview do link novo para removido %', r.status; end if;
+  if public.join_group((select v from toks where k = 'inv3')) <> g then raise exception 'FAIL: removido não voltou com link novo'; end if;
+end $$;
+
+reset role;
+do $$
+begin
+  if exists (select 1 from public.group_members
+             where group_id = (select v from ids where k = 'g') and user_id = '00000000-0000-0000-0000-0000000000b5'
+               and (removed or left_at is not null or role <> 'member')) then
+    raise exception 'FAIL: B voltou ainda marcado como removido';
+  end if;
+end $$;
+set local role authenticated;
 
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a5","role":"authenticated"}';
 do $$
@@ -426,7 +521,7 @@ begin
   -- Admin renomeia
   update public.groups set name = 'Casa nova', icon = 'house' where id = g;
   if not found then raise exception 'FAIL: admin não renomeou o grupo'; end if;
-  if (select count(*) from public.group_invites) <> 1 then raise exception 'FAIL: novo admin não vê convites'; end if;
+  if (select count(*) from public.group_invites) <> 2 then raise exception 'FAIL: novo admin não vê convites'; end if;
 
   perform public.revoke_group_invite((select v from ids where k = 'inv'));
   if (select revoked_at from public.group_invites where id = (select v from ids where k = 'inv')) is null then
@@ -463,6 +558,24 @@ begin
   if e <> '23514:invite_invalid' then raise exception 'FAIL: convite inexistente (%)', e; end if;
   if (select count(*) from public.group_invite_preview('nao-existe')) <> 0 then
     raise exception 'FAIL: preview de convite inexistente';
+  end if;
+end $$;
+
+-- Membro ativo com link revogado/expirado: volta para o grupo sem erro
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b5","role":"authenticated"}';
+do $$
+declare
+  g uuid; e text;
+begin
+  select v into g from ids where k = 'g';
+  if public.join_group((select v from toks where k = 'inv')) is distinct from g then
+    raise exception 'FAIL: membro com link revogado';
+  end if;
+  if public.join_group((select v from toks where k = 'inv2')) is distinct from g then
+    raise exception 'FAIL: membro com link expirado';
+  end if;
+  if (select status from public.group_invite_preview((select v from toks where k = 'inv2'))) <> 'member' then
+    raise exception 'FAIL: preview de membro com link expirado';
   end if;
 end $$;
 
@@ -504,6 +617,66 @@ begin
       values ('expense', 700, (select v from ids where k = 'cat_b'), acc, 'monthly', current_date + 400, g)
       returning id)
   insert into ids select 'rec_b2', x.id from x;
+end $$;
+
+-- Excluir recorrente cuja compra gerada está em fatura paga
+do $$
+declare
+  card uuid; acc uuid; rec uuid; tx uuid; inv uuid; n int;
+begin
+  select v into card from ids where k = 'card_b';
+  select v into acc from ids where k = 'acc_b';
+  insert into public.recurring (kind, amount, category_id, description, card_id, frequency, start_date)
+    values ('expense', 4000, (select v from ids where k = 'cat_b'), 'Assinatura', card, 'monthly', current_date - 2)
+    returning id into rec;
+  n := public.generate_my_recurring();
+  select id into tx from public.transactions where recurring_id = rec;
+  if tx is null then raise exception 'FAIL: recorrente no cartão não gerou'; end if;
+  select invoice_id into inv from public.installments where transaction_id = tx;
+  perform public.pay_invoice(inv, acc);
+
+  delete from public.recurring where id = rec;
+  if not found then raise exception 'FAIL: não excluiu a recorrente'; end if;
+  if (select recurring_id from public.transactions where id = tx) is not null
+     or not exists (select 1 from public.transactions where id = tx) then
+    raise exception 'FAIL: compra da recorrente excluída';
+  end if;
+end $$;
+
+-- Limite de 50 membros ativos
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b5","role":"authenticated"}';
+do $$
+declare
+  inv4 public.group_invites;
+begin
+  inv4 := public.create_group_invite((select v from ids where k = 'g'));
+  insert into toks values ('inv4', inv4.token);
+end $$;
+
+reset role;
+do $$
+declare
+  g uuid := (select v from ids where k = 'g');
+  n int;
+begin
+  select count(*) into n from public.group_members where group_id = g and left_at is null;
+  with u as (
+    insert into auth.users (id, email)
+      select gen_random_uuid(), 'rls-grp-fill-' || s || '@test.invalid' from generate_series(1, 50 - n) s
+      returning id)
+  insert into public.group_members (group_id, user_id) select g, u.id from u;
+  if (select count(*) from public.group_members where group_id = g and left_at is null) <> 50 then
+    raise exception 'FAIL: preenchimento do grupo';
+  end if;
+end $$;
+set local role authenticated;
+
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a5","role":"authenticated"}';
+do $$
+declare e text;
+begin
+  e := pg_temp.err(format($q$select public.join_group(%L)$q$, (select v from toks where k = 'inv4')));
+  if e <> '23514:group_full' then raise exception 'FAIL: entrou em grupo cheio (%)', e; end if;
 end $$;
 
 ------------------------------------------------------------

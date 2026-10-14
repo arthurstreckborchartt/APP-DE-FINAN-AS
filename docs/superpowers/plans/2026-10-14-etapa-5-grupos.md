@@ -17,6 +17,7 @@
 - Marcar lançamento/recorrente para um grupo exige ser membro ativo (checado ao inserir ou trocar de grupo) e moeda igual à do grupo (checada ao inserir, trocar de grupo ou trocar de origem). Hints: `not_group_member`, `group_currency`.
 - Um único administrador por grupo. Admin não sai (hint `admin_must_transfer`): exclui o grupo ou passa a administração. Admin remove membros (não a si mesmo: `cannot_remove_self`) e gerencia convites (`not_admin` para os demais). Máximo de 50 membros ativos (`group_full`).
 - Convite: link `<origem>/join/<token>`, vale 7 dias, reutilizável até expirar ou ser revogado. Hints: `invite_invalid`, `invite_expired`.
+- Membro removido pelo admin só volta com um link criado depois da remoção (hint `removed_from_group`; preview com status `removed`). Quem saiu por conta própria volta com qualquer link válido. Membro ativo que abre link antigo (expirado/revogado) apenas volta para o grupo.
 - Quem sai (ou é removido) mantém seus lançamentos já marcados no histórico do grupo; suas recorrentes marcadas para o grupo deixam de ser do grupo (`group_id` → nulo). Excluir o grupo deixa `group_id` nulo nos lançamentos e recorrentes (o dinheiro de cada um não muda).
 - Mudar só `group_id` de um lançamento nunca regenera parcelas nem esbarra no bloqueio de fatura paga.
 - Competência no grupo igual à pessoal: compra no cartão conta parcela a parcela (`month_entries`).
@@ -32,7 +33,7 @@
 **Interfaces (produz):**
 - Tabelas `groups(id, name, currency, icon, created_by, created_at, updated_at)` (cliente só atualiza `name, icon` se admin; exclui se admin), `group_members(group_id, user_id, role, joined_at, left_at)` (só leitura via RPC), `group_invites(id, group_id, token, created_by, expires_at, revoked_at, created_at)` (admin lê).
 - `transactions.group_id`, `recurring.group_id` (`uuid null`, graváveis no insert/update). `month_entries` ganha `group_id` no fim.
-- RPCs (todas para `authenticated`): `create_group(p_name text, p_currency text, p_icon text) returns uuid`; `my_groups() returns table(id, name, currency, icon, role, members int, created_at)`; `group_member_list(p_group uuid) returns table(user_id, name, role, joined_at, left_at)`; `group_month_entries(p_group uuid, p_month date) returns table(entry_id, transaction_id, user_id, kind, amount, currency, date, category_id, category_name, category_key, category_icon, category_color, description, is_card, installment_number, installments_count, created_at)`; `create_group_invite(p_group uuid) returns public.group_invites`; `revoke_group_invite(p_invite uuid) returns void`; `group_invite_preview(p_token text) returns table(group_id, name, icon, currency, members int, expires_at, status text)` com `status in ('valid','expired','member')` (sem linha = convite inexistente); `join_group(p_token text) returns uuid`; `leave_group(p_group uuid) returns void`; `remove_member(p_group uuid, p_user uuid) returns void`; `transfer_admin(p_group uuid, p_user uuid) returns void`.
+- RPCs (todas para `authenticated`): `create_group(p_name text, p_currency text, p_icon text) returns uuid`; `my_groups() returns table(id, name, currency, icon, role, members int, created_at)`; `group_member_list(p_group uuid) returns table(user_id, name, role, joined_at, left_at)`; `group_month_entries(p_group uuid, p_month date) returns table(entry_id, transaction_id, user_id, kind, amount, currency, date, category_id, category_name, category_key, category_icon, category_color, description, is_card, installment_number, installments_count, created_at)`; `create_group_invite(p_group uuid) returns public.group_invites`; `revoke_group_invite(p_invite uuid) returns void`; `group_invite_preview(p_token text) returns table(group_id, name, icon, currency, members int, expires_at, status text)` com `status in ('valid','expired','removed','member')` (sem linha = convite inexistente); `join_group(p_token text) returns uuid`; `leave_group(p_group uuid) returns void`; `remove_member(p_group uuid, p_user uuid) returns void`; `transfer_admin(p_group uuid, p_user uuid) returns void`.
 - Auxiliares: `is_group_member(uuid) → boolean`, `is_group_admin(uuid) → boolean`, `group_currency(uuid) → char(3)` (todas `security definer`, `stable`, executáveis por `authenticated`).
 
 - [ ] **Step 1: Migration** (escrever exatamente; corrigir só bugs encontrados no dry-run, registrando no relatório):
@@ -61,6 +62,7 @@ create table public.group_members (
   role text not null default 'member' check (role in ('admin', 'member')),
   joined_at timestamptz not null default now(),
   left_at timestamptz,
+  removed boolean not null default false,
   primary key (group_id, user_id),
   constraint group_members_admin_active check (role = 'member' or left_at is null)
 );
@@ -443,24 +445,30 @@ begin
   if v_uid is null then
     raise exception 'sem usuário' using errcode = '42501';
   end if;
-  select i.group_id, i.expires_at, i.revoked_at into v from public.group_invites i where i.token = p_token;
+  select i.group_id, i.expires_at, i.revoked_at, i.created_at into v from public.group_invites i where i.token = p_token;
   if not found then
     raise exception 'convite inválido' using errcode = '23514', hint = 'invite_invalid';
+  end if;
+  -- quem já é membro ativo volta para o grupo, mesmo com link antigo
+  if exists (select 1 from public.group_members
+             where group_id = v.group_id and user_id = v_uid and left_at is null) then
+    return v.group_id;
   end if;
   if v.revoked_at is not null or v.expires_at <= now() then
     raise exception 'convite expirado' using errcode = '23514', hint = 'invite_expired';
   end if;
   -- trava o grupo: contagem de membros consistente
   perform 1 from public.groups where id = v.group_id for update;
+  -- removido pelo admin só volta com link criado depois da remoção
   if exists (select 1 from public.group_members
-             where group_id = v.group_id and user_id = v_uid and left_at is null) then
-    return v.group_id;
+             where group_id = v.group_id and user_id = v_uid and removed and v.created_at <= left_at) then
+    raise exception 'removido do grupo' using errcode = '23514', hint = 'removed_from_group';
   end if;
   if (select count(*) from public.group_members where group_id = v.group_id and left_at is null) >= 50 then
     raise exception 'grupo cheio' using errcode = '23514', hint = 'group_full';
   end if;
   insert into public.group_members (group_id, user_id, role) values (v.group_id, v_uid, 'member')
-  on conflict (group_id, user_id) do update set left_at = null, joined_at = now(), role = 'member';
+  on conflict (group_id, user_id) do update set left_at = null, removed = false, joined_at = now(), role = 'member';
   return v.group_id;
 end;
 $$;
@@ -495,7 +503,7 @@ begin
   if p_user = auth.uid() then
     raise exception 'não pode remover a si mesmo' using errcode = '23514', hint = 'cannot_remove_self';
   end if;
-  update public.group_members set left_at = now()
+  update public.group_members set left_at = now(), removed = true
     where group_id = p_group and user_id = p_user and left_at is null;
   if not found then
     raise exception 'não é membro' using errcode = '23514', hint = 'not_member';
@@ -579,6 +587,9 @@ as $$
       when exists (select 1 from public.group_members m
                    where m.group_id = g.id and m.user_id = (select auth.uid()) and m.left_at is null) then 'member'
       when i.revoked_at is not null or i.expires_at <= now() then 'expired'
+      when exists (select 1 from public.group_members m
+                   where m.group_id = g.id and m.user_id = (select auth.uid()) and m.removed
+                     and i.created_at <= m.left_at) then 'removed'
       else 'valid'
     end
   from public.group_invites i

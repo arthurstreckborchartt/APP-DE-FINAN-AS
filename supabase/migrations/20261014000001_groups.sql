@@ -21,6 +21,7 @@ create table public.group_members (
   role text not null default 'member' check (role in ('admin', 'member')),
   joined_at timestamptz not null default now(),
   left_at timestamptz,
+  removed boolean not null default false,
   primary key (group_id, user_id),
   constraint group_members_admin_active check (role = 'member' or left_at is null)
 );
@@ -403,24 +404,30 @@ begin
   if v_uid is null then
     raise exception 'sem usuário' using errcode = '42501';
   end if;
-  select i.group_id, i.expires_at, i.revoked_at into v from public.group_invites i where i.token = p_token;
+  select i.group_id, i.expires_at, i.revoked_at, i.created_at into v from public.group_invites i where i.token = p_token;
   if not found then
     raise exception 'convite inválido' using errcode = '23514', hint = 'invite_invalid';
+  end if;
+  -- quem já é membro ativo volta para o grupo, mesmo com link antigo
+  if exists (select 1 from public.group_members
+             where group_id = v.group_id and user_id = v_uid and left_at is null) then
+    return v.group_id;
   end if;
   if v.revoked_at is not null or v.expires_at <= now() then
     raise exception 'convite expirado' using errcode = '23514', hint = 'invite_expired';
   end if;
   -- trava o grupo: contagem de membros consistente
   perform 1 from public.groups where id = v.group_id for update;
+  -- removido pelo admin só volta com link criado depois da remoção
   if exists (select 1 from public.group_members
-             where group_id = v.group_id and user_id = v_uid and left_at is null) then
-    return v.group_id;
+             where group_id = v.group_id and user_id = v_uid and removed and v.created_at <= left_at) then
+    raise exception 'removido do grupo' using errcode = '23514', hint = 'removed_from_group';
   end if;
   if (select count(*) from public.group_members where group_id = v.group_id and left_at is null) >= 50 then
     raise exception 'grupo cheio' using errcode = '23514', hint = 'group_full';
   end if;
   insert into public.group_members (group_id, user_id, role) values (v.group_id, v_uid, 'member')
-  on conflict (group_id, user_id) do update set left_at = null, joined_at = now(), role = 'member';
+  on conflict (group_id, user_id) do update set left_at = null, removed = false, joined_at = now(), role = 'member';
   return v.group_id;
 end;
 $$;
@@ -455,7 +462,7 @@ begin
   if p_user = auth.uid() then
     raise exception 'não pode remover a si mesmo' using errcode = '23514', hint = 'cannot_remove_self';
   end if;
-  update public.group_members set left_at = now()
+  update public.group_members set left_at = now(), removed = true
     where group_id = p_group and user_id = p_user and left_at is null;
   if not found then
     raise exception 'não é membro' using errcode = '23514', hint = 'not_member';
@@ -539,6 +546,9 @@ as $$
       when exists (select 1 from public.group_members m
                    where m.group_id = g.id and m.user_id = (select auth.uid()) and m.left_at is null) then 'member'
       when i.revoked_at is not null or i.expires_at <= now() then 'expired'
+      when exists (select 1 from public.group_members m
+                   where m.group_id = g.id and m.user_id = (select auth.uid()) and m.removed
+                     and i.created_at <= m.left_at) then 'removed'
       else 'valid'
     end
   from public.group_invites i
