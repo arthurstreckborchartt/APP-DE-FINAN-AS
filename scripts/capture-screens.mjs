@@ -96,6 +96,17 @@ const installments = [
   { id: 'n4', number: 2, amount: 12000, transaction: { id: 't10', description: 'Cinema e jantar', category_id: 'c-leis', installments_count: 3, date: day(20), amount: 36000 } },
 ]
 
+const rec = (id, kind, amount, category_id, description, frequency, start, next, extra = {}) => ({
+  id, user_id: USER_ID, kind, amount, currency: 'BRL', category_id, description, account_id: 'a-nu', card_id: null,
+  frequency, start_date: start, end_date: null, next_date: next, paused: false, created_at: '', updated_at: '', ...extra,
+})
+const recurring = [
+  rec('r1', 'expense', 180000, 'c-home', 'Aluguel', 'monthly', '2026-01-05', `${ym(1)}-05`),
+  rec('r2', 'income', 650000, 'c-sal', 'Salário', 'monthly', '2026-01-28', `${ym(0)}-28`),
+  rec('r3', 'expense', 3990, 'c-subs', 'Streaming', 'weekly', '2026-09-14', day(-3)),
+  rec('r4', 'expense', 29900, 'c-heal', 'Academia', 'monthly', '2026-02-10', `${ym(0)}-10`, { paused: true }),
+]
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -120,6 +131,7 @@ async function mock(page) {
       const cid = url.searchParams.get('card_id')
       return json(route, cid ? invoices.filter((i) => `eq.${i.card_id}` === cid) : invoices.filter((i) => !i.paid_at))
     }
+    if (path === '/rest/v1/recurring') return json(route, recurring)
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
   })
@@ -127,7 +139,7 @@ async function mock(page) {
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

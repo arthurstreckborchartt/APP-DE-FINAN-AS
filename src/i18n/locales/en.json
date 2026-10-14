@@ -21,7 +21,8 @@
     "create": "Create",
     "all": "All",
     "default": "Default",
-    "other": "Other"
+    "other": "Other",
+    "tomorrow": "Tomorrow"
   },
   "nav": {
     "home": "Home",
@@ -239,7 +240,10 @@
     "cards": "Your cards",
     "availableLimit": "Available limit",
     "balanceTrend": "Balance",
-    "spentSoFar": "Spending so far this month"
+    "spentSoFar": "Spending so far this month",
+    "upcoming": "Upcoming",
+    "upcomingEmpty": "Nothing due in the next 30 days.",
+    "invoiceOf": "{{card}} bill"
   },
   "cards": {
     "title": "Cards",
@@ -294,5 +298,34 @@
       "archivedAccount": "This account is archived.",
       "emptyInvoice": "This invoice has no purchases."
     }
+  },
+  "recurring": {
+    "title": "Recurring",
+    "new": "New recurring",
+    "edit": "Edit recurring",
+    "subtitle": "Repeating income and expenses are recorded automatically.",
+    "frequency": "Frequency",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "everyWeek": "Every {{weekday}}",
+    "everyMonth": "Monthly on day {{day}}",
+    "everyYear": "Every year on {{date}}",
+    "startDate": "Starts on",
+    "endDate": "Ends on (optional)",
+    "endBeforeStart": "The end must be after the start.",
+    "next": "Next: {{date}}",
+    "paused": "Paused",
+    "pause": "Pause",
+    "resume": "Resume",
+    "ended": "Ended",
+    "amount": "Amount",
+    "invalidAmount": "Enter an amount greater than zero.",
+    "empty": "No recurring items yet",
+    "emptyBody": "Add salary, rent, subscriptions and fixed bills to record them automatically.",
+    "editHint": "Changes apply to upcoming entries; past ones stay as they are.",
+    "deleteHint": "Transactions already recorded stay in your history.",
+    "archivedSource": "This account or card is archived. Choose another one.",
+    "badge": "Recurring"
   }
 }

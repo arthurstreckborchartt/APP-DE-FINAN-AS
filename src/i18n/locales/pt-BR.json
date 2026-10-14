@@ -21,7 +21,8 @@
     "create": "Criar",
     "all": "Todos",
     "default": "Padrão",
-    "other": "Outros"
+    "other": "Outros",
+    "tomorrow": "Amanhã"
   },
   "nav": {
     "home": "Início",
@@ -239,7 +240,10 @@
     "cards": "Seus cartões",
     "availableLimit": "Limite disponível",
     "balanceTrend": "Saldo",
-    "spentSoFar": "Gastos acumulados no mês"
+    "spentSoFar": "Gastos acumulados no mês",
+    "upcoming": "Próximos vencimentos",
+    "upcomingEmpty": "Nada vencendo nos próximos 30 dias.",
+    "invoiceOf": "Fatura {{card}}"
   },
   "cards": {
     "title": "Cartões",
@@ -294,5 +298,34 @@
       "archivedAccount": "Esta conta está arquivada.",
       "emptyInvoice": "Esta fatura não tem compras."
     }
+  },
+  "recurring": {
+    "title": "Recorrentes",
+    "new": "Nova recorrente",
+    "edit": "Editar recorrente",
+    "subtitle": "Receitas e despesas que se repetem são lançadas sozinhas.",
+    "frequency": "Frequência",
+    "weekly": "Semanal",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "everyWeek": "Semanal · {{weekday}}",
+    "everyMonth": "Todo dia {{day}}",
+    "everyYear": "Todo ano em {{date}}",
+    "startDate": "Começa em",
+    "endDate": "Termina em (opcional)",
+    "endBeforeStart": "O fim precisa ser depois do início.",
+    "next": "Próxima: {{date}}",
+    "paused": "Pausada",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "ended": "Encerrada",
+    "amount": "Valor",
+    "invalidAmount": "Informe um valor maior que zero.",
+    "empty": "Nenhuma recorrente ainda",
+    "emptyBody": "Cadastre salário, aluguel, assinaturas e contas fixas para lançá-los automaticamente.",
+    "editHint": "As mudanças valem para os próximos lançamentos; os já lançados não mudam.",
+    "deleteHint": "Os lançamentos já gerados continuam no extrato.",
+    "archivedSource": "Esta conta ou cartão está arquivado. Escolha outro.",
+    "badge": "Recorrente"
   }
 }

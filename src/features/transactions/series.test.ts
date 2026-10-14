@@ -6,7 +6,7 @@ function tx(p: Partial<Transaction>): Transaction {
   return {
     id: 'id', user_id: 'u', kind: 'expense', amount: 100, currency: 'BRL', date: '2026-10-01',
     category_id: 'c', description: '', account_id: 'a1', card_id: null, installments_count: 1,
-    created_at: '', updated_at: '', ...p,
+    recurring_id: null, created_at: '', updated_at: '', ...p,
   }
 }
 

@@ -16,6 +16,8 @@ export type Transaction = {
   /** Cartão da compra; nulo quando o lançamento é em conta. */
   card_id: string | null
   installments_count: number
+  /** Recorrente que gerou o lançamento; nulo nos lançamentos manuais. */
+  recurring_id: string | null
   created_at: string
   updated_at: string
 }

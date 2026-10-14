@@ -21,7 +21,8 @@
     "create": "Criar",
     "all": "Todos",
     "default": "Predefinição",
-    "other": "Outros"
+    "other": "Outros",
+    "tomorrow": "Amanhã"
   },
   "nav": {
     "home": "Início",
@@ -239,7 +240,10 @@
     "cards": "Os seus cartões",
     "availableLimit": "Limite disponível",
     "balanceTrend": "Saldo",
-    "spentSoFar": "Despesas acumuladas no mês"
+    "spentSoFar": "Despesas acumuladas no mês",
+    "upcoming": "Próximos vencimentos",
+    "upcomingEmpty": "Nada a vencer nos próximos 30 dias.",
+    "invoiceOf": "Extrato {{card}}"
   },
   "cards": {
     "title": "Cartões",
@@ -294,5 +298,34 @@
       "archivedAccount": "Esta conta está arquivada.",
       "emptyInvoice": "Este extrato não tem compras."
     }
+  },
+  "recurring": {
+    "title": "Recorrentes",
+    "new": "Nova recorrente",
+    "edit": "Editar recorrente",
+    "subtitle": "Receitas e despesas que se repetem são registadas automaticamente.",
+    "frequency": "Frequência",
+    "weekly": "Semanal",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "everyWeek": "Semanal · {{weekday}}",
+    "everyMonth": "Todos os meses no dia {{day}}",
+    "everyYear": "Todos os anos em {{date}}",
+    "startDate": "Começa em",
+    "endDate": "Termina em (opcional)",
+    "endBeforeStart": "O fim tem de ser depois do início.",
+    "next": "Próxima: {{date}}",
+    "paused": "Em pausa",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "ended": "Terminada",
+    "amount": "Valor",
+    "invalidAmount": "Indique um valor superior a zero.",
+    "empty": "Ainda não há recorrentes",
+    "emptyBody": "Registe ordenado, renda, subscrições e contas fixas para os registar automaticamente.",
+    "editHint": "As alterações aplicam-se aos próximos movimentos; os já registados não mudam.",
+    "deleteHint": "Os movimentos já gerados continuam no histórico.",
+    "archivedSource": "Esta conta ou cartão está arquivado. Escolha outro.",
+    "badge": "Recorrente"
   }
 }

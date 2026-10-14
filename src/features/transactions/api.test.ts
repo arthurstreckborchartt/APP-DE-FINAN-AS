@@ -23,11 +23,11 @@ test('toMonthEntry usa o id do lançamento, o valor da parcela e a data da entra
   const entry = toMonthEntry({
     entry_id: 'inst2', transaction_id: 'tx1', user_id: 'u', kind: 'expense', amount: 3333, currency: 'BRL',
     month: '2026-11-01', date: '2026-11-10', purchase_date: '2026-10-10', category_id: 'c1', description: 'TV',
-    account_id: null, card_id: 'k1', installment_number: 2, installments_count: 3, total_amount: 10000,
+    account_id: null, card_id: 'k1', installment_number: 2, installments_count: 3, total_amount: 10000, recurring_id: null,
     created_at: '2026-10-10T12:00:00Z',
   })
   expect(entry).toMatchObject({
-    id: 'tx1', entry_id: 'inst2', transaction_id: 'tx1', amount: 3333, total_amount: 10000,
+    id: 'tx1', entry_id: 'inst2', transaction_id: 'tx1', amount: 3333, total_amount: 10000, recurring_id: null,
     date: '2026-11-10', purchase_date: '2026-10-10', card_id: 'k1', account_id: null,
     installment_number: 2, installments_count: 3, updated_at: '2026-10-10T12:00:00Z',
   })

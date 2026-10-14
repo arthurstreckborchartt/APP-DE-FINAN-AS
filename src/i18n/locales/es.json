@@ -21,7 +21,8 @@
     "create": "Crear",
     "all": "Todos",
     "default": "Predeterminado",
-    "other": "Otros"
+    "other": "Otros",
+    "tomorrow": "Mañana"
   },
   "nav": {
     "home": "Inicio",
@@ -239,7 +240,10 @@
     "cards": "Tus tarjetas",
     "availableLimit": "Límite disponible",
     "balanceTrend": "Saldo",
-    "spentSoFar": "Gastos acumulados del mes"
+    "spentSoFar": "Gastos acumulados del mes",
+    "upcoming": "Próximos vencimientos",
+    "upcomingEmpty": "Nada vence en los próximos 30 días.",
+    "invoiceOf": "Resumen {{card}}"
   },
   "cards": {
     "title": "Tarjetas",
@@ -294,5 +298,34 @@
       "archivedAccount": "Esta cuenta está archivada.",
       "emptyInvoice": "Este resumen no tiene compras."
     }
+  },
+  "recurring": {
+    "title": "Recurrentes",
+    "new": "Nueva recurrente",
+    "edit": "Editar recurrente",
+    "subtitle": "Los ingresos y gastos que se repiten se registran solos.",
+    "frequency": "Frecuencia",
+    "weekly": "Semanal",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "everyWeek": "Cada {{weekday}}",
+    "everyMonth": "Cada mes el día {{day}}",
+    "everyYear": "Cada año el {{date}}",
+    "startDate": "Empieza el",
+    "endDate": "Termina el (opcional)",
+    "endBeforeStart": "El fin debe ser posterior al inicio.",
+    "next": "Próxima: {{date}}",
+    "paused": "En pausa",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "ended": "Finalizada",
+    "amount": "Importe",
+    "invalidAmount": "Introduce un importe mayor que cero.",
+    "empty": "Aún no hay recurrentes",
+    "emptyBody": "Añade sueldo, alquiler, suscripciones y cuentas fijas para registrarlos automáticamente.",
+    "editHint": "Los cambios valen para los próximos registros; los ya registrados no cambian.",
+    "deleteHint": "Los movimientos ya generados siguen en el historial.",
+    "archivedSource": "Esta cuenta o tarjeta está archivada. Elige otra.",
+    "badge": "Recurrente"
   }
 }
