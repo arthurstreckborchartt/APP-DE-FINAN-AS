@@ -2,7 +2,8 @@
 const KEY = 'return-to'
 const TTL_MS = 24 * 60 * 60 * 1000
 
-const isAllowed = (path: unknown): path is string => typeof path === 'string' && path.startsWith('/join/')
+const JOIN_PATH = /^\/join\/[A-Za-z0-9_-]+$/
+const isAllowed = (path: unknown): path is string => typeof path === 'string' && JOIN_PATH.test(path)
 
 export function saveReturnTo(path: string): void {
   if (!isAllowed(path)) return
@@ -19,7 +20,10 @@ export function readReturnTo(): string | null {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
     const { path, at } = JSON.parse(raw) as { path?: unknown; at?: unknown }
-    if (!isAllowed(path) || typeof at !== 'number' || Date.now() - at > TTL_MS) return null
+    if (!isAllowed(path) || typeof at !== 'number') return null
+    // Carimbo no futuro (relógio adulterado ou trocado) conta como expirado.
+    const age = Date.now() - at
+    if (age < 0 || age > TTL_MS) return null
     return path
   } catch {
     return null

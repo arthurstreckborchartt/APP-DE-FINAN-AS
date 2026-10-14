@@ -27,6 +27,12 @@ describe('return-to', () => {
     expect(readReturnTo()).toBeNull()
     saveReturnTo('//evil.com/join/abc')
     expect(readReturnTo()).toBeNull()
+    for (const bad of ['/join/', '/join/abc/def', '/join/abc?x=1', '/join/../cards', '/join/a b']) {
+      saveReturnTo(bad)
+      expect(readReturnTo()).toBeNull()
+    }
+    saveReturnTo('/join/A-b_9')
+    expect(readReturnTo()).toBe('/join/A-b_9')
   })
 
   it('expira após 24 h', () => {
@@ -36,6 +42,14 @@ describe('return-to', () => {
     vi.setSystemTime(new Date('2026-10-14T09:59:00Z'))
     expect(readReturnTo()).toBe('/join/abc')
     vi.setSystemTime(new Date('2026-10-14T10:01:00Z'))
+    expect(readReturnTo()).toBeNull()
+  })
+
+  it('carimbo no futuro conta como expirado', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-10-14T10:00:00Z'))
+    saveReturnTo('/join/abc')
+    vi.setSystemTime(new Date('2026-10-14T09:00:00Z'))
     expect(readReturnTo()).toBeNull()
   })
 

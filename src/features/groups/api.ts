@@ -8,6 +8,11 @@ export function inviteUrl(token: string, origin = window.location.origin): strin
   return `${origin}/join/${token}`
 }
 
+/** O RLS filtra em silêncio: 0 linhas significa que não era admin (ou o grupo não existe mais). */
+function assertAffected(rows: unknown[] | null) {
+  if (!rows || rows.length === 0) throw new Error('group_not_changed')
+}
+
 const invalidateGroups = (qc: QueryClient) => qc.invalidateQueries({ queryKey: ['groups'] })
 
 /** Sair/remover/excluir muda `group_id` de lançamentos e recorrentes. */
@@ -113,8 +118,9 @@ export function useUpdateGroup() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: { name?: string; icon?: string } }) => {
-      const { error } = await supabase.from('groups').update(patch).eq('id', id)
+      const { data, error } = await supabase.from('groups').update(patch).eq('id', id).select('id')
       if (error) throw error
+      assertAffected(data)
     },
     onSuccess: () => invalidateGroups(qc),
   })
@@ -124,8 +130,9 @@ export function useDeleteGroup() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('groups').delete().eq('id', id)
+      const { data, error } = await supabase.from('groups').delete().eq('id', id).select('id')
       if (error) throw error
+      assertAffected(data)
     },
     onSuccess: () => invalidateGroupsAndFinance(qc),
   })
@@ -173,7 +180,12 @@ export function useLeaveGroup() {
       const { error } = await supabase.rpc('leave_group', { p_group: groupId })
       if (error) throw error
     },
-    onSuccess: () => invalidateGroupsAndFinance(qc),
+    // Os lançamentos de quem sai continuam no grupo; só as recorrentes deixam de ser do grupo.
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: ['groups'] }),
+        qc.invalidateQueries({ queryKey: ['recurring'] }),
+      ]),
   })
 }
 
