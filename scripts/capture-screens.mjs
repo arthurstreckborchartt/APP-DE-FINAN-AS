@@ -107,6 +107,11 @@ const recurring = [
   rec('r4', 'expense', 29900, 'c-heal', 'Academia', 'monthly', '2026-02-10', `${ym(0)}-10`, { paused: true }),
 ]
 
+const groups = [
+  { id: 'g-casa', name: 'Casa', currency: 'BRL', icon: 'home', role: 'admin', members: 3, created_at: '2026-10-01T00:00:00Z' },
+  { id: 'g-lis', name: 'Viagem Lisboa', currency: 'EUR', icon: 'plane', role: 'member', members: 4, created_at: '2026-10-02T00:00:00Z' },
+]
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -131,6 +136,7 @@ async function mock(page) {
       const cid = url.searchParams.get('card_id')
       return json(route, cid ? invoices.filter((i) => `eq.${i.card_id}` === cid) : invoices.filter((i) => !i.paid_at))
     }
+    if (path === '/rest/v1/rpc/my_groups') return json(route, groups)
     if (path === '/rest/v1/recurring') return json(route, recurring)
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
@@ -139,7 +145,7 @@ async function mock(page) {
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['groups', '/groups'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')
