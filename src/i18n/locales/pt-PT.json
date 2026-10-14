@@ -356,15 +356,15 @@
     "membersTitle": "Membros",
     "invite": "Convidar",
     "inviteTitle": "Convidar para o grupo",
-    "inviteBody": "Quem abrir esta ligação entra no grupo. Vale por 7 dias e pode ser usada por várias pessoas.",
-    "copyLink": "Copiar ligação",
-    "copied": "Ligação copiada",
+    "inviteBody": "Quem abrir este link entra no grupo. Vale por 7 dias e pode ser usado por várias pessoas.",
+    "copyLink": "Copiar link",
+    "copied": "Link copiado",
     "share_action": "Partilhar",
     "shareText": "Entre no meu grupo \"{{name}}\" no FINANCE",
     "expiresOn": "Válido até {{date}}",
-    "activeInvites": "Ligações ativas",
+    "activeInvites": "Links ativos",
     "revoke": "Revogar",
-    "newInvite": "Gerar nova ligação",
+    "newInvite": "Gerar novo link",
     "settings": "Definições do grupo",
     "save": "Guardar",
     "delete": "Eliminar grupo",
@@ -391,12 +391,12 @@
       "body": "Foi convidado para entrar em",
       "action": "Entrar no grupo",
       "joined": "Entrou no grupo.",
-      "invalid": "Este convite não existe. Peça uma nova ligação a quem o convidou.",
-      "expired": "Este convite expirou ou foi revogado. Peça uma nova ligação a quem o convidou.",
+      "invalid": "Este convite não existe. Peça uma novo link a quem o convidou.",
+      "expired": "Este convite expirou ou foi revogado. Peça uma novo link a quem o convidou.",
       "already": "Já faz parte deste grupo.",
       "open": "Abrir grupo",
       "full": "Este grupo já tem o máximo de 50 membros.",
-      "removed": "Foi removido deste grupo. Para voltar, peça uma nova ligação ao administrador."
+      "removed": "Foi removido deste grupo. Para voltar, peça uma novo link ao administrador."
     }
   }
 }
