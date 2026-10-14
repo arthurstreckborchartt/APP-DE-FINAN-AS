@@ -28,7 +28,7 @@ export function GroupForm({ initial, submitLabel, loading, error, onSubmit }: Pr
     e.preventDefault()
     if (loading) return
     const trimmed = name.trim()
-    if (trimmed.length < 1 || trimmed.length > 40) return setNameError(t('common.errorGeneric'))
+    if (trimmed.length < 1 || trimmed.length > 40) return setNameError(t('groups.nameRequired'))
     setNameError(undefined)
     onSubmit({ name: trimmed, currency, icon })
   }
@@ -46,11 +46,11 @@ export function GroupForm({ initial, submitLabel, loading, error, onSubmit }: Pr
       <div>
         <p className="mb-1.5 text-[13px] font-semibold text-muted">{t('groups.icon')}</p>
         <div className="grid grid-cols-5 gap-2">
-          {GROUP_ICON_NAMES.map((n) => {
+          {GROUP_ICON_NAMES.map((n, i) => {
             const Icon = groupIconComponent(n)
             const on = icon === n
             return (
-              <button key={n} type="button" aria-pressed={on} aria-label={n} onClick={() => setIcon(n)}
+              <button key={n} type="button" aria-pressed={on} aria-label={t('categories.iconOption', { n: i + 1 })} onClick={() => setIcon(n)}
                 className={`grid h-12 place-items-center rounded-2xl transition ${on ? 'bg-primary text-primary-fg' : 'bg-surface-2 text-muted hover:bg-surface-3'}`}>
                 <Icon className="size-5" aria-hidden="true" />
               </button>

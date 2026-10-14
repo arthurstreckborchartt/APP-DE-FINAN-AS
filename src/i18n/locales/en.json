@@ -335,6 +335,7 @@
     "create": "Create group",
     "name": "Group name",
     "currency": "Group currency",
+    "nameRequired": "Give the group a name.",
     "currencyHint": "Only entries in this currency can go to the group. It can't be changed later.",
     "icon": "Icon",
     "empty": "No groups yet",

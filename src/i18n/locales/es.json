@@ -335,6 +335,7 @@
     "create": "Crear grupo",
     "name": "Nombre del grupo",
     "currency": "Moneda del grupo",
+    "nameRequired": "Ponle un nombre al grupo.",
     "currencyHint": "Solo los movimientos en esta moneda pueden ir al grupo. No se puede cambiar después.",
     "icon": "Icono",
     "empty": "Aún no hay grupos",
