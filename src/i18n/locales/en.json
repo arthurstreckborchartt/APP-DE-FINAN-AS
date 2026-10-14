@@ -313,6 +313,7 @@
     "everyYear": "Every year on {{date}}",
     "startDate": "Starts on",
     "endDate": "Ends on (optional)",
+    "endBeforeStart": "The end must be after the start.",
     "next": "Next: {{date}}",
     "paused": "Paused",
     "pause": "Pause",

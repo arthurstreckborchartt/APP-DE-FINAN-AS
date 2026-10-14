@@ -88,7 +88,7 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
     if (!categoryId) next.category = t('transactions.errors.category')
     if (onCard ? !cardId : !accountId) next.source = t(onCard ? 'transactions.errors.card' : 'transactions.errors.account')
     if (!startDate) next.start = t('transactions.errors.date')
-    if (endDate && endDate < startDate) next.end = t('transactions.errors.date')
+    if (endDate && endDate < startDate) next.end = t('recurring.endBeforeStart')
     setErrors(next)
     if (Object.keys(next).length > 0) return
     onSubmit({
