@@ -1,3 +1,4 @@
+import { Repeat } from 'lucide-react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Amount } from '../../components/Amount'
@@ -28,6 +29,9 @@ export function TransactionRow({ transaction: tx, category, account, card, local
           {tx.description ? `${label} · ` : ''}{account?.name ?? card?.name ?? ''}
         </span>
       </span>
+      {tx.recurring_id && (
+        <Repeat className="size-3.5 shrink-0 text-muted" role="img" aria-label={t('recurring.badge')} />
+      )}
       {installment && (
         <span className="shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-extrabold text-muted num">
           {tx.installment_number !== undefined

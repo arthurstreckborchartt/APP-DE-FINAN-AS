@@ -309,7 +309,7 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "everyWeek": "Every {{weekday}}",
-    "everyMonth": "Every month on the {{day}}",
+    "everyMonth": "Monthly on day {{day}}",
     "everyYear": "Every year on {{date}}",
     "startDate": "Starts on",
     "endDate": "Ends on (optional)",

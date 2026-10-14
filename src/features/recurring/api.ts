@@ -88,7 +88,10 @@ export function useGenerateRecurringOnOpen() {
     if (!shouldGenerateOnOpen(doneFor.current, uid)) return
     doneFor.current = uid ?? null
     generateNow()
-      .then((created) => (created > 0 ? invalidateRecurringData(qc) : undefined))
-      .catch(() => undefined)
+      .then(() => invalidateRecurringData(qc))
+      .catch(() => {
+        // Falhou: libera para tentar de novo na próxima montagem.
+        if (doneFor.current === uid) doneFor.current = null
+      })
   }, [uid, qc])
 }

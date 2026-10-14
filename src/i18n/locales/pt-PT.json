@@ -321,9 +321,9 @@
     "amount": "Valor",
     "invalidAmount": "Indique um valor superior a zero.",
     "empty": "Ainda não há recorrentes",
-    "emptyBody": "Registe ordenado, renda, subscrições e contas fixas para os lançar automaticamente.",
+    "emptyBody": "Registe ordenado, renda, subscrições e contas fixas para os registar automaticamente.",
     "editHint": "As alterações aplicam-se aos próximos movimentos; os já registados não mudam.",
-    "deleteHint": "Os movimentos já gerados continuam no extrato.",
+    "deleteHint": "Os movimentos já gerados continuam no histórico.",
     "archivedSource": "Esta conta ou cartão está arquivado. Escolha outro.",
     "badge": "Recorrente"
   }
