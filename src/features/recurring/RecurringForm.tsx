@@ -95,6 +95,8 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
       kind, amount: cents!, category_id: categoryId!, description: description.trim(), frequency,
       start_date: startDate, end_date: endDate || null,
       account_id: onCard ? null : accountId, card_id: onCard ? cardId : null,
+      // O seletor de grupo vem depois; na edição preserva o grupo atual.
+      group_id: recurring?.group_id ?? null,
     })
   }
 

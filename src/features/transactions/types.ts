@@ -18,6 +18,8 @@ export type Transaction = {
   installments_count: number
   /** Recorrente que gerou o lançamento; nulo nos lançamentos manuais. */
   recurring_id: string | null
+  /** Grupo com que o lançamento é compartilhado; nulo quando é pessoal. */
+  group_id: string | null
   created_at: string
   updated_at: string
 }
@@ -25,7 +27,7 @@ export type Transaction = {
 /** Lançamento em conta (`card_id` nulo) ou compra no cartão (`account_id` nulo). */
 export type TransactionInput = Pick<
   Transaction,
-  'kind' | 'amount' | 'date' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'installments_count'
+  'kind' | 'amount' | 'date' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'installments_count' | 'group_id'
 >
 
 /**

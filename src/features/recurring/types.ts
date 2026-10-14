@@ -19,6 +19,8 @@ export type Recurring = {
   end_date: string | null
   next_date: string
   paused: boolean
+  /** Grupo das ocorrências geradas; nulo quando é pessoal. */
+  group_id: string | null
   created_at: string
   updated_at: string
 }
@@ -26,10 +28,10 @@ export type Recurring = {
 /** Colunas graváveis no insert (`next_date` e `currency` são definidos pelo banco). */
 export type RecurringInput = Pick<
   Recurring,
-  'kind' | 'amount' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'frequency' | 'start_date' | 'end_date'
+  'kind' | 'amount' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'frequency' | 'start_date' | 'end_date' | 'group_id'
 >
 
 /** Colunas graváveis no update. */
 export type RecurringPatch = Partial<
-  Pick<Recurring, 'amount' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'frequency' | 'end_date' | 'paused'>
+  Pick<Recurring, 'amount' | 'category_id' | 'description' | 'account_id' | 'card_id' | 'frequency' | 'end_date' | 'paused' | 'group_id'>
 >

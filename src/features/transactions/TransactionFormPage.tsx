@@ -170,6 +170,8 @@ export default function TransactionFormPage() {
     const input = {
       kind: form.kind, amount: form.amount, date: form.date, category_id: form.categoryId!,
       description: form.description.trim(),
+      // O seletor de grupo vem depois; na edição preserva o grupo atual.
+      group_id: existing?.group_id ?? null,
       ...(onCard
         ? { account_id: null, card_id: form.cardId!, installments_count: form.installments }
         : { account_id: form.accountId!, card_id: null, installments_count: 1 }),

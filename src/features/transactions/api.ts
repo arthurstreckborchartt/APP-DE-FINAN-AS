@@ -26,6 +26,7 @@ export function toMonthEntry(row: MonthEntryRow): MonthEntry {
     installments_count: row.installments_count,
     total_amount: Number(row.total_amount),
     recurring_id: row.recurring_id ?? null,
+    group_id: row.group_id ?? null,
     created_at: row.created_at,
     // A view não expõe updated_at; created_at é o valor mais próximo disponível.
     updated_at: row.created_at,
