@@ -9,6 +9,18 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.5.0.0 — 2026-10-13
+
+Etapa 4: contas fixas e recorrentes.
+
+- Nova tela **Recorrentes** (menu lateral e Ajustes): receitas e despesas que se repetem toda semana, todo mês ou todo ano, pagas com conta ou cartão, com data de início e fim opcional.
+- Os lançamentos são criados sozinhos: ao abrir o app e também uma vez por dia no servidor, sem duplicar e sem "atrasados" ao retomar uma recorrente pausada.
+- Pausar, retomar, editar e excluir recorrentes (o histórico já lançado é mantido).
+- Datas de fim de mês respeitadas (ex.: dia 31 cai no último dia de meses mais curtos; 29/02 em anos não bissextos).
+- Lançamentos gerados por recorrente mostram um ícone de repetição no extrato.
+- Início: novo quadro **Próximos vencimentos**, com as próximas recorrentes e faturas a pagar dos próximos 30 dias (faturas vencidas em destaque).
+- Atualização em tempo real entre dispositivos.
+
 ## Atualização 1.4.0.0 — 2026-10-12
 
 Gráficos e cartões animados.
