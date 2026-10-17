@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 import { LogOut, Trash2 } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Sheet } from '../../components/ui/Sheet'
@@ -11,20 +10,25 @@ import { groupErrorKey } from './display'
 import { GROUP_ICON_NAMES, groupIconComponent } from './GroupIcon'
 import type { Group } from './types'
 
-type Props = { open: boolean; onClose: () => void; group: Group }
+type Props = {
+  open: boolean
+  onClose: () => void
+  group: Group
+  /** Avisado antes de sair/excluir (e desfeito se falhar): a tela vai para a lista quando o grupo some. */
+  onLeaving: (leaving: boolean) => void
+}
 
-export function GroupSettingsSheet({ open, onClose, group }: Props) {
+export function GroupSettingsSheet({ open, onClose, group, onLeaving }: Props) {
   const { t } = useTranslation()
   return (
     <Sheet open={open} onClose={onClose} title={t('groups.settings')}>
-      {open && <SettingsContent group={group} onClose={onClose} />}
+      {open && <SettingsContent group={group} onClose={onClose} onLeaving={onLeaving} />}
     </Sheet>
   )
 }
 
-function SettingsContent({ group, onClose }: { group: Group; onClose: () => void }) {
+function SettingsContent({ group, onClose, onLeaving }: Omit<Props, 'open'>) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const update = useUpdateGroup()
   const remove = useDeleteGroup()
   const leave = useLeaveGroup()
@@ -39,7 +43,7 @@ function SettingsContent({ group, onClose }: { group: Group; onClose: () => void
     e.preventDefault()
     if (update.isPending) return
     const trimmed = name.trim()
-    if (trimmed.length < 1 || trimmed.length > 40) return setNameError(t('common.errorGeneric'))
+    if (trimmed.length < 1 || trimmed.length > 40) return setNameError(t('groups.nameRequired'))
     setNameError(undefined)
     setError(null)
     try {
@@ -51,13 +55,13 @@ function SettingsContent({ group, onClose }: { group: Group; onClose: () => void
   }
 
   async function confirm() {
+    if (pending !== 'delete' && pending !== 'leave') return
     setError(null)
+    onLeaving(true)
     try {
-      if (pending === 'delete') await remove.mutateAsync(group.id)
-      else if (pending === 'leave') await leave.mutateAsync(group.id)
-      else return
-      navigate('/groups', { replace: true })
+      await (pending === 'delete' ? remove : leave).mutateAsync(group.id)
     } catch (err) {
+      onLeaving(false)
       setError(t(groupErrorKey(err)))
     }
   }
@@ -71,11 +75,11 @@ function SettingsContent({ group, onClose }: { group: Group; onClose: () => void
           <div>
             <p className="mb-1.5 text-[13px] font-semibold text-muted">{t('groups.icon')}</p>
             <div className="grid grid-cols-5 gap-2">
-              {GROUP_ICON_NAMES.map((n) => {
+              {GROUP_ICON_NAMES.map((n, i) => {
                 const Icon = groupIconComponent(n)
                 const on = icon === n
                 return (
-                  <button key={n} type="button" aria-pressed={on} aria-label={n} onClick={() => setIcon(n)}
+                  <button key={n} type="button" aria-pressed={on} aria-label={t('categories.iconOption', { n: i + 1 })} onClick={() => setIcon(n)}
                     className={`grid h-12 place-items-center rounded-2xl transition ${on ? 'bg-primary text-primary-fg' : 'bg-surface-2 text-muted hover:bg-surface-3'}`}>
                     <Icon className="size-5" aria-hidden="true" />
                   </button>

@@ -35,18 +35,22 @@ function InviteContent({ group }: { group: Group }) {
   const autoCreated = useRef(false)
   const copiedTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  // Ao abrir, sem convite ativo, já cria um.
+  // Ao abrir, sem convite ativo, já cria um — uma vez só por abertura (o ref sobrevive ao StrictMode).
   const empty = invites.isSuccess && invites.data.length === 0
+  const { mutate: createInvite } = create
   useEffect(() => {
     if (!empty || autoCreated.current) return
     autoCreated.current = true
-    create.mutate(group.id, { onError: (e) => setError(t(groupErrorKey(e))) })
-  }, [empty, create, group.id, t])
+    createInvite(group.id, { onError: (e) => setError(t(groupErrorKey(e))) })
+  }, [empty, createInvite, group.id, t])
 
   useEffect(() => () => clearTimeout(copiedTimer.current), [])
 
-  const current = invites.data?.[0] ?? (create.data && !revoked.includes(create.data.id) ? create.data : undefined)
+  // Esconde na hora os links revogados, sem esperar o recarregamento.
+  const active = (invites.data ?? []).filter((i) => !revoked.includes(i.id))
+  const current = active[0] ?? (create.data && !revoked.includes(create.data.id) ? create.data : undefined)
   const url = current ? inviteUrl(current.token) : ''
+  const waiting = invites.isPending || create.isPending
   const longDate = (iso: string) => new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(iso))
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
@@ -66,8 +70,9 @@ function InviteContent({ group }: { group: Group }) {
     if (!url) return
     try {
       await navigator.share({ title: group.name, text: t('groups.shareText', { name: group.name }), url })
-    } catch {
-      // Cancelado pelo usuário: nada a fazer.
+    } catch (e) {
+      // Cancelar a folha de compartilhamento não é erro.
+      if (!(e instanceof DOMException && e.name === 'AbortError')) setError(t('common.errorGeneric'))
     }
   }
 
@@ -98,7 +103,9 @@ function InviteContent({ group }: { group: Group }) {
     <div className="flex flex-col gap-4">
       <p className="text-sm text-muted">{t('groups.inviteBody')}</p>
 
-      {current ? (
+      {waiting ? (
+        <div className="grid place-items-center py-6 text-primary"><Spinner /></div>
+      ) : current ? (
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
             <span className="sr-only">{t('groups.inviteTitle')}</span>
@@ -120,16 +127,16 @@ function InviteContent({ group }: { group: Group }) {
           <p className="sr-only" aria-live="polite">{copied ? t('groups.copied') : ''}</p>
         </div>
       ) : (
-        <div className="grid place-items-center py-6 text-primary"><Spinner /></div>
+        <p className="rounded-2xl bg-surface-2 px-4 py-3 text-sm font-semibold">{t('groups.noActiveInvite')}</p>
       )}
 
       {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
 
-      {(invites.data?.length ?? 0) > 0 && (
+      {active.length > 0 && (
         <section className="border-t border-line pt-4">
           <h3 className="mb-2 text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('groups.activeInvites')}</h3>
           <ul className="flex flex-col gap-1">
-            {invites.data!.map((inv) => (
+            {active.map((inv) => (
               <li key={inv.id}>
                 {revoking === inv.id ? (
                   <ConfirmPanel message={t('groups.revokeConfirm')} confirmLabel={t('groups.revoke')} danger

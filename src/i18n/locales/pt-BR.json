@@ -367,6 +367,8 @@
     "revoke": "Revogar",
     "newInvite": "Gerar novo link",
     "revokeConfirm": "Revogar este link? Quem ainda não entrou não vai conseguir usá-lo.",
+    "noActiveInvite": "Nenhum link ativo. Gere um novo para convidar.",
+    "memberOptions": "Opções de {{name}}",
     "settings": "Ajustes do grupo",
     "save": "Salvar",
     "delete": "Excluir grupo",

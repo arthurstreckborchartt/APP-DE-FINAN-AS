@@ -23,6 +23,21 @@ const invalidateGroupsAndFinance = (qc: QueryClient) =>
     qc.invalidateQueries({ queryKey: ['recurring'] }),
   ])
 
+/**
+ * Quem saiu ou excluiu o grupo: tira o grupo da lista em cache na hora (a tela do grupo navega para
+ * a lista sem mostrar "não encontrado") e não recarrega as consultas desse grupo, que já não são acessíveis.
+ */
+function dropGroup(qc: QueryClient, groupId: string, alsoFinance: boolean) {
+  qc.setQueriesData<Group[]>({ queryKey: ['groups'], predicate: (q) => q.queryKey[2] === 'list' }, (old) =>
+    old?.filter((g) => g.id !== groupId),
+  )
+  return Promise.all([
+    qc.invalidateQueries({ queryKey: ['groups'], predicate: (q) => q.queryKey[2] !== groupId }),
+    qc.invalidateQueries({ queryKey: ['recurring'] }),
+    ...(alsoFinance ? [qc.invalidateQueries({ queryKey: ['transactions'] })] : []),
+  ])
+}
+
 export function useMyGroups() {
   const { user } = useAuth()
   return useQuery({
@@ -134,7 +149,7 @@ export function useDeleteGroup() {
       if (error) throw error
       assertAffected(data)
     },
-    onSuccess: () => invalidateGroupsAndFinance(qc),
+    onSuccess: (_data, id) => dropGroup(qc, id, true),
   })
 }
 
@@ -181,11 +196,7 @@ export function useLeaveGroup() {
       if (error) throw error
     },
     // Os lançamentos de quem sai continuam no grupo; só as recorrentes deixam de ser do grupo.
-    onSuccess: () =>
-      Promise.all([
-        qc.invalidateQueries({ queryKey: ['groups'] }),
-        qc.invalidateQueries({ queryKey: ['recurring'] }),
-      ]),
+    onSuccess: (_data, groupId) => dropGroup(qc, groupId, false),
   })
 }
 

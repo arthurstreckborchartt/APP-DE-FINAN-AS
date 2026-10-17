@@ -1,6 +1,6 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { createElement, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams, useSearchParams } from 'react-router'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router'
 import { ChevronLeft, ReceiptText, Settings2, UserPlus, Users } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
@@ -14,7 +14,7 @@ import { normalizeLocale } from '../../lib/locale'
 import { useAuth } from '../auth/auth-context'
 import { categoryLabel } from '../categories/label'
 import { useGroupEntries, useGroupMembers, useMyGroups, useRemoveMember, useTransferAdmin } from './api'
-import { groupErrorKey, memberDisplayName, splitAtSlot } from './display'
+import { memberDisplayName, splitAtSlot } from './display'
 import { groupIconComponent } from './GroupIcon'
 import { GroupSettingsSheet } from './GroupSettingsSheet'
 import { InviteSheet } from './InviteSheet'
@@ -30,6 +30,14 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
       <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h2>
       {children}
     </section>
+  )
+}
+
+function LargeGroupIcon({ name }: { name: string }) {
+  return (
+    <span className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
+      {createElement(groupIconComponent(name), { className: 'size-7', 'aria-hidden': true })}
+    </span>
   )
 }
 
@@ -58,7 +66,7 @@ export default function GroupDetailPage() {
   const remove = useRemoveMember()
   const [inviteOpen, setInviteOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [memberError, setMemberError] = useState<string | null>(null)
+  const [leaving, setLeaving] = useState(false)
 
   const members = useMemo(() => membersQuery.data ?? [], [membersQuery.data])
   const entries = useMemo(() => [...(entriesQuery.data ?? [])].sort(byDateDesc), [entriesQuery.data])
@@ -70,6 +78,8 @@ export default function GroupDetailPage() {
 
   if (groupsQuery.isPending) return <div className="min-h-[40vh]"><FullScreenSpinner /></div>
   if (groupsQuery.isError) return <QueryError onRetry={() => void groupsQuery.refetch()} />
+  // Saiu ou excluiu: o grupo some do cache e a tela vai direto para a lista, sem "não encontrado".
+  if (!group && leaving) return <Navigate to="/groups" replace />
   if (!group) {
     return (
       <EmptyState icon={Users} title={t('groups.notFound')}
@@ -78,7 +88,6 @@ export default function GroupDetailPage() {
   }
 
   const admin = group.role === 'admin'
-  const Icon = groupIconComponent(group.icon)
   const mine = stats.byMember.find((m) => m.user_id === myId)
   const [beforeAmount, afterAmount] = splitAtSlot(t('groups.yourPart', { amount: AMOUNT_SLOT, pct: mine?.share ?? 0 }), AMOUNT_SLOT)
   const dataPending = membersQuery.isPending || entriesQuery.isPending
@@ -86,16 +95,6 @@ export default function GroupDetailPage() {
   const retry = () => { void membersQuery.refetch(); void entriesQuery.refetch() }
   const shortDate = (iso: string) => new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(dateFromISO(iso))
   const nameOf = (userId: string) => namesById.get(userId) ?? t('groups.unnamed')
-
-  async function memberAction(action: () => Promise<void>) {
-    setMemberError(null)
-    try {
-      await action()
-    } catch (e) {
-      setMemberError(t(groupErrorKey(e)))
-      throw e
-    }
-  }
 
   return (
     <section className="flex flex-col gap-5">
@@ -117,9 +116,7 @@ export default function GroupDetailPage() {
       </div>
 
       <header className="flex items-center gap-4">
-        <span className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-          <Icon className="size-7" aria-hidden="true" />
-        </span>
+        <LargeGroupIcon name={group.icon} />
         <div className="min-w-0">
           <h1 className="truncate text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{group.name}</h1>
           <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[15px] font-medium text-muted">
@@ -260,9 +257,6 @@ export default function GroupDetailPage() {
           {/* Membros */}
           <section className="rounded-[24px] bg-surface p-2 shadow-sheet sm:p-3">
             <h2 className="px-3 pb-1 pt-3 text-[17px] font-extrabold tracking-[-0.01em]">{t('groups.membersTitle')}</h2>
-            {memberError && (
-              <p role="alert" className="mx-3 my-2 rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{memberError}</p>
-            )}
             {membersQuery.isPending ? <Loading /> : membersQuery.isError ? (
               <div className="p-3"><QueryError onRetry={() => void membersQuery.refetch()} /></div>
             ) : (
@@ -272,8 +266,8 @@ export default function GroupDetailPage() {
                     <MemberRow member={m} displayName={memberDisplayName(m, myId, t)}
                       manageable={admin && m.user_id !== myId && m.left_at === null}
                       busy={transfer.isPending || remove.isPending}
-                      onMakeAdmin={() => memberAction(() => transfer.mutateAsync({ groupId: group.id, userId: m.user_id }))}
-                      onRemove={() => memberAction(() => remove.mutateAsync({ groupId: group.id, userId: m.user_id }))} />
+                      onMakeAdmin={() => transfer.mutateAsync({ groupId: group.id, userId: m.user_id })}
+                      onRemove={() => remove.mutateAsync({ groupId: group.id, userId: m.user_id })} />
                   </li>
                 ))}
               </ul>
@@ -285,7 +279,7 @@ export default function GroupDetailPage() {
       <p className="px-2 text-xs text-muted">{t('groups.privacyNote')}</p>
 
       {admin && <InviteSheet open={inviteOpen} onClose={() => setInviteOpen(false)} group={group} />}
-      <GroupSettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} group={group} />
+      <GroupSettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} group={group} onLeaving={setLeaving} />
     </section>
   )
 }

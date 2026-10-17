@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EllipsisVertical } from 'lucide-react'
 import { ConfirmPanel } from './ConfirmPanel'
+import { groupErrorKey } from './display'
 import type { GroupMember } from './types'
 
 type Action = 'makeAdmin' | 'remove'
@@ -21,17 +22,20 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
   const { t } = useTranslation()
   const [menu, setMenu] = useState(false)
   const [pending, setPending] = useState<Action | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const left = member.left_at !== null
   const initial = (member.name.trim() || displayName).charAt(0).toUpperCase()
 
   async function run() {
     if (!pending) return
+    setError(null)
     try {
       await (pending === 'makeAdmin' ? onMakeAdmin() : onRemove())
       setPending(null)
       setMenu(false)
-    } catch {
-      // A mensagem de erro é mostrada pela tela; a confirmação continua aberta.
+    } catch (e) {
+      // A confirmação continua aberta, com o erro logo abaixo.
+      setError(t(groupErrorKey(e)))
     }
   }
 
@@ -49,8 +53,8 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
           {left && <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{t('groups.left')}</span>}
         </span>
         {manageable && (
-          <button type="button" aria-expanded={menu} aria-label={`${t('groups.makeAdmin')} / ${t('groups.remove')}: ${displayName}`}
-            onClick={() => { setMenu(!menu); setPending(null) }}
+          <button type="button" aria-expanded={menu} aria-label={t('groups.memberOptions', { name: displayName })}
+            onClick={() => { setMenu(!menu); setPending(null); setError(null) }}
             className="grid size-11 shrink-0 place-items-center rounded-full text-muted transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
             <EllipsisVertical className="size-5" aria-hidden="true" />
           </button>
@@ -63,7 +67,7 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
               message={t(pending === 'makeAdmin' ? 'groups.makeAdminConfirm' : 'groups.removeConfirm', { name: displayName })}
               confirmLabel={t(pending === 'makeAdmin' ? 'groups.makeAdmin' : 'groups.remove')}
               danger={pending === 'remove'} loading={busy}
-              onConfirm={() => void run()} onCancel={() => setPending(null)} />
+              onConfirm={() => void run()} onCancel={() => { setPending(null); setError(null) }} />
           ) : (
             <div className="flex flex-col rounded-2xl bg-surface-2 p-1.5">
               <button type="button" onClick={() => setPending('makeAdmin')}
@@ -76,6 +80,7 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
               </button>
             </div>
           )}
+          {error && <p role="alert" className="mt-2 rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
         </div>
       )}
     </div>
