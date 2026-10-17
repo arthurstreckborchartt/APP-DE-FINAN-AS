@@ -77,7 +77,9 @@
       "rateLimit": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
       "generic": "No se pudo completar. Inténtalo de nuevo."
     },
-    "tagline": "Tus finanzas con calma y control, en cualquier dispositivo."
+    "tagline": "Tus finanzas con calma y control, en cualquier dispositivo.",
+    "google": "Continuar con Google",
+    "or": "o"
   },
   "onboarding": {
     "title": "¡Bienvenido!",
@@ -499,5 +501,11 @@
     "empty": "Nada registrado en este periodo.",
     "share": "{{pct}}% de los gastos",
     "chartHidden": "Valores ocultos"
+  },
+  "errors": {
+    "pageTitle": "Algo salió mal",
+    "pageBody": "Intenta recargar la página. Si sigue pasando, vuelve al inicio.",
+    "reload": "Recargar",
+    "home": "Ir al inicio"
   }
 }

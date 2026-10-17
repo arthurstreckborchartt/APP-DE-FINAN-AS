@@ -7,6 +7,7 @@ import { normalizeLocale } from '../../lib/locale'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/TextField'
 import { AuthLayout } from './AuthLayout'
+import { GoogleButton } from './GoogleButton'
 import { authErrorKey } from './errors'
 
 export default function SignupPage() {
@@ -76,6 +77,7 @@ export default function SignupPage() {
         {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
         <Button type="submit" full loading={loading}>{t('auth.signup.submit')}</Button>
       </form>
+      <GoogleButton />
     </AuthLayout>
   )
 }

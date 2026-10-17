@@ -77,7 +77,9 @@
       "rateLimit": "Demasiadas tentativas. Aguarde um pouco e tente de novo.",
       "generic": "Não foi possível concluir. Tente novamente."
     },
-    "tagline": "As suas finanças com calma e controlo, no telemóvel e no computador."
+    "tagline": "As suas finanças com calma e controlo, no telemóvel e no computador.",
+    "google": "Continuar com o Google",
+    "or": "ou"
   },
   "onboarding": {
     "title": "Bem-vindo!",
@@ -499,5 +501,11 @@
     "empty": "Nada registado neste período.",
     "share": "{{pct}}% das despesas",
     "chartHidden": "Valores ocultos"
+  },
+  "errors": {
+    "pageTitle": "Algo correu mal",
+    "pageBody": "Experimente recarregar a página. Se continuar, volte ao início.",
+    "reload": "Recarregar",
+    "home": "Ir para o início"
   }
 }
