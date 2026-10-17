@@ -14,6 +14,9 @@ import RecurringPage from '../features/recurring/RecurringPage'
 import GroupsPage from '../features/groups/GroupsPage'
 import GroupDetailPage from '../features/groups/GroupDetailPage'
 import JoinGroupPage from '../features/groups/JoinGroupPage'
+import BudgetsPage from '../features/budgets/BudgetsPage'
+import GoalsPage from '../features/goals/GoalsPage'
+import ReportsPage from '../features/reports/ReportsPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import HomePage from '../features/home/HomePage'
 import TransactionsPage from '../features/transactions/TransactionsPage'
@@ -56,6 +59,9 @@ export const router = createBrowserRouter([
               { path: '/accounts', element: <AccountsPage /> },
               { path: '/categories', element: <CategoriesPage /> },
               { path: '/recurring', element: <RecurringPage /> },
+              { path: '/budgets', element: <BudgetsPage /> },
+              { path: '/goals', element: <GoalsPage /> },
+              { path: '/reports', element: <ReportsPage /> },
               { path: '/more', element: <SettingsPage /> },
             ],
           },
