@@ -6,7 +6,8 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000a7', 'rls-bud-a@test.invalid'),
   ('00000000-0000-0000-0000-0000000000b7', 'rls-bud-b@test.invalid'),
   ('00000000-0000-0000-0000-0000000000c7', 'rls-bud-c@test.invalid'),
-  ('00000000-0000-0000-0000-0000000000d7', 'rls-bud-d@test.invalid');
+  ('00000000-0000-0000-0000-0000000000d7', 'rls-bud-d@test.invalid'),
+  ('00000000-0000-0000-0000-0000000000e7', 'rls-bud-e@test.invalid');
 
 create temp table ids (k text primary key, v uuid) on commit drop;
 grant all on ids to authenticated;
@@ -80,6 +81,12 @@ begin
 
   e := pg_temp.err(format('insert into public.budgets (category_id, amount, currency) values (%L, 0, %L)', own, 'USD'));
   if e not like '23514:%' then raise exception 'FAIL: valor zero (%)', e; end if;
+
+  -- categoria arquivada: não recebe orçamento novo
+  insert into public.categories (kind, name, icon, color) values ('expense', 'Arquivada', 'tag', '#111111') returning id into own;
+  update public.categories set archived = true where id = own;
+  e := pg_temp.err(format('insert into public.budgets (category_id, amount, currency) values (%L, 5000, %L)', own, 'BRL'));
+  if e <> '23514:budget_category' then raise exception 'FAIL: categoria arquivada (%)', e; end if;
 
   if (select count(*) from public.budgets) <> 3 then raise exception 'FAIL: A deveria ter 3 orçamentos'; end if;
 end $$;
@@ -223,7 +230,7 @@ begin
 
   e := pg_temp.err(format('insert into public.goal_contributions (goal_id, amount) values (%L, 1000)',
                           (select v from ids where k = 'goal_b')));
-  if e = 'ok' then raise exception 'FAIL: A aportou na meta de B'; end if;
+  if e <> '23514:' then raise exception 'FAIL: A aportou na meta de B (%)', e; end if;
 
   e := pg_temp.err(format('insert into public.goal_contributions (goal_id, amount) values (%L, 0)', goal));
   if e not like '23514:%' then raise exception 'FAIL: aporte zero (%)', e; end if;
@@ -330,30 +337,79 @@ begin
   end if;
 end $$;
 
+-- B sai do grupo: deixa de ver orçamentos e entradas do grupo
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b7","role":"authenticated"}';
+do $$
+declare g uuid := (select v from ids where k = 'g');
+begin
+  if (select count(*) from public.budgets where group_id = g) = 0 then raise exception 'FAIL: B não via orçamentos antes de sair'; end if;
+  if (select count(*) from public.group_period_entries(g, '2026-01-01', '2026-03-31')) = 0 then
+    raise exception 'FAIL: B não via entradas antes de sair';
+  end if;
+  perform public.leave_group(g);
+  if (select count(*) from public.budgets where group_id = g) <> 0 then raise exception 'FAIL: ex-membro B vê orçamentos do grupo'; end if;
+  if (select count(*) from public.group_period_entries(g, '2026-01-01', '2026-03-31')) <> 0 then
+    raise exception 'FAIL: ex-membro B vê entradas do grupo';
+  end if;
+end $$;
+
 ------------------------------------------------------------
--- Excluir a pessoa (cascata) com aporte e retirada não falha
+-- Cascatas não esbarram na trava do guardado.
+-- D: aporte +10000 e retirada -4000 apagados por um gatilho (como numa cascata), aporte primeiro.
+-- E: excluir a pessoa com aporte e retirada.
 ------------------------------------------------------------
-set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000d7","role":"authenticated"}';
 do $$
 declare goal uuid;
 begin
+  perform set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000d7","role":"authenticated"}', true);
   insert into public.goals (name, target_amount, currency) values ('Meta D', 100000, 'EUR') returning id into goal;
+  insert into ids values ('goal_d', goal);
   insert into public.goal_contributions (goal_id, amount) values (goal, 10000);
   insert into public.goal_contributions (goal_id, amount) values (goal, -4000);
-  insert into public.goal_contributions (goal_id, amount) values (goal, 2000);
+  insert into public.budgets (category_id, amount, currency)
+    values ((select id from public.categories where i18n_key = 'food'), 1000, 'EUR');
+
+  perform set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e7","role":"authenticated"}', true);
+  insert into public.goals (name, target_amount, currency) values ('Meta E', 100000, 'EUR') returning id into goal;
+  insert into public.goal_contributions (goal_id, amount) values (goal, 10000);
+  insert into public.goal_contributions (goal_id, amount) values (goal, -4000);
   insert into public.budgets (category_id, amount, currency)
     values ((select id from public.categories where i18n_key = 'food'), 1000, 'EUR');
 end $$;
 
 reset role;
+create temp table purge (user_id uuid not null) on commit drop;
+create function pg_temp.purge_contributions() returns trigger
+language plpgsql
+as $$
+begin
+  -- apaga o aporte antes da retirada, a ordem que falharia sem a exceção para cascatas
+  delete from public.goal_contributions where user_id = new.user_id and amount > 0;
+  delete from public.goal_contributions where user_id = new.user_id;
+  return null;
+end;
+$$;
+create trigger purge_contributions after insert on pg_temp.purge
+  for each row execute function pg_temp.purge_contributions();
+
 do $$
 declare e text;
 begin
-  e := pg_temp.err($q$delete from auth.users where id = '00000000-0000-0000-0000-0000000000d7'$q$);
+  e := pg_temp.err($q$insert into pg_temp.purge values ('00000000-0000-0000-0000-0000000000d7')$q$);
+  if e <> 'ok' then raise exception 'FAIL: aportes apagados em cascata (%)', e; end if;
+  if exists (select 1 from public.goal_contributions where user_id = '00000000-0000-0000-0000-0000000000d7') then
+    raise exception 'FAIL: aportes de D ficaram';
+  end if;
+  if not exists (select 1 from public.goals where id = (select v from ids where k = 'goal_d')) then
+    raise exception 'FAIL: meta de D sumiu';
+  end if;
+
+  e := pg_temp.err($q$delete from auth.users where id = '00000000-0000-0000-0000-0000000000e7'$q$);
   if e <> 'ok' then raise exception 'FAIL: excluir usuário com metas (%)', e; end if;
-  if exists (select 1 from public.goal_contributions where user_id = '00000000-0000-0000-0000-0000000000d7')
-     or exists (select 1 from public.budgets where user_id = '00000000-0000-0000-0000-0000000000d7') then
-    raise exception 'FAIL: dados de D ficaram';
+  if exists (select 1 from public.goal_contributions where user_id = '00000000-0000-0000-0000-0000000000e7')
+     or exists (select 1 from public.goals where user_id = '00000000-0000-0000-0000-0000000000e7')
+     or exists (select 1 from public.budgets where user_id = '00000000-0000-0000-0000-0000000000e7') then
+    raise exception 'FAIL: dados de E ficaram';
   end if;
 end $$;
 

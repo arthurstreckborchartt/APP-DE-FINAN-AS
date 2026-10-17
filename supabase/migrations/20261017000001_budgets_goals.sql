@@ -29,6 +29,7 @@ as $$
 declare
   cat_user uuid;
   cat_kind text;
+  cat_archived boolean;
 begin
   if tg_op = 'INSERT' then
     new.created_by := auth.uid();
@@ -40,8 +41,10 @@ begin
     end if;
   end if;
 
-  select c.user_id, c.kind into cat_user, cat_kind from public.categories c where c.id = new.category_id;
-  if cat_kind is distinct from 'expense' then
+  select c.user_id, c.kind, c.archived into cat_user, cat_kind, cat_archived
+    from public.categories c where c.id = new.category_id;
+  -- categoria arquivada não recebe orçamento novo (os que já existem continuam editáveis)
+  if cat_kind is distinct from 'expense' or (tg_op = 'INSERT' and cat_archived) then
     raise exception 'categoria inválida' using errcode = '23514', hint = 'budget_category';
   end if;
   if new.group_id is null then
@@ -166,6 +169,10 @@ as $$
 declare
   v_saved bigint;
 begin
+  -- Cascatas (excluir a pessoa ou a meta) rodam dentro dos gatilhos de FK: não há o que proteger.
+  if pg_trigger_depth() > 1 then
+    return old;
+  end if;
   if not exists (select 1 from public.goals g where g.id = old.goal_id) then
     return old; -- meta sendo excluída (cascata)
   end if;
