@@ -93,7 +93,7 @@ export default function BudgetsPage() {
                     limit: <Amount cents={total.limit} currency={currency} locale={locale} className="font-bold" />,
                   }} />
                 </p>
-                <BudgetBar spent={total.spent} limit={total.limit} className="mt-3" />
+                <BudgetBar spent={total.spent} limit={total.limit} label={t('budgets.total')} className="mt-3" />
               </div>
             )}
           </aside>
@@ -121,7 +121,7 @@ export default function BudgetsPage() {
         title={editing === 'new' ? t('budgets.new') : t('budgets.edit')}>
         {editing && (
           <BudgetForm key={editing === 'new' ? 'new' : editing.id} mode="personal"
-            currency={profile?.currency ?? 'BRL'}
+            currency={(currency || profile?.currency || 'BRL') as CurrencyCode}
             budget={editing === 'new' ? undefined : editing} existing={budgets}
             categories={categoriesQuery.data} onDone={() => setEditing(null)} />
         )}

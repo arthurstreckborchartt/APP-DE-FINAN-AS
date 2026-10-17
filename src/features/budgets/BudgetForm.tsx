@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { SelectField } from '../../components/ui/SelectField'
 import { TextField } from '../../components/ui/TextField'
-import { formatAmountPlain, parseAmount } from '../../lib/amount'
+import { formatAmountPlain, MAX_AMOUNT_CENTS, parseAmount } from '../../lib/amount'
 import { isRpcHint } from '../../lib/db-errors'
 import { normalizeLocale } from '../../lib/locale'
 import { CURRENCIES, currencyName, type CurrencyCode } from '../../lib/money'
@@ -13,12 +13,7 @@ import { categoryLabel } from '../categories/label'
 import { useCreateBudget, useDeleteBudget, useUpdateBudget } from './api'
 import type { Budget } from './types'
 
-type Props = {
-  /** `group`: só categorias padrão e moeda fixa (a do grupo). */
-  mode: 'personal' | 'group'
-  groupId?: string
-  /** Moeda inicial (pessoal) ou a moeda fixa do grupo. */
-  currency: CurrencyCode
+type Common = {
   /** Orçamento em edição; sem ele, cria um novo. */
   budget?: Budget
   /** Orçamentos já existentes (do mesmo dono), para esconder as categorias que já têm limite. */
@@ -27,6 +22,9 @@ type Props = {
   onDone: () => void
 }
 
+/** Pessoal: `currency` é só a moeda inicial. Grupo: só categorias padrão e moeda fixa (a do grupo). */
+type Props = Common & ({ mode: 'personal'; currency: CurrencyCode } | { mode: 'group'; groupId: string; currency: CurrencyCode })
+
 function errorKey(e: unknown): string {
   if (typeof e === 'object' && e !== null && (e as { code?: unknown }).code === '23505') return 'budgets.duplicate'
   if (isRpcHint(e, 'budget_category')) return 'budgets.categoryInvalid'
@@ -34,7 +32,9 @@ function errorKey(e: unknown): string {
   return 'common.errorGeneric'
 }
 
-export function BudgetForm({ mode, groupId, currency: initialCurrency, budget, existing, categories, onDone }: Props) {
+export function BudgetForm(props: Props) {
+  const { mode, currency: initialCurrency, budget, existing, categories, onDone } = props
+  const groupId = props.mode === 'group' ? props.groupId : null
   const { t, i18n } = useTranslation()
   const locale = normalizeLocale(i18n.language)
   const create = useCreateBudget()
@@ -61,7 +61,7 @@ export function BudgetForm({ mode, groupId, currency: initialCurrency, budget, e
     setError(null)
     setConfirmDelete(false)
     const cents = parseAmount(amountText)
-    const amountBad = cents === null || cents <= 0
+    const amountBad = cents === null || cents <= 0 || cents > MAX_AMOUNT_CENTS
     const categoryBad = !budget && !selected
     setAmountError(amountBad ? t('budgets.invalidAmount') : undefined)
     setCategoryError(categoryBad ? t('budgets.categoryInvalid') : undefined)
@@ -70,7 +70,7 @@ export function BudgetForm({ mode, groupId, currency: initialCurrency, budget, e
       if (budget) await update.mutateAsync({ id: budget.id, amount: cents })
       else {
         await create.mutateAsync({
-          category_id: selected!, amount: cents, currency, group_id: mode === 'group' ? groupId ?? null : null,
+          category_id: selected!, amount: cents, currency, group_id: groupId,
         })
       }
       onDone()

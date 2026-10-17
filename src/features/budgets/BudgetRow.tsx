@@ -9,11 +9,15 @@ import { categoryLabel } from '../categories/label'
 const LEVEL_BAR: Record<BudgetLevel, string> = { ok: 'bg-primary', warn: 'bg-warning', over: 'bg-danger' }
 
 /** Barra de progresso do orçamento: largura limitada a 100%; passou → cheia em `danger`. */
-export function BudgetBar({ spent, limit, className = '' }: { spent: number; limit: number; className?: string }) {
+export function BudgetBar({ spent, limit, label, className = '' }: { spent: number; limit: number; label: string; className?: string }) {
+  const { t } = useTranslation()
   const level = budgetLevel(spent, limit)
+  const pct = budgetPct(spent, limit)
   const width = limit > 0 ? Math.min(100, Math.max(0, (spent / limit) * 100)) : 0
   return (
-    <span className={`block h-2 overflow-hidden rounded-full bg-surface-2 ${className}`} aria-hidden="true">
+    <span role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, pct)}
+      aria-valuetext={t('budgets.pct', { pct })} aria-label={`${label}: ${t('budgets.pct', { pct })}`}
+      className={`block h-2 overflow-hidden rounded-full bg-surface-2 ${className}`}>
       <span data-level={level} className={`block h-full rounded-full ${LEVEL_BAR[level]}`} style={{ width: `${width}%` }} />
     </span>
   )
@@ -49,16 +53,19 @@ export function BudgetRow({ category, spent, limit, currency, locale, compact = 
   const level = budgetLevel(spent, limit)
   const pct = budgetPct(spent, limit)
   const over = spent > limit
+  const name = category ? categoryLabel(category, t) : '—'
   const body = (
     <span className="flex items-center gap-3.5">
       {category && <CategoryIcon icon={category.icon} color={category.color} size={compact ? 'sm' : 'md'} />}
       <span className="min-w-0 flex-1">
-        <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate text-[15px] font-bold tracking-[-0.01em]">{category ? categoryLabel(category, t) : '—'}</span>
-          <BudgetPill level={level} />
-          <span className={`num ml-auto shrink-0 pl-1 text-[15px] font-extrabold ${over ? 'text-danger' : ''}`}>{t('budgets.pct', { pct })}</span>
+        <span className="flex min-w-0 items-start gap-2">
+          <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="min-w-0 max-w-full truncate text-[15px] font-bold tracking-[-0.01em]">{name}</span>
+            <BudgetPill level={level} />
+          </span>
+          <span className={`num shrink-0 pl-1 text-[15px] font-extrabold ${over ? 'text-danger' : ''}`}>{t('budgets.pct', { pct })}</span>
         </span>
-        <BudgetBar spent={spent} limit={limit} className="mt-2" />
+        <BudgetBar spent={spent} limit={limit} label={name} className="mt-2" />
         <span className="mt-1.5 flex flex-wrap items-baseline justify-between gap-x-3 text-[13px]">
           <span className="font-medium text-muted">
             <Interpolate i18nKey="budgets.spentOf" values={{

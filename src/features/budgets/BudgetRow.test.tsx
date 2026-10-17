@@ -73,3 +73,12 @@ test('com onClick a linha é um botão; sem ele, só leitura', () => {
   renderRow(1000)
   expect(screen.queryByRole('button')).toBeNull()
 })
+
+test('barra é um progressbar com valores e rótulo (categoria + percentual)', () => {
+  renderRow(15000)
+  const pb = screen.getByRole('progressbar')
+  expect(pb.getAttribute('aria-valuenow')).toBe('100')
+  expect(pb.getAttribute('aria-valuemin')).toBe('0')
+  expect(pb.getAttribute('aria-valuemax')).toBe('100')
+  expect(pb.getAttribute('aria-label')).toBe('Alimentação: 150%')
+})

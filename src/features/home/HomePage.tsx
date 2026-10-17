@@ -18,7 +18,7 @@ import { useAccounts } from '../accounts/api'
 import { balancesByCurrency } from '../accounts/totals'
 import { useBudgets } from '../budgets/api'
 import { BudgetBar, BudgetRow } from '../budgets/BudgetRow'
-import { budgetsWithSpent, budgetTotals } from '../budgets/rows'
+import { budgetsWithSpent, budgetTotals, pickBudgetCurrency } from '../budgets/rows'
 import { useCards } from '../cards/api'
 import { useAllOpenInvoices, usePaidInvoicesInMonth } from '../cards/invoicesApi'
 import type { CardWithLimit, InvoiceSummary } from '../cards/types'
@@ -199,10 +199,11 @@ export default function HomePage() {
   const rest = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.total, 0)
   const restShare = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.share, 0)
   // Orçamento do mês na moeda principal do perfil.
-  const mainCurrency = profile?.currency
-  const budgetRows = mainCurrency ? budgetsWithSpent(budgetsQuery.data ?? [], monthTx, mainCurrency) : []
+  // Sem orçamento na moeda do perfil, usa a moeda com maior limite somado.
+  const budgetCurrency = pickBudgetCurrency(budgetsQuery.data ?? [], profile?.currency)
+  const budgetRows = budgetCurrency ? budgetsWithSpent(budgetsQuery.data ?? [], monthTx, budgetCurrency) : []
   const budgetTotal = budgetTotals(budgetRows)
-  const showBudget = showMonth || budgetRows.length > 0
+  const showBudget = showMonth || budgetRows.length > 0 || budgetsQuery.isError
   const firstName = profile?.name?.trim().split(/\s+/)[0]
 
   // Gráficos do mês: só até hoje (o resto do mês ainda não aconteceu).
@@ -313,16 +314,19 @@ export default function HomePage() {
             </div>
           ) : (
             <>
+              {budgetCurrency !== profile?.currency && (
+                <span className="mb-3 inline-block rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted">{budgetCurrency}</span>
+              )}
               <div className="flex items-baseline justify-between gap-3">
                 <p className="min-w-0 text-[15px] font-medium text-muted">
                   <Interpolate i18nKey="budgets.spentOf" values={{
-                    spent: <Amount cents={budgetTotal.spent} currency={mainCurrency!} locale={locale} className="text-[20px] font-extrabold tracking-[-0.02em] text-fg" />,
-                    limit: <Amount cents={budgetTotal.limit} currency={mainCurrency!} locale={locale} className="font-bold" />,
+                    spent: <Amount cents={budgetTotal.spent} currency={budgetCurrency!} locale={locale} className="text-[20px] font-extrabold tracking-[-0.02em] text-fg" />,
+                    limit: <Amount cents={budgetTotal.limit} currency={budgetCurrency!} locale={locale} className="font-bold" />,
                   }} />
                 </p>
                 <span className="num shrink-0 text-[15px] font-extrabold">{t('budgets.pct', { pct: budgetPct(budgetTotal.spent, budgetTotal.limit) })}</span>
               </div>
-              <BudgetBar spent={budgetTotal.spent} limit={budgetTotal.limit} className="mt-2.5" />
+              <BudgetBar spent={budgetTotal.spent} limit={budgetTotal.limit} label={t('home.budget')} className="mt-2.5" />
               <ul className="mt-4 flex flex-col">
                 {budgetRows.slice(0, TOP_BUDGETS).map((r) => (
                   <li key={r.budget.id}>
