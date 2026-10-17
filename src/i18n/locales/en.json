@@ -77,7 +77,9 @@
       "rateLimit": "Too many attempts. Wait a moment and try again.",
       "generic": "Couldn't complete that. Please try again."
     },
-    "tagline": "Your finances, calm and in control, on your phone and computer."
+    "tagline": "Your finances, calm and in control, on your phone and computer.",
+    "google": "Continue with Google",
+    "or": "or"
   },
   "onboarding": {
     "title": "Welcome!",
@@ -499,5 +501,11 @@
     "empty": "Nothing recorded in this period.",
     "share": "{{pct}}% of expenses",
     "chartHidden": "Values hidden"
+  },
+  "errors": {
+    "pageTitle": "Something went wrong",
+    "pageBody": "Try reloading the page. If it keeps happening, go back to the start.",
+    "reload": "Reload",
+    "home": "Go to start"
   }
 }

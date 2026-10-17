@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router'
 import { PublicOnly, RequireAuth, RequireOnboarded } from './guards'
 import { AppShell } from './AppShell'
+import { ErrorPage } from './ErrorPage'
 import LoginPage from '../features/auth/LoginPage'
 import SignupPage from '../features/auth/SignupPage'
 import ForgotPasswordPage from '../features/auth/ForgotPasswordPage'
@@ -27,47 +28,60 @@ function TransactionFormRoute() {
   return <TransactionFormPage key={id ?? 'new'} />
 }
 
+// Toda rota tem uma tela de erro calma. Dentro do AppShell ela fica no lugar da
+// página (o menu continua); fora dele, ocupa a tela toda.
 export const router = createBrowserRouter([
   {
-    element: <PublicOnly />,
+    errorElement: <ErrorPage />,
     children: [
-      { path: '/login', element: <LoginPage /> },
-      { path: '/signup', element: <SignupPage /> },
-      { path: '/forgot-password', element: <ForgotPasswordPage /> },
-    ],
-  },
-  { path: '/reset-password', element: <ResetPasswordPage /> },
-  {
-    element: <RequireAuth />,
-    children: [
-      { path: '/onboarding', element: <OnboardingPage /> },
       {
-        element: <RequireOnboarded />,
+        element: <PublicOnly />,
         children: [
+          { path: '/login', element: <LoginPage /> },
+          { path: '/signup', element: <SignupPage /> },
+          { path: '/forgot-password', element: <ForgotPasswordPage /> },
+        ],
+      },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
+      {
+        element: <RequireAuth />,
+        errorElement: <ErrorPage />,
+        children: [
+          { path: '/onboarding', element: <OnboardingPage /> },
           {
-            element: <AppShell />,
+            element: <RequireOnboarded />,
             children: [
-              { path: '/', element: <HomePage /> },
-              { path: '/transactions', element: <TransactionsPage /> },
-              { path: '/new', element: <TransactionFormRoute /> },
-              { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
-              { path: '/cards', element: <CardsPage /> },
-              { path: '/cards/:id', element: <CardDetailPage /> },
-              { path: '/groups', element: <GroupsPage /> },
-              { path: '/groups/:id', element: <GroupDetailPage /> },
-              { path: '/join/:token', element: <JoinGroupPage /> },
-              { path: '/accounts', element: <AccountsPage /> },
-              { path: '/categories', element: <CategoriesPage /> },
-              { path: '/recurring', element: <RecurringPage /> },
-              { path: '/budgets', element: <BudgetsPage /> },
-              { path: '/goals', element: <GoalsPage /> },
-              { path: '/reports', element: <ReportsPage /> },
-              { path: '/more', element: <SettingsPage /> },
+              {
+                element: <AppShell />,
+                children: [
+                  {
+                    errorElement: <ErrorPage />,
+                    children: [
+                      { path: '/', element: <HomePage /> },
+                      { path: '/transactions', element: <TransactionsPage /> },
+                      { path: '/new', element: <TransactionFormRoute /> },
+                      { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
+                      { path: '/cards', element: <CardsPage /> },
+                      { path: '/cards/:id', element: <CardDetailPage /> },
+                      { path: '/groups', element: <GroupsPage /> },
+                      { path: '/groups/:id', element: <GroupDetailPage /> },
+                      { path: '/join/:token', element: <JoinGroupPage /> },
+                      { path: '/accounts', element: <AccountsPage /> },
+                      { path: '/categories', element: <CategoriesPage /> },
+                      { path: '/recurring', element: <RecurringPage /> },
+                      { path: '/budgets', element: <BudgetsPage /> },
+                      { path: '/goals', element: <GoalsPage /> },
+                      { path: '/reports', element: <ReportsPage /> },
+                      { path: '/more', element: <SettingsPage /> },
+                    ],
+                  },
+                ],
+              },
             ],
           },
         ],
       },
+      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
-  { path: '*', element: <Navigate to="/" replace /> },
 ])
