@@ -15,6 +15,7 @@ import { useAuth } from '../auth/auth-context'
 import { categoryLabel } from '../categories/label'
 import { useGroupEntries, useGroupMembers, useMyGroups, useRemoveMember, useTransferAdmin } from './api'
 import { memberDisplayName, splitAtSlot } from './display'
+import { GroupBudgetSection } from './GroupBudgetSection'
 import { groupIconComponent } from './GroupIcon'
 import { GroupSettingsSheet } from './GroupSettingsSheet'
 import { InviteSheet } from './InviteSheet'
@@ -208,6 +209,9 @@ export default function GroupDetailPage() {
               </>
             )}
           </Panel>
+
+          {/* Orçamento do grupo */}
+          <GroupBudgetSection group={group} month={month} admin={admin} />
         </div>
 
         <div className="flex min-w-0 flex-col gap-5 lg:gap-6">

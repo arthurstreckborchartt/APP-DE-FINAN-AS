@@ -85,6 +85,15 @@ const budgets = [
   budget('b5', 'c-food', 60000),
 ]
 
+// Orçamentos do grupo Casa (gasto do mês nas groupEntries): Moradia 1.800 de 2.000 (90%, perto),
+// Contas 475,90 de 400 (passou), Mercado 278,37 de 1.000 (27%).
+const groupBudget = (id, category_id, amount) => ({ ...budget(id, category_id, amount), group_id: 'g-casa' })
+const groupBudgets = [
+  groupBudget('gb1', 'c-home', 200000),
+  groupBudget('gb2', 'c-util', 40000),
+  groupBudget('gb3', 'c-groc', 100000),
+]
+
 const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
 const cards = [
   card('k-nu', 'Nubank Ultravioleta', '#5b3df5', 800000, 5, 12, 215000),
@@ -187,7 +196,10 @@ async function mock(page) {
     if (path === '/rest/v1/group_invites') return json(route, groupInvites)
     if (path === '/rest/v1/rpc/group_invite_preview') return json(route, [invitePreview])
     if (path === '/rest/v1/recurring') return json(route, recurring)
-    if (path === '/rest/v1/budgets') return json(route, url.searchParams.get('user_id') ? budgets : [])
+    if (path === '/rest/v1/budgets') {
+      if (url.searchParams.get('group_id') === 'eq.g-casa') return json(route, groupBudgets)
+      return json(route, url.searchParams.get('user_id') ? budgets : [])
+    }
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
   })
