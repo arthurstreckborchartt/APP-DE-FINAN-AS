@@ -1,4 +1,4 @@
-import { beforeAll, expect, test, vi } from 'vitest'
+import { afterEach, beforeAll, expect, test, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import i18n from '../../i18n'
@@ -11,6 +11,8 @@ const entry = (kind: string, amount: number, currency: string, extra = {}) => ({
   kind, amount, currency, month, category_id: kind === 'income' ? 'c-sal' : 'c-food', account_id: 'a1', card_id: null, ...extra,
 })
 
+const privacy = vi.hoisted(() => ({ hidden: false }))
+vi.mock('../../lib/privacy', () => ({ useHideValues: () => privacy.hidden }))
 vi.mock('../auth/auth-context', () => ({ useAuth: () => ({ user: { id: 'u1' } }) }))
 vi.mock('./api', () => ({
   useEntriesRange: () => ok([
@@ -46,6 +48,7 @@ vi.mock('../categories/api', () => ({
 }))
 
 beforeAll(async () => { await i18n.changeLanguage('pt-BR') })
+afterEach(() => { privacy.hidden = false })
 
 const renderAt = (url: string) => render(<MemoryRouter initialEntries={[url]}><ReportsPage /></MemoryRouter>)
 
@@ -71,4 +74,16 @@ test('grupo: comparação entre membros e gastos por membro', () => {
   expect(screen.getByText('Gastos por membro')).toBeTruthy()
   expect(screen.getAllByText('Bruno').length).toBeGreaterThan(0)
   expect(screen.queryByLabelText('Conta ou cartão')).toBeNull()
+})
+
+test.each(['/reports', '/reports?scope=g1'])('ocultar valores: nenhum valor vaza em %s (resumo, eixo, balão, tabela)', (url) => {
+  privacy.hidden = true
+  const { container } = renderAt(url)
+  const chart = screen.getByRole('img')
+  expect(chart.getAttribute('aria-label')).toContain('Valores ocultos')
+  fireEvent.focus(chart)
+  expect(screen.getByRole('tooltip')).toBeTruthy()
+  const text = container.textContent ?? ''
+  expect(text).not.toMatch(/R\$|€|\d[.,]\d{2}\b|\bmil\b/)
+  expect(text).toContain('••••')
 })

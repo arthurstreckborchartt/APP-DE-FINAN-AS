@@ -1,6 +1,7 @@
 import { useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 
-export type BarSeries = { name: string; color: string; values: number[] }
+/** `id` estável é a chave React (nomes podem se repetir); sem ele, vale a posição. */
+export type BarSeries = { id?: string; name: string; color: string; values: number[] }
 
 type Props = {
   /** Rótulo curto de cada grupo (eixo X), ex.: "out.". */
@@ -179,8 +180,8 @@ export function BarChart({ labels, series, format, formatTick = format, titles =
               boxShadow: TOOLTIP_SHADOW,
             }}>
             <span className="whitespace-nowrap font-bold text-fg">{titles[active]}</span>
-            {series.map((s) => (
-              <span key={s.name} className="flex items-center gap-2 leading-none">
+            {series.map((s, j) => (
+              <span key={s.id ?? j} className="flex items-center gap-2 leading-none">
                 <span className="h-0.5 w-3 shrink-0 rounded-full" style={{ background: s.color }} aria-hidden="true" />
                 <span className="whitespace-nowrap text-muted">{s.name}</span>
                 <span className={`num ml-auto whitespace-nowrap pl-3 font-bold text-fg ${hidden ? 'tracking-[0.18em]' : ''}`}>
@@ -211,8 +212,8 @@ export function BarChart({ labels, series, format, formatTick = format, titles =
 
       {m > 1 && (
         <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2" aria-hidden="true">
-          {series.map((s) => (
-            <li key={s.name} className="flex items-center gap-2 text-[13px] font-semibold text-muted">
+          {series.map((s, j) => (
+            <li key={s.id ?? j} className="flex items-center gap-2 text-[13px] font-semibold text-muted">
               <span className="size-2.5 shrink-0 rounded-[3px]" style={{ background: s.color }} />
               {s.name}
             </li>
@@ -227,14 +228,14 @@ export function BarChart({ labels, series, format, formatTick = format, titles =
         <thead>
           <tr>
             <th scope="col"></th>
-            {series.map((s) => <th key={s.name} scope="col">{s.name}</th>)}
+            {series.map((s, j) => <th key={s.id ?? j} scope="col">{s.name}</th>)}
           </tr>
         </thead>
         <tbody>
           {labels.map((_, i) => (
             <tr key={i}>
               <th scope="row">{titles[i]}</th>
-              {series.map((s) => <td key={s.name}>{value(s.values[i] ?? 0)}</td>)}
+              {series.map((s, j) => <td key={s.id ?? j}>{value(s.values[i] ?? 0)}</td>)}
             </tr>
           ))}
         </tbody>

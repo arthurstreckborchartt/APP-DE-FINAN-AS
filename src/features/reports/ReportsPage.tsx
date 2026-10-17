@@ -61,6 +61,13 @@ function Tile({ label, children }: { label: string; children: ReactNode }) {
   )
 }
 
+/** Rótulo do gráfico para o leitor de tela; avisa quando os valores estão ocultos ("••••"). */
+function useChartLabel() {
+  const { t } = useTranslation()
+  const hidden = useHideValues()
+  return (title: string) => (hidden ? `${title}. ${t('reports.chartHidden')}` : title)
+}
+
 function useMoneyFormats(currency: string, locale: string) {
   return useMemo(() => {
     const compact = new Intl.NumberFormat(locale, { style: 'currency', currency, notation: 'compact', maximumFractionDigits: 1 })
@@ -135,6 +142,7 @@ export default function ReportsPage() {
 
   // Grupo na URL ainda carregando: espera em vez de mostrar o pessoal por um instante.
   const waitingGroup = scope !== 'personal' && groupsQuery.isPending
+  const groupsFailed = scope !== 'personal' && groupsQuery.isError
 
   return (
     <section className="flex flex-col gap-5">
@@ -149,7 +157,7 @@ export default function ReportsPage() {
             <ControlLabel>{t('reports.scope')}</ControlLabel>
             <div role="radiogroup" aria-label={t('reports.scope')} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
               {[{ id: 'personal', name: t('reports.personal') }, ...groups].map((g) => {
-                const on = g.id === 'personal' ? !group && !waitingGroup : g.id === group?.id
+                const on = g.id === 'personal' ? !group && !waitingGroup && !groupsFailed : g.id === group?.id
                 return (
                   <button key={g.id} type="button" role="radio" aria-checked={on}
                     onClick={() => update({ scope: g.id === 'personal' ? null : g.id, src: null, cur: null })}
@@ -170,7 +178,7 @@ export default function ReportsPage() {
         </div>
       </div>
 
-      {waitingGroup ? <FullScreenSpinner /> : group ? (
+      {waitingGroup ? <FullScreenSpinner /> : groupsFailed ? <QueryError onRetry={() => void groupsQuery.refetch()} /> : group ? (
         <GroupReport key={group.id} group={group} period={period} locale={locale} />
       ) : (
         <PersonalReport period={period} locale={locale} src={params.get('src')} cur={params.get('cur')}
@@ -190,6 +198,7 @@ function PersonalReport({ period, locale, src, cur, onSource, onCurrency }: {
 }) {
   const { t } = useTranslation()
   const hidden = useHideValues()
+  const chartLabel = useChartLabel()
   const entriesQuery = useEntriesRange(period.from, period.to)
   const accountsQuery = useAccounts()
   const cardsQuery = useCards()
@@ -288,7 +297,7 @@ function PersonalReport({ period, locale, src, cur, onSource, onCurrency }: {
             </Panel>
             <Panel title={t('reports.incomeVsExpense')}>
               <BarChart labels={period.labels} titles={period.titles} series={series} format={format} formatTick={formatTick}
-                hidden={hidden} ariaLabel={t('reports.incomeVsExpense')} />
+                hidden={hidden} ariaLabel={chartLabel(t('reports.incomeVsExpense'))} />
             </Panel>
           </div>
           <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
@@ -308,6 +317,7 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
   const { user } = useAuth()
   const myId = user?.id
   const membersQuery = useGroupMembers(group.id)
+  const chartLabel = useChartLabel()
   const entriesQuery = useGroupPeriodEntries(group.id, period.from, period.to)
   const { format, formatTick } = useMoneyFormats(group.currency, locale)
 
@@ -324,31 +334,39 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
     label: categoryLabel({ name: c.name, i18n_key: c.key }, t),
   })), [stats, t])
 
-  // Uma série por membro que gastou (até 6; os demais somados em "Outros"). A cor segue a pessoa:
-  // você primeiro, depois a ordem de entrada no grupo — nunca a posição no ranking.
+  // A cor segue a pessoa: posição dela na lista de membros (já ordenada pelo servidor), nunca o
+  // ranking nem o período — trocar 3→12 meses não repinta ninguém.
+  const colorOf = useMemo(() => {
+    const index = new Map(members.map((m, i) => [m.user_id, i]))
+    return (userId: string) => MEMBER_COLORS[(index.get(userId) ?? 0) % MEMBER_COLORS.length]
+  }, [members])
+
+  // Uma série por membro que gastou (até 6; os demais somados em "Outros"), na ordem da lista de membros.
   const series = useMemo<BarSeries[]>(() => {
     const spenders = memberMonthly(entries, period.months, group.currency)
     const overflow = spenders.length > MAX_SERIES
     const top = overflow ? spenders.slice(0, MAX_SERIES - 1) : spenders
-    const order = (id: string) => (id === myId ? -1 : members.findIndex((m) => m.user_id === id))
-    const named = [...top].sort((a, b) => order(a.user_id) - order(b.user_id)).map((s, i) => {
+    const position = (id: string) => members.findIndex((m) => m.user_id === id)
+    const named: BarSeries[] = [...top].sort((a, b) => position(a.user_id) - position(b.user_id)).map((s) => {
       const member = members.find((m) => m.user_id === s.user_id)
       return {
+        id: s.user_id,
         name: member ? memberDisplayName(member, myId, t) : t('groups.unnamed'),
-        color: MEMBER_COLORS[i],
+        color: colorOf(s.user_id),
         values: s.values,
       }
     })
     if (overflow) {
       const rest = spenders.slice(MAX_SERIES - 1)
       named.push({
+        id: 'other',
         name: t('common.other'),
         color: 'var(--muted)',
         values: period.months.map((_, i) => rest.reduce((sum, r) => sum + r.values[i], 0)),
       })
     }
     return named
-  }, [entries, period.months, group.currency, members, myId, t])
+  }, [entries, period.months, group.currency, members, myId, t, colorOf])
 
   if (membersQuery.isPending || entriesQuery.isPending) return <Loading />
   if (membersQuery.isError || entriesQuery.isError) {
@@ -373,14 +391,13 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
         </Panel>
         <Panel title={t('reports.memberComparison')}>
           <BarChart labels={period.labels} titles={period.titles} series={series} format={format} formatTick={formatTick}
-            hidden={hidden} ariaLabel={t('reports.memberComparison')} />
+            hidden={hidden} ariaLabel={chartLabel(t('reports.memberComparison'))} />
         </Panel>
       </div>
       <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
         <Panel title={t('reports.byMember')}>
           <ul className="flex flex-col gap-4">
             {stats.byMember.map((m) => {
-              const self = m.user_id === myId
               return (
                 <li key={m.user_id}>
                   <div className="flex items-center justify-between gap-3">
@@ -391,7 +408,7 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
                     <Amount cents={m.amount} currency={group.currency} locale={locale} className="shrink-0 text-[15px] font-bold" />
                   </div>
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-                    <div className={`h-full rounded-full ${self ? 'bg-primary' : 'bg-muted'}`} style={{ width: `${m.share}%` }} />
+                    <div className="h-full rounded-full" style={{ width: `${m.share}%`, backgroundColor: colorOf(m.user_id) }} />
                   </div>
                   <p className="mt-1 text-[13px] font-medium text-muted">{t('groups.share', { pct: m.share })}</p>
                 </li>
