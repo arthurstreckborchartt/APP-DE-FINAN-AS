@@ -9,6 +9,16 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.8.0.0 — 2026-10-18
+
+Etapa 7: pronto para publicar.
+
+- Configuração da Vercel (deploy automático a cada push na main), com cabeçalhos de segurança e cache correto do app instalável.
+- Página de erro amigável com "Recarregar" e "Ir para o início".
+- Login com Google opcional: o botão aparece sozinho quando o Google for ligado no Supabase.
+- Um grupo nunca fica sem administrador: se a conta do admin for apagada, o membro mais antigo assume.
+- Guia passo a passo em docs/publicacao.md.
+
 ## Atualização 1.7.0.0 — 2026-10-17
 
 Etapa 6: orçamentos, metas e relatórios.
