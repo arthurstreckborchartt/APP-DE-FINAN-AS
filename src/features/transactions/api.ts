@@ -90,6 +90,8 @@ function useInvalidateFinance() {
       qc.invalidateQueries({ queryKey: ['accounts'] }),
       qc.invalidateQueries({ queryKey: ['cards'] }),
       qc.invalidateQueries({ queryKey: ['invoices'] }),
+      // Totais e lista do grupo dependem dos lançamentos marcados para ele.
+      qc.invalidateQueries({ queryKey: ['groups'] }),
     ])
 }
 
@@ -128,6 +130,7 @@ export function afterDeleteTransaction(qc: QueryClient, id: string) {
     qc.invalidateQueries({ queryKey: ['accounts'] }),
     qc.invalidateQueries({ queryKey: ['cards'] }),
     qc.invalidateQueries({ queryKey: ['invoices'] }),
+    qc.invalidateQueries({ queryKey: ['groups'] }),
   ])
 }
 
