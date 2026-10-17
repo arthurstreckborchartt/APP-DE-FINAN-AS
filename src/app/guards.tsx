@@ -1,20 +1,27 @@
-import { Navigate, Outlet } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router'
 import { useAuth } from '../features/auth/auth-context'
 import { useProfile } from '../features/profile/api'
 import { FullScreenSpinner } from '../components/ui/Spinner'
 import { ProfileErrorState } from './ProfileErrorState'
+import { readReturnTo, saveReturnTo } from '../lib/return-to'
 
 export function RequireAuth() {
   const { session, loading } = useAuth()
+  const location = useLocation()
   if (loading) return <FullScreenSpinner />
-  if (!session) return <Navigate to="/login" replace />
+  if (!session) {
+    // Link de convite aberto sem sessão: volta para ele depois de entrar (só guarda `/join/...`).
+    saveReturnTo(location.pathname)
+    return <Navigate to="/login" replace />
+  }
   return <Outlet />
 }
 
 export function PublicOnly() {
   const { session, loading } = useAuth()
   if (loading) return <FullScreenSpinner />
-  if (session) return <Navigate to="/" replace />
+  // Não apaga o destino aqui: a página do convite apaga ao montar (seguro no StrictMode).
+  if (session) return <Navigate to={readReturnTo() ?? '/'} replace />
   return <Outlet />
 }
 

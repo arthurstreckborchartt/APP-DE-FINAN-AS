@@ -32,3 +32,23 @@ export function groupErrorKey(error: unknown): string {
   if (error instanceof Error && error.message === 'group_not_changed') return 'groups.notAdmin'
   return 'common.errorGeneric'
 }
+
+const JOIN_HINTS: [hint: string, key: string][] = [
+  ['invite_invalid', 'groups.join.invalid'],
+  ['invite_expired', 'groups.join.expired'],
+  ['group_full', 'groups.join.full'],
+  ['removed_from_group', 'groups.join.removed'],
+]
+
+/** Chave de tradução da mensagem para um erro de `join_group`. */
+export function joinErrorKey(error: unknown): string {
+  for (const [hint, key] of JOIN_HINTS) if (isRpcHint(error, hint)) return key
+  return 'common.errorGeneric'
+}
+
+/** Chave de tradução para um erro ao salvar lançamento/recorrente marcado para um grupo; `null` se não for desse tipo. */
+export function groupSaveErrorKey(error: unknown): string | null {
+  if (isRpcHint(error, 'not_group_member')) return 'groups.notMember'
+  if (isRpcHint(error, 'group_currency')) return 'groups.groupCurrency'
+  return null
+}

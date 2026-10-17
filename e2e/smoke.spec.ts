@@ -27,3 +27,9 @@ test('sem rolagem horizontal', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
   expect(overflow).toBeLessThanOrEqual(0)
 })
+
+test('convite sem sessão leva ao login', async ({ page }) => {
+  await page.goto('/join/abc')
+  await expect(page).toHaveURL(/\/login$/)
+  await expect(page.getByRole('heading', { name: 'Entrar' })).toBeVisible()
+})

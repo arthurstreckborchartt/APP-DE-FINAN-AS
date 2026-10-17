@@ -1,6 +1,6 @@
 import { createElement, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate, useParams, useSearchParams } from 'react-router'
+import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router'
 import { ChevronLeft, ReceiptText, Settings2, UserPlus, Users } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
@@ -55,6 +55,8 @@ export default function GroupDetailPage() {
   const { user } = useAuth()
   const myId = user?.id
   const [params, setParams] = useSearchParams()
+  // Acabou de entrar pelo convite.
+  const joined = (useLocation().state as { joined?: boolean } | null)?.joined === true
   const raw = params.get('m')
   const month = isMonth(raw) ? raw : monthOf(todayISO())
 
@@ -125,6 +127,8 @@ export default function GroupDetailPage() {
           </p>
         </div>
       </header>
+
+      {joined && <p role="status" className="rounded-2xl bg-success/10 px-4 py-3 text-sm font-semibold text-success">{t('groups.join.joined')}</p>}
 
       <div className="sm:max-w-md">
         <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />

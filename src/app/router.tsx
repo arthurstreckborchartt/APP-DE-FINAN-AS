@@ -13,6 +13,7 @@ import CardDetailPage from '../features/cards/CardDetailPage'
 import RecurringPage from '../features/recurring/RecurringPage'
 import GroupsPage from '../features/groups/GroupsPage'
 import GroupDetailPage from '../features/groups/GroupDetailPage'
+import JoinGroupPage from '../features/groups/JoinGroupPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import HomePage from '../features/home/HomePage'
 import TransactionsPage from '../features/transactions/TransactionsPage'
@@ -51,6 +52,7 @@ export const router = createBrowserRouter([
               { path: '/cards/:id', element: <CardDetailPage /> },
               { path: '/groups', element: <GroupsPage /> },
               { path: '/groups/:id', element: <GroupDetailPage /> },
+              { path: '/join/:token', element: <JoinGroupPage /> },
               { path: '/accounts', element: <AccountsPage /> },
               { path: '/categories', element: <CategoriesPage /> },
               { path: '/recurring', element: <RecurringPage /> },
