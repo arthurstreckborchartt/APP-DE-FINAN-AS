@@ -467,6 +467,7 @@
     "history": "Historial",
     "historyEmpty": "Aún no hay aportes.",
     "deleteContribution": "Eliminar aporte",
+    "deleteContributionConfirm": "¿Eliminar este movimiento del historial? Lo ahorrado se recalcula.",
     "negative": "No se puede retirar más de lo que está ahorrado.",
     "archive": "Archivar meta",
     "unarchive": "Reactivar meta",

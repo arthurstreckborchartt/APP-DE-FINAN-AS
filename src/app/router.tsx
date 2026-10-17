@@ -15,6 +15,7 @@ import GroupsPage from '../features/groups/GroupsPage'
 import GroupDetailPage from '../features/groups/GroupDetailPage'
 import JoinGroupPage from '../features/groups/JoinGroupPage'
 import BudgetsPage from '../features/budgets/BudgetsPage'
+import GoalsPage from '../features/goals/GoalsPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import HomePage from '../features/home/HomePage'
 import TransactionsPage from '../features/transactions/TransactionsPage'
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
               { path: '/categories', element: <CategoriesPage /> },
               { path: '/recurring', element: <RecurringPage /> },
               { path: '/budgets', element: <BudgetsPage /> },
+              { path: '/goals', element: <GoalsPage /> },
               { path: '/more', element: <SettingsPage /> },
             ],
           },

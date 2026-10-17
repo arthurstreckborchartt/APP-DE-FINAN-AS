@@ -467,6 +467,7 @@
     "history": "Histórico",
     "historyEmpty": "Ainda sem contribuições.",
     "deleteContribution": "Eliminar contribuição",
+    "deleteContributionConfirm": "Eliminar este movimento do histórico? O valor poupado é recalculado.",
     "negative": "Não é possível levantar mais do que o valor poupado.",
     "archive": "Arquivar meta",
     "unarchive": "Reativar meta",

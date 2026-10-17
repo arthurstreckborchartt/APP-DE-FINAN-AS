@@ -467,6 +467,7 @@
     "history": "History",
     "historyEmpty": "No contributions yet.",
     "deleteContribution": "Delete contribution",
+    "deleteContributionConfirm": "Delete this entry from the history? The saved amount is recalculated.",
     "negative": "You can't withdraw more than you've saved.",
     "archive": "Archive goal",
     "unarchive": "Reactivate goal",

@@ -1,7 +1,7 @@
 import {
   Baby, BookOpen, Briefcase, Car, CircleEllipsis, Coffee, Dumbbell, Film, Fuel, Gamepad2, Gift, GraduationCap,
-  HeartPulse, Home, Landmark, Laptop, Lightbulb, Music, PartyPopper, PawPrint, PiggyBank, Plane, Receipt, Repeat,
-  Shirt, ShoppingBag, ShoppingCart, Smartphone, Sparkles, Tag, TrendingUp, Utensils, Wallet, Wrench,
+  Heart, HeartPulse, Home, Landmark, Laptop, Lightbulb, Music, PartyPopper, PawPrint, PiggyBank, Plane, Receipt, Repeat,
+  Shirt, ShoppingBag, ShoppingCart, Smartphone, Sparkles, Tag, TrendingUp, Umbrella, Utensils, Wallet, Wrench,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -13,6 +13,7 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   coffee: Coffee, dumbbell: Dumbbell, baby: Baby, shirt: Shirt, smartphone: Smartphone, fuel: Fuel,
   'book-open': BookOpen, music: Music, film: Film, wrench: Wrench, 'piggy-bank': PiggyBank, wallet: Wallet,
   receipt: Receipt, 'gamepad-2': Gamepad2, sparkles: Sparkles, tag: Tag,
+  heart: Heart, umbrella: Umbrella,
 }
 
 export const CATEGORY_ICON_NAMES = Object.keys(CATEGORY_ICONS)

@@ -94,6 +94,23 @@ const groupBudgets = [
   groupBudget('gb3', 'c-groc', 100000),
 ]
 
+// Metas: uma atingida, uma com prazo vencido, uma sem prazo e uma arquivada.
+const goal = (id, name, target_amount, saved, deadline, icon, color, archived = false) => ({
+  id, user_id: USER_ID, name, target_amount, currency: 'BRL', deadline, icon, color, archived,
+  created_at: '2026-01-01T00:00:00Z', updated_at: '', saved, contributions: 3, last_contribution: day(2),
+})
+const goals = [
+  goal('go1', 'Reserva de emergência', 1000000, 1025000, `${now.getFullYear()}-12-31`, 'umbrella', '#10b981'),
+  goal('go2', 'Viagem para o Chile', 800000, 512000, `${now.getFullYear()}-01-31`, 'plane', '#3b82f6'),
+  goal('go3', 'Notebook novo', 650000, 147500, null, 'laptop', '#6366f1'),
+  goal('go4', 'Curso de inglês', 300000, 90000, null, 'graduation-cap', '#f97316', true),
+]
+const goalContributions = [
+  { id: 'gc1', user_id: USER_ID, goal_id: 'go2', amount: 200000, date: day(2), note: 'Bônus', created_at: '' },
+  { id: 'gc2', user_id: USER_ID, goal_id: 'go2', amount: -38000, date: day(9), note: 'Passagem de ônibus', created_at: '' },
+  { id: 'gc3', user_id: USER_ID, goal_id: 'go2', amount: 350000, date: day(20), note: '', created_at: '' },
+]
+
 const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
 const cards = [
   card('k-nu', 'Nubank Ultravioleta', '#5b3df5', 800000, 5, 12, 215000),
@@ -201,13 +218,18 @@ async function mock(page) {
       return json(route, url.searchParams.get('user_id') ? budgets : [])
     }
     if (path === '/rest/v1/installments') return json(route, installments)
+    if (path === '/rest/v1/goal_progress') return json(route, goals)
+    if (path === '/rest/v1/goal_contributions') {
+      const gid = url.searchParams.get('goal_id')
+      return json(route, goalContributions.filter((c) => `eq.${c.goal_id}` === gid))
+    }
     return json(route, [])
   })
 }
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['budgets', '/budgets'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['budgets', '/budgets'], ['goals', '/goals'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

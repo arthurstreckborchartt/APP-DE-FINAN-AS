@@ -467,6 +467,7 @@
     "history": "Histórico",
     "historyEmpty": "Nenhum aporte ainda.",
     "deleteContribution": "Excluir aporte",
+    "deleteContributionConfirm": "Excluir este movimento do histórico? O valor guardado é recalculado.",
     "negative": "Não dá para retirar mais do que está guardado.",
     "archive": "Arquivar meta",
     "unarchive": "Reativar meta",
