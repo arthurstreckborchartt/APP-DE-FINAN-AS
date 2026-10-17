@@ -26,6 +26,7 @@ export function toMonthEntry(row: MonthEntryRow): MonthEntry {
     installments_count: row.installments_count,
     total_amount: Number(row.total_amount),
     recurring_id: row.recurring_id ?? null,
+    group_id: row.group_id ?? null,
     created_at: row.created_at,
     // A view não expõe updated_at; created_at é o valor mais próximo disponível.
     updated_at: row.created_at,
@@ -89,6 +90,8 @@ function useInvalidateFinance() {
       qc.invalidateQueries({ queryKey: ['accounts'] }),
       qc.invalidateQueries({ queryKey: ['cards'] }),
       qc.invalidateQueries({ queryKey: ['invoices'] }),
+      // Totais e lista do grupo dependem dos lançamentos marcados para ele.
+      qc.invalidateQueries({ queryKey: ['groups'] }),
     ])
 }
 
@@ -127,6 +130,7 @@ export function afterDeleteTransaction(qc: QueryClient, id: string) {
     qc.invalidateQueries({ queryKey: ['accounts'] }),
     qc.invalidateQueries({ queryKey: ['cards'] }),
     qc.invalidateQueries({ queryKey: ['invoices'] }),
+    qc.invalidateQueries({ queryKey: ['groups'] }),
   ])
 }
 

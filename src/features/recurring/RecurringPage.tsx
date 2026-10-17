@@ -15,6 +15,7 @@ import { useAccounts } from '../accounts/api'
 import { useCards } from '../cards/api'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
+import { groupSaveErrorKey } from '../groups/display'
 import { useCreateRecurring, useDeleteRecurring, useRecurring, useUpdateRecurring } from './api'
 import { RecurringForm } from './RecurringForm'
 import type { Recurring, RecurringInput } from './types'
@@ -69,7 +70,7 @@ export default function RecurringPage() {
   }
 
   function fail(e: unknown) {
-    setError(t(isRpcHint(e, 'archived_source') ? 'recurring.archivedSource' : 'common.errorGeneric'))
+    setError(t(isRpcHint(e, 'archived_source') ? 'recurring.archivedSource' : groupSaveErrorKey(e) ?? 'common.errorGeneric'))
   }
 
   async function save(value: RecurringInput) {
@@ -83,6 +84,7 @@ export default function RecurringPage() {
           patch: {
             amount: value.amount, category_id: value.category_id, description: value.description,
             account_id: value.account_id, card_id: value.card_id, frequency: value.frequency, end_date: value.end_date,
+            group_id: value.group_id,
           },
         })
       }

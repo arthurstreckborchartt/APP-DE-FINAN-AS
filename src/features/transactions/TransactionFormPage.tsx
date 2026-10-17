@@ -21,6 +21,8 @@ import { useAccounts } from '../accounts/api'
 import { useCards } from '../cards/api'
 import { useCardInvoices } from '../cards/invoicesApi'
 import { useCategories } from '../categories/api'
+import { groupSaveErrorKey } from '../groups/display'
+import { GroupPicker } from '../groups/GroupPicker'
 import { categoryLabel } from '../categories/label'
 import { useProfile } from '../profile/api'
 import { useCreateTransaction, useDeleteTransaction, useRecentTransactions, useTransaction, useUpdateTransaction } from './api'
@@ -37,6 +39,7 @@ type Draft = {
   installments: number
   date: string
   description: string
+  groupId: string | null
 }
 
 type Errors = Partial<Record<'amount' | 'category' | 'account' | 'card' | 'date', string>>
@@ -60,7 +63,8 @@ export default function TransactionFormPage() {
   const remove = useDeleteTransaction()
   const [draft, setDraft] = useState<Draft | null>(null)
   const [errors, setErrors] = useState<Errors>({})
-  const [saveError, setSaveError] = useState<'generic' | 'locked' | null>(null)
+  /** Chave de tradução do erro ao salvar ou excluir. */
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   const accounts = accountsQuery.data
@@ -76,6 +80,7 @@ export default function TransactionFormPage() {
         kind: existing.kind, amount: existing.amount, categoryId: existing.category_id,
         accountId: existing.account_id, source: existing.card_id ? 'card' : 'account', cardId: existing.card_id,
         installments: existing.installments_count, date: existing.date, description: existing.description,
+        groupId: existing.group_id,
       }
     }
     if (!recentSettled) return null
@@ -90,7 +95,7 @@ export default function TransactionFormPage() {
     return {
       kind: 'expense', amount: 0, categoryId: d.categoryId, accountId: d.accountId,
       source: lastCard ? 'card' : 'account', cardId: lastCard?.id ?? null, installments: 1,
-      date: todayISO(), description: '',
+      date: todayISO(), description: '', groupId: null,
     }
   }, [id, existing, accounts, categories, cards, recent, recentSettled])
 
@@ -170,6 +175,7 @@ export default function TransactionFormPage() {
     const input = {
       kind: form.kind, amount: form.amount, date: form.date, category_id: form.categoryId!,
       description: form.description.trim(),
+      group_id: form.groupId,
       ...(onCard
         ? { account_id: null, card_id: form.cardId!, installments_count: form.installments }
         : { account_id: form.accountId!, card_id: null, installments_count: 1 }),
@@ -179,7 +185,7 @@ export default function TransactionFormPage() {
       else await create.mutateAsync(input)
       navigate(`/transactions?m=${monthOf(form.date)}`, { replace: true })
     } catch (e) {
-      setSaveError(isPaidInvoiceError(e) ? 'locked' : 'generic')
+      setSaveError(isPaidInvoiceError(e) ? 'transactions.paidLocked' : groupSaveErrorKey(e) ?? 'common.errorGeneric')
     }
   }
 
@@ -191,7 +197,7 @@ export default function TransactionFormPage() {
       navigate(`/transactions?m=${monthOf(form.date)}`, { replace: true })
     } catch (e) {
       setConfirmDelete(false)
-      setSaveError(isPaidInvoiceError(e) ? 'locked' : 'generic')
+      setSaveError(isPaidInvoiceError(e) ? 'transactions.paidLocked' : 'common.errorGeneric')
     }
   }
 
@@ -289,10 +295,13 @@ export default function TransactionFormPage() {
             </div>
           )}
 
+          <GroupPicker value={form.groupId} currency={onCard ? card?.currency : account?.currency}
+            onChange={(groupId) => set({ groupId })} />
+
           <TextField label={t('transactions.description')} maxLength={140} placeholder={t('transactions.descriptionPlaceholder')}
             value={form.description} onChange={(e) => set({ description: e.target.value })} />
 
-          {saveError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{saveError === 'locked' ? t('transactions.paidLocked') : t('common.errorGeneric')}</p>}
+          {saveError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{t(saveError)}</p>}
 
           <div className="sticky bottom-0 -mx-5 -mb-5 flex flex-col gap-2 rounded-b-[28px] bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-3
             sm:static sm:mx-0 sm:mb-0 sm:flex-row-reverse sm:rounded-none sm:p-0">

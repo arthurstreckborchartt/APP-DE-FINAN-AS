@@ -48,12 +48,12 @@ const accounts = [
 ]
 let n = 0
 const tx = (d, kind, amount, category_id, account_id, description = '', currency = 'BRL', card_id = null, installments_count = 1) => ({
-  id: `t${++n}`, user_id: USER_ID, kind, amount, currency, date: day(d), category_id, description, account_id, card_id, installments_count, created_at: `2026-10-0${n % 9}T10:00:00Z`, updated_at: '',
+  id: `t${++n}`, user_id: USER_ID, kind, amount, currency, date: day(d), category_id, description, account_id, card_id, installments_count, group_id: null, recurring_id: null, created_at: `2026-10-0${n % 9}T10:00:00Z`, updated_at: '',
 })
 const transactions = [
   tx(0, 'expense', 3850, 'c-food', 'a-nu', 'Almoço com a equipe'),
   tx(0, 'expense', 1290, 'c-cafe', 'a-cash'),
-  tx(1, 'expense', 21437, 'c-groc', 'a-nu', 'Mercado do mês'),
+  { ...tx(1, 'expense', 21437, 'c-groc', 'a-nu', 'Mercado do mês'), group_id: 'g-casa' },
   tx(1, 'expense', 2390, 'c-tran', 'a-nu', 'Uber'),
   tx(2, 'income', 650000, 'c-sal', 'a-nu', 'Salário'),
   tx(3, 'expense', 180000, 'c-home', 'a-nu', 'Aluguel'),
@@ -71,7 +71,7 @@ const monthEntries = transactions.map((t) => ({
   month: `${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`, entry_id: `e-${t.id}`, transaction_id: t.id, user_id: USER_ID, kind: t.kind,
   amount: t.installments_count > 1 ? Math.floor(t.amount / t.installments_count) : t.amount, currency: t.currency, date: t.date,
   purchase_date: t.date, category_id: t.category_id, description: t.description, account_id: t.account_id, card_id: t.card_id,
-  installment_number: 1, installments_count: t.installments_count, total_amount: t.amount, created_at: t.created_at,
+  installment_number: 1, installments_count: t.installments_count, total_amount: t.amount, recurring_id: t.recurring_id, group_id: t.group_id, created_at: t.created_at,
 }))
 
 const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
@@ -107,6 +107,45 @@ const recurring = [
   rec('r4', 'expense', 29900, 'c-heal', 'Academia', 'monthly', '2026-02-10', `${ym(0)}-10`, { paused: true }),
 ]
 
+const groups = [
+  { id: 'g-casa', name: 'Casa', currency: 'BRL', icon: 'home', role: 'admin', members: 3, created_at: '2026-10-01T00:00:00Z' },
+  { id: 'g-lis', name: 'Viagem Lisboa', currency: 'EUR', icon: 'plane', role: 'member', members: 4, created_at: '2026-10-02T00:00:00Z' },
+]
+
+const BRUNO = '00000000-0000-4000-8000-000000000002'
+const CARLA = '00000000-0000-4000-8000-000000000003'
+const groupMembers = [
+  { user_id: USER_ID, name: 'Ana Souza', role: 'admin', joined_at: '2026-10-01T00:00:00Z', left_at: null },
+  { user_id: BRUNO, name: 'Bruno Lima', role: 'member', joined_at: '2026-10-02T00:00:00Z', left_at: null },
+  { user_id: CARLA, name: 'Carla Dias', role: 'member', joined_at: '2026-10-02T00:00:00Z', left_at: day(2) + 'T12:00:00Z' },
+]
+let gn = 0
+const gEntry = (user_id, d, amount, catId, description = '', extra = {}) => {
+  const c = categories.find((x) => x.id === catId)
+  gn += 1
+  return {
+    entry_id: `ge${gn}`, transaction_id: user_id === USER_ID ? `t${gn}` : `x${gn}`, user_id, kind: c.kind, amount, currency: 'BRL', date: day(d),
+    category_id: c.id, category_name: c.name, category_key: c.i18n_key, category_icon: c.icon, category_color: c.color, description,
+    is_card: false, installment_number: 1, installments_count: 1, created_at: `2026-10-0${gn % 9}T10:00:00Z`, ...extra,
+  }
+}
+const groupEntries = [
+  gEntry(USER_ID, 0, 21437, 'c-groc', 'Mercado do mês'),
+  gEntry(BRUNO, 0, 15600, 'c-util', 'Conta de luz'),
+  gEntry(USER_ID, 1, 20000, 'c-util', 'Geladeira nova', { is_card: true, installment_number: 2, installments_count: 10 }),
+  gEntry(BRUNO, 1, 9800, 'c-food', 'Pizza de sexta'),
+  gEntry(CARLA, 3, 6400, 'c-groc', 'Feira'),
+  gEntry(USER_ID, 3, 180000, 'c-home', 'Aluguel'),
+  gEntry(BRUNO, 4, 11990, 'c-util', 'Internet', { is_card: true }),
+  gEntry(USER_ID, 5, 1290, 'c-cafe', ''),
+  gEntry(BRUNO, 6, 4500, 'c-tran', 'Uber da feira'),
+]
+const groupInvites = [
+  { id: 'gi1', group_id: 'g-casa', token: 'k3f9Qx2LmP7aZt0R', expires_at: new Date(Date.now() + 6 * 864e5).toISOString(), revoked_at: null, created_at: new Date(Date.now() - 864e5).toISOString() },
+]
+
+const invitePreview = { group_id: 'g-rep', name: 'República da Vila', icon: 'users', currency: 'BRL', members: 5, expires_at: new Date(Date.now() + 5 * 864e5).toISOString(), status: 'valid' }
+
 const json = (route, body) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
 
 async function mock(page) {
@@ -131,6 +170,11 @@ async function mock(page) {
       const cid = url.searchParams.get('card_id')
       return json(route, cid ? invoices.filter((i) => `eq.${i.card_id}` === cid) : invoices.filter((i) => !i.paid_at))
     }
+    if (path === '/rest/v1/rpc/my_groups') return json(route, groups)
+    if (path === '/rest/v1/rpc/group_member_list') return json(route, groupMembers)
+    if (path === '/rest/v1/rpc/group_month_entries') return json(route, groupEntries)
+    if (path === '/rest/v1/group_invites') return json(route, groupInvites)
+    if (path === '/rest/v1/rpc/group_invite_preview') return json(route, [invitePreview])
     if (path === '/rest/v1/recurring') return json(route, recurring)
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
@@ -139,7 +183,7 @@ async function mock(page) {
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

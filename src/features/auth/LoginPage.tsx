@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { readReturnTo } from '../../lib/return-to'
 import { supabase } from '../../lib/supabase'
 import { Button } from '../../components/ui/Button'
 import { TextField } from '../../components/ui/TextField'
@@ -22,7 +23,7 @@ export default function LoginPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
       if (error) return setError(t(authErrorKey(error.code)))
-      navigate('/', { replace: true })
+      navigate(readReturnTo() ?? '/', { replace: true })
     } catch {
       setError(t('auth.errors.generic'))
     } finally {

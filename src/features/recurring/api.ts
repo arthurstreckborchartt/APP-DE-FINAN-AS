@@ -7,7 +7,7 @@ import type { Recurring, RecurringInput, RecurringPatch } from './types'
 
 /** Dados que mudam quando ocorrências são geradas (ou a recorrente muda). */
 export const RECURRING_AFFECTED_KEYS = [
-  ['recurring'], ['transactions'], ['accounts'], ['cards'], ['invoices'],
+  ['recurring'], ['transactions'], ['accounts'], ['cards'], ['invoices'], ['groups'],
 ] as const
 
 export function invalidateRecurringData(qc: QueryClient) {

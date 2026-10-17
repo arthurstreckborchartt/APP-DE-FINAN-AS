@@ -12,6 +12,7 @@ import type { Frequency } from '../../lib/recurrence'
 import type { Account } from '../accounts/types'
 import type { Card } from '../cards/types'
 import { categoryLabel } from '../categories/label'
+import { GroupPicker } from '../groups/GroupPicker'
 import type { Category } from '../categories/types'
 import type { TransactionKind } from '../transactions/types'
 import type { Recurring, RecurringInput } from './types'
@@ -50,6 +51,7 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
   const [startDate, setStartDate] = useState(recurring?.start_date ?? todayISO())
   const [endDate, setEndDate] = useState(recurring?.end_date ?? '')
   const [description, setDescription] = useState(recurring?.description ?? '')
+  const [groupId, setGroupId] = useState<string | null>(recurring?.group_id ?? null)
   const [errors, setErrors] = useState<Errors>({})
 
   // Origens arquivadas ficam ocultas, exceto a que a recorrente já usa.
@@ -57,6 +59,7 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
   const selectableCards = cards.filter((c) => !c.archived || c.id === recurring?.card_id)
   const showSource = kind === 'expense' && selectableCards.length > 0
   const onCard = kind === 'expense' && source === 'card'
+  const sourceCurrency = onCard ? cards.find((c) => c.id === cardId)?.currency : accounts.find((a) => a.id === accountId)?.currency
   const selectableCategories = categories.filter(
     (c) => c.kind === kind && (!c.archived || c.id === categoryId),
   )
@@ -95,6 +98,7 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
       kind, amount: cents!, category_id: categoryId!, description: description.trim(), frequency,
       start_date: startDate, end_date: endDate || null,
       account_id: onCard ? null : accountId, card_id: onCard ? cardId : null,
+      group_id: groupId,
     })
   }
 
@@ -177,6 +181,8 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
         <TextField label={t('recurring.endDate')} type="date" value={endDate} error={errors.end}
           onChange={(e) => { setEndDate(e.target.value); setErrors({}) }} />
       </div>
+
+      <GroupPicker value={groupId} currency={sourceCurrency} onChange={setGroupId} />
 
       <TextField label={t('transactions.description')} maxLength={140} placeholder={t('transactions.descriptionPlaceholder')}
         value={description} onChange={(e) => setDescription(e.target.value)} />

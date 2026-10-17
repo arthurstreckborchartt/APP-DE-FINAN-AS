@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate, useParams } from 'react-router'
 import { PublicOnly, RequireAuth, RequireOnboarded } from './guards'
 import { AppShell } from './AppShell'
-import PlaceholderPage from './PlaceholderPage'
 import LoginPage from '../features/auth/LoginPage'
 import SignupPage from '../features/auth/SignupPage'
 import ForgotPasswordPage from '../features/auth/ForgotPasswordPage'
@@ -12,6 +11,9 @@ import CategoriesPage from '../features/categories/CategoriesPage'
 import CardsPage from '../features/cards/CardsPage'
 import CardDetailPage from '../features/cards/CardDetailPage'
 import RecurringPage from '../features/recurring/RecurringPage'
+import GroupsPage from '../features/groups/GroupsPage'
+import GroupDetailPage from '../features/groups/GroupDetailPage'
+import JoinGroupPage from '../features/groups/JoinGroupPage'
 import SettingsPage from '../features/settings/SettingsPage'
 import HomePage from '../features/home/HomePage'
 import TransactionsPage from '../features/transactions/TransactionsPage'
@@ -48,7 +50,9 @@ export const router = createBrowserRouter([
               { path: '/transactions/:id/edit', element: <TransactionFormRoute /> },
               { path: '/cards', element: <CardsPage /> },
               { path: '/cards/:id', element: <CardDetailPage /> },
-              { path: '/groups', element: <PlaceholderPage titleKey="nav.groups" /> },
+              { path: '/groups', element: <GroupsPage /> },
+              { path: '/groups/:id', element: <GroupDetailPage /> },
+              { path: '/join/:token', element: <JoinGroupPage /> },
               { path: '/accounts', element: <AccountsPage /> },
               { path: '/categories', element: <CategoriesPage /> },
               { path: '/recurring', element: <RecurringPage /> },

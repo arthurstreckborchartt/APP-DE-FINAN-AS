@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { readReturnTo } from '../../lib/return-to'
 import { BrandMark } from '../../components/BrandMark'
 import { Button } from '../../components/ui/Button'
 import { AccountForm } from '../accounts/AccountForm'
@@ -60,7 +61,7 @@ export default function OnboardingPage() {
         setAccountCreated(true)
       }
       await update.mutateAsync({ onboarded_at: new Date().toISOString() })
-      navigate('/', { replace: true })
+      navigate(readReturnTo() ?? '/', { replace: true })
     } catch {
       setFinishError(true)
     }
