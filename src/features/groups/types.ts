@@ -36,6 +36,9 @@ export type GroupEntry = {
   created_at: string
 }
 
+/** Entrada do grupo num intervalo de meses; `month` no formato 'YYYY-MM'. */
+export type GroupPeriodEntry = GroupEntry & { month: string }
+
 export type GroupInvite = {
   id: string
   group_id: string

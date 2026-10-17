@@ -6,7 +6,7 @@ import { useMyGroups } from '../features/groups/api'
 import { supabase } from './supabase'
 
 const DEBOUNCE_MS = 300
-const AFFECTED_KEYS = [['transactions'], ['accounts'], ['cards'], ['invoices'], ['recurring'], ['groups']] as const
+const AFFECTED_KEYS = [['transactions'], ['accounts'], ['cards'], ['invoices'], ['recurring'], ['groups'], ['budgets'], ['goals']] as const
 
 /** Canais privados exigem o JWT no socket; se falhar, assina mesmo assim (o status avisa). */
 async function ensureAuth() {
