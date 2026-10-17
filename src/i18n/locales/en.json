@@ -222,7 +222,12 @@
     "firstInvoice": "The first installment goes on the {{month}} bill.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "This transaction is on a paid bill and can't be changed. Undo the bill payment to edit it.",
-    "dailySpending": "Spending per day"
+    "dailySpending": "Spending per day",
+    "filters": "Filters",
+    "filtersActive_one": "{{count}} active",
+    "filtersActive_other": "{{count}} active",
+    "clearFilters": "Clear filters",
+    "showResults": "Show results"
   },
   "home": {
     "greeting": "Hi, {{name}}!",

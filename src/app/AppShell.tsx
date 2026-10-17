@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, useMatch } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { initials } from '../lib/initials'
 import { Plus, Settings } from 'lucide-react'
 import { BrandMark } from '../components/BrandMark'
 import { InstallPrompt } from '../components/InstallPrompt'
@@ -14,10 +15,6 @@ const sideLink = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-surface text-fg' : 'text-muted hover:bg-surface hover:text-fg'
   }`
 
-function initials(name: string | undefined): string {
-  const parts = (name ?? '').trim().split(/\s+/).filter(Boolean)
-  return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || '·'
-}
 
 export function AppShell() {
   const { t } = useTranslation()

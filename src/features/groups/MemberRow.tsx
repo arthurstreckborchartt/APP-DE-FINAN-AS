@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EllipsisVertical } from 'lucide-react'
+import { initials } from '../../lib/initials'
 import { ConfirmPanel } from './ConfirmPanel'
 import { groupErrorKey } from './display'
 import type { GroupMember } from './types'
@@ -24,7 +25,7 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
   const [pending, setPending] = useState<Action | null>(null)
   const [error, setError] = useState<string | null>(null)
   const left = member.left_at !== null
-  const initial = (member.name.trim() || displayName).charAt(0).toUpperCase()
+  const avatar = initials(member.name.trim() || displayName)
 
   async function run() {
     if (!pending) return
@@ -42,8 +43,8 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
   return (
     <div className="py-1">
       <div className="flex items-center gap-3.5 rounded-[18px] px-2 py-1.5">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-[15px] font-extrabold text-fg dark:bg-surface-2" aria-hidden="true">
-          {initial}
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-[13px] font-extrabold text-fg dark:bg-surface-2" aria-hidden="true">
+          {avatar}
         </span>
         <span className="min-w-0 flex-1 truncate text-[15px] font-bold">{displayName}</span>
         <span className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">

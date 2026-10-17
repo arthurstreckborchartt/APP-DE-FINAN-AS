@@ -222,7 +222,12 @@
     "firstInvoice": "La primera cuota entra en el resumen de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este movimiento está en un resumen pagado y no se puede modificar. Deshaz el pago del resumen para editarlo.",
-    "dailySpending": "Gastos por día"
+    "dailySpending": "Gastos por día",
+    "filters": "Filtros",
+    "filtersActive_one": "{{count}} activo",
+    "filtersActive_other": "{{count}} activos",
+    "clearFilters": "Borrar filtros",
+    "showResults": "Ver resultados"
   },
   "home": {
     "greeting": "¡Hola, {{name}}!",

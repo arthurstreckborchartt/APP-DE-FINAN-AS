@@ -222,7 +222,12 @@
     "firstInvoice": "A primeira parcela cai na fatura de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este lançamento está numa fatura paga e não pode ser alterado. Desfaça o pagamento da fatura para editar.",
-    "dailySpending": "Gastos por dia"
+    "dailySpending": "Gastos por dia",
+    "filters": "Filtros",
+    "filtersActive_one": "{{count}} ativo",
+    "filtersActive_other": "{{count}} ativos",
+    "clearFilters": "Limpar filtros",
+    "showResults": "Ver resultados"
   },
   "home": {
     "greeting": "Olá, {{name}}!",

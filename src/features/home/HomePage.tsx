@@ -1,16 +1,18 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, CreditCard, Ellipsis, Eye, EyeOff, Target, Wallet } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, ChevronRight, CreditCard, Ellipsis, Eye, EyeOff, Landmark, Target, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { Interpolate } from '../../components/Interpolate'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { dayLabels, MoneyLineChart } from '../../components/MoneyLineChart'
 import { Card, IconTile, RowItem, RowList, SectionHeader, SeeAllLink } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { HERO_NUMBER, HeroCard } from '../../components/ui/HeroCard'
 import { QueryError } from '../../components/ui/QueryError'
 import { Ring } from '../../components/ui/Ring'
 import { RingCard } from '../../components/ui/RingCard'
+import { SegmentedRing } from '../../components/ui/SegmentedRing'
 import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
 import { addDaysISO, dateFromISO, formatMonth, monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
@@ -269,7 +271,6 @@ export default function HomePage() {
   const breakdown = breakdownCurrency ? expensesByCategory(monthTx, breakdownCurrency) : []
   const top = breakdown.slice(0, TOP_CATEGORIES)
   const rest = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.total, 0)
-  const restShare = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.share, 0)
   // Orçamento do mês na moeda principal do perfil.
   // Sem orçamento na moeda do perfil, usa a moeda com maior limite somado.
   const budgetCurrency = pickBudgetCurrency(budgetsQuery.data ?? [], profile?.currency)
@@ -343,9 +344,9 @@ export default function HomePage() {
   )
 
   const heroRing = heroMode === 'budget'
-    ? { value: budgetTotal.limit > 0 ? budgetTotal.spent / budgetTotal.limit : 0, icon: Target,
+    ? { value: budgetTotal.limit > 0 ? budgetTotal.spent / budgetTotal.limit : 0, icon: Wallet,
         text: t('home.heroBudgetRing', { pct: budgetPct(budgetTotal.spent, budgetTotal.limit) }) }
-    : { value: main.income > 0 ? main.expense / main.income : main.expense > 0 ? 1 : 0, icon: Wallet,
+    : { value: main.income > 0 ? main.expense / main.income : main.expense > 0 ? 1 : 0, icon: Landmark,
         text: main.income > 0 ? t('home.heroIncomeRing', { pct: pctOf(main.expense, main.income) }) : t('home.heroNoIncome') }
   const HeroIcon = heroRing.icon
 
@@ -358,45 +359,38 @@ export default function HomePage() {
         </div>
 
         {/* Destaque: quanto sobra (ou o saldo) ao lado do anel */}
-        <section aria-labelledby="home-hero-label" className="@container rounded-card bg-surface p-5 sm:p-6 max-lg:order-2">
-          <div className="flex items-center justify-between gap-3">
+        <HeroCard className="max-lg:order-2"
+          top={<>
             <p className="min-w-0 truncate text-[15px] font-semibold text-muted">
               {profile ? (firstName ? t('home.greeting', { name: firstName }) : t('home.greetingNoName')) : ' '}
             </p>
             {eye}
-          </div>
-          <div className="mt-2 flex flex-col gap-4 @md:flex-row @md:items-center @md:justify-between">
-            <div className="min-w-0">
-              {heroLoading ? (
-                <div className="py-4 text-primary"><Spinner className="size-7" /></div>
-              ) : heroMode === 'budget' ? (
-                <Amount cents={Math.abs(left)} currency={budgetCurrency!} locale={locale}
-                  className={`block text-[clamp(2.25rem,13cqi,3.5rem)] font-extrabold leading-[1.05] tracking-[-0.04em] ${left < 0 ? 'text-danger' : ''}`} />
-              ) : mainBalance ? (
-                <Amount cents={mainBalance.total} currency={mainBalance.currency} locale={locale}
-                  className="block text-[clamp(2.25rem,13cqi,3.5rem)] font-extrabold leading-[1.05] tracking-[-0.04em]" />
-              ) : (
-                <p className="num text-[clamp(2.25rem,13cqi,3.5rem)] font-extrabold leading-[1.05]">—</p>
-              )}
-              <p id="home-hero-label" className="mt-1.5 text-[15px] font-semibold text-muted">
-                {heroMode === 'budget' ? t(left < 0 ? 'home.overBudget' : 'home.leftToSpend') : t('home.balance')}
-              </p>
-              {heroMode === 'balance' && otherBalances.length > 0 && (
-                <p className="mt-1 flex flex-wrap gap-x-3 text-[15px] font-bold text-muted">
-                  {otherBalances.map((b) => <Amount key={b.currency} cents={b.total} currency={b.currency} locale={locale} />)}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-4 @md:flex-col-reverse @md:items-end">
-              <p className="max-w-[12rem] text-[13px] font-semibold text-muted @md:text-right">{heroRing.text}</p>
-              <Ring value={heroRing.value} size={112} stroke={10} color="var(--primary)" overflowColor="var(--expense)"
-                ariaLabel={heroRing.text}>
-                <HeroIcon className="size-7 text-primary" aria-hidden="true" />
-              </Ring>
-            </div>
-          </div>
+          </>}
+          value={heroLoading ? (
+            <span className="inline-block py-2 text-primary"><Spinner className="size-7" /></span>
+          ) : heroMode === 'budget' ? (
+            <Amount cents={Math.abs(left)} currency={budgetCurrency!} locale={locale} smallSymbol
+              className={`${HERO_NUMBER} ${left < 0 ? 'text-danger' : ''}`} />
+          ) : mainBalance ? (
+            <Amount cents={mainBalance.total} currency={mainBalance.currency} locale={locale} smallSymbol className={HERO_NUMBER} />
+          ) : (
+            <span className={`num ${HERO_NUMBER}`}>—</span>
+          )}
+          label={heroMode === 'budget' ? t(left < 0 ? 'home.overBudget' : 'home.leftToSpend') : t('home.balance')}
+          detail={heroMode === 'balance' && otherBalances.length > 0 && (
+            <p className="mt-1 flex flex-wrap gap-x-3 text-[15px] font-bold text-muted">
+              {otherBalances.map((b) => <Amount key={b.currency} cents={b.total} currency={b.currency} locale={locale} />)}
+            </p>
+          )}
+          caption={heroRing.text}
+          ring={
+            <Ring value={heroRing.value} size={100} stroke={10} color="var(--primary)" overflowColor="var(--expense)"
+              ariaLabel={heroRing.text}>
+              <HeroIcon className="size-7 text-primary" aria-hidden="true" />
+            </Ring>
+          }>
           {heroMode === 'balance' && <div className="mt-4">{accountsLink}</div>}
-        </section>
+        </HeroCard>
 
         {activeAccounts.length === 0 && (
           <div className="max-lg:order-3"><EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
@@ -481,14 +475,20 @@ export default function HomePage() {
               <p className="py-4 text-sm font-medium text-muted">{t('home.noExpenses')}</p>
             ) : (
               <>
-                <div className="mb-4 flex h-3 gap-0.5 overflow-hidden rounded-full" aria-hidden="true">
-                  {top.map((c) => (
-                    <div key={c.categoryId} className="h-full first:rounded-l-full last:rounded-r-full"
-                      style={{ width: `${c.share * 100}%`, backgroundColor: categoriesById.get(c.categoryId)?.color }} />
-                  ))}
-                  {rest > 0 && <div className="h-full rounded-r-full bg-surface-3" style={{ width: `${restShare * 100}%` }} />}
-                </div>
-                <ul className="-mx-2 flex flex-col">
+                <div className="@container">
+                <div className="flex flex-col items-center gap-5 @md:flex-row @md:items-start">
+                <SegmentedRing size={136} stroke={13} ariaLabel={t('home.byCategory')} className="@md:mt-1"
+                  segments={[
+                    ...top.map((c) => ({ key: c.categoryId, value: c.total, color: categoriesById.get(c.categoryId)?.color ?? 'var(--muted)' })),
+                    ...(rest > 0 ? [{ key: 'rest', value: rest, color: 'var(--surface-3)' }] : []),
+                  ]}>
+                  <span className="flex max-w-[96px] flex-col items-center">
+                    <Amount cents={top.reduce((sum, c) => sum + c.total, 0) + rest} currency={breakdownCurrency!} locale={locale} whole
+                      className="text-[17px] font-extrabold leading-tight tracking-[-0.03em]" />
+                    <span className="text-[12px] font-semibold text-muted">{t('transactions.expense_total')}</span>
+                  </span>
+                </SegmentedRing>
+                <ul className="-mx-2 flex w-full min-w-0 flex-col @md:flex-1">
                   {top.map((c) => {
                     const cat = categoriesById.get(c.categoryId)
                     const pct = Math.round(c.share * 100)
@@ -514,8 +514,38 @@ export default function HomePage() {
                     </li>
                   )}
                 </ul>
+                </div>
+                </div>
               </>
             )}
+          </Card>
+        )}
+
+        {/* Saldo nas contas (quando o destaque é o orçamento) e a evolução do saldo */}
+        {(heroMode === 'budget' || balanceSeries.length > 1) && (
+          <Card className="max-lg:order-9">
+            <SectionHeader title={heroMode === 'budget' ? t('home.balance') : t('home.balanceTrend')} />
+            {heroMode === 'budget' && (
+              balances.length === 0 ? (
+                <p className="num text-[34px] font-extrabold leading-tight">—</p>
+              ) : (
+                <div className="flex flex-col gap-0.5">
+                  {balances.map((b) => (
+                    <Amount key={b.currency} cents={b.total} currency={b.currency} locale={locale}
+                      className={b === mainBalance
+                        ? 'text-[34px] font-extrabold leading-tight tracking-[-0.035em]'
+                        : 'text-[17px] font-bold text-muted'} />
+                  ))}
+                </div>
+              )
+            )}
+            {balanceSeries.length > 1 && (
+              <div className="-mx-1 mt-3">
+                <MoneyLineChart values={balanceSeries} labels={labels} currency={balanceCurrency!} locale={locale}
+                  name={t('home.balanceTrend')} showXAxis={false} />
+              </div>
+            )}
+            {heroMode === 'budget' && <div className="mt-4">{accountsLink}</div>}
           </Card>
         )}
 
@@ -572,34 +602,6 @@ export default function HomePage() {
             </RowList>
           )}
         </section>
-
-        {/* Saldo nas contas (quando o destaque é o orçamento) e a evolução do saldo */}
-        {(heroMode === 'budget' || balanceSeries.length > 1) && (
-          <Card className="max-lg:order-9">
-            <SectionHeader title={heroMode === 'budget' ? t('home.balance') : t('home.balanceTrend')} />
-            {heroMode === 'budget' && (
-              balances.length === 0 ? (
-                <p className="num text-[34px] font-extrabold leading-tight">—</p>
-              ) : (
-                <div className="flex flex-col gap-0.5">
-                  {balances.map((b) => (
-                    <Amount key={b.currency} cents={b.total} currency={b.currency} locale={locale}
-                      className={b === mainBalance
-                        ? 'text-[34px] font-extrabold leading-tight tracking-[-0.035em]'
-                        : 'text-[17px] font-bold text-muted'} />
-                  ))}
-                </div>
-              )
-            )}
-            {balanceSeries.length > 1 && (
-              <div className="-mx-1 mt-3">
-                <MoneyLineChart values={balanceSeries} labels={labels} currency={balanceCurrency!} locale={locale}
-                  name={t('home.balanceTrend')} showXAxis={false} />
-              </div>
-            )}
-            {heroMode === 'budget' && <div className="mt-4">{accountsLink}</div>}
-          </Card>
-        )}
 
         {/* Este mês, por moeda */}
         {showMonth && (

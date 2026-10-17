@@ -87,7 +87,7 @@ export default function BudgetsPage() {
                   <h2 className="text-[15px] font-semibold text-muted">{t('budgets.total')}</h2>
                   <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted">{currency}</span>
                 </>}
-                value={<Amount cents={Math.abs(left)} currency={currency} locale={locale} className={`${HERO_NUMBER} ${left < 0 ? 'text-danger' : ''}`} />}
+                value={<Amount cents={Math.abs(left)} currency={currency} locale={locale} smallSymbol className={`${HERO_NUMBER} ${left < 0 ? 'text-danger' : ''}`} />}
                 label={t(left < 0 ? 'budgets.heroOver' : 'budgets.heroLeft')}
                 detail={
                   <p className="mt-1 text-[13px] font-medium text-muted">
@@ -99,7 +99,7 @@ export default function BudgetsPage() {
                 }
                 caption={ringText}
                 ring={
-                  <Ring value={total.limit > 0 ? total.spent / total.limit : 0} size={112} stroke={10} color="var(--primary)"
+                  <Ring value={total.limit > 0 ? total.spent / total.limit : 0} size={100} stroke={10} color="var(--primary)"
                     overflowColor="var(--danger)" ariaLabel={ringText}>
                     <Target className="size-7 text-primary" aria-hidden="true" />
                   </Ring>

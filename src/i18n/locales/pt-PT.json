@@ -222,7 +222,12 @@
     "firstInvoice": "A primeira prestação entra no extrato de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar.",
-    "dailySpending": "Despesas por dia"
+    "dailySpending": "Despesas por dia",
+    "filters": "Filtros",
+    "filtersActive_one": "{{count}} ativo",
+    "filtersActive_other": "{{count}} ativos",
+    "clearFilters": "Limpar filtros",
+    "showResults": "Ver resultados"
   },
   "home": {
     "greeting": "Olá, {{name}}!",

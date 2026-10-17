@@ -231,7 +231,7 @@ export default function CardDetailPage() {
       </div>
 
       <HeroCard className="mt-6"
-        value={<Amount cents={card.available} currency={card.currency} locale={locale} className={HERO_NUMBER} />}
+        value={<Amount cents={card.available} currency={card.currency} locale={locale} smallSymbol className={HERO_NUMBER} />}
         label={t('cards.available')}
         detail={
           <p className="mt-1 text-[13px] font-medium text-muted">
@@ -241,7 +241,7 @@ export default function CardDetailPage() {
         }
         caption={t('cards.usedPct', { pct: Math.round(pct) })}
         ring={
-          <Ring value={card.limit_amount > 0 ? card.used / card.limit_amount : 0} size={112} stroke={10} color={card.color}
+          <Ring value={card.limit_amount > 0 ? card.used / card.limit_amount : 0} size={100} stroke={10} color={card.color}
             overflowColor="var(--danger)" ariaLabel={t('cards.usedPct', { pct: Math.round(pct) })}>
             <CreditCard className="size-7" style={{ color: card.color }} aria-hidden="true" />
           </Ring>

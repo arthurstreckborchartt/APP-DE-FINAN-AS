@@ -6,7 +6,8 @@ import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { BarChart, type BarSeries } from '../../components/ui/BarChart'
 import { PageHeader, SectionHeader } from '../../components/ui/Card'
-import { CHIP_BUTTON } from '../../components/ui/Chip'
+import { ChipRadioGroup } from '../../components/ui/Chip'
+import { SegmentedRing } from '../../components/ui/SegmentedRing'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
@@ -81,19 +82,22 @@ function useMoneyFormats(currency: string, locale: string) {
 
 type CategoryItem = { id: string; label: string; icon: string; color: string; amount: number; share: number }
 
-/** Barra empilhada fina (como no Início) e a lista das categorias com a fatia de cada uma. */
+/** Rosca das categorias (total no centro) ao lado da lista com a fatia de cada uma. */
 function CategoryBreakdown({ items, currency, locale }: { items: CategoryItem[]; currency: string; locale: string }) {
   const { t } = useTranslation()
   const total = items.reduce((s, c) => s + c.amount, 0)
   if (items.length === 0) return <p className="py-2 text-sm font-medium text-muted">{t('reports.empty')}</p>
   return (
-    <>
-      <div className="mb-4 flex h-3 gap-0.5 overflow-hidden rounded-full bg-ring-track" aria-hidden="true">
-        {items.map((c) => (
-          <div key={c.id} className="h-full" style={{ width: `${total > 0 ? (c.amount / total) * 100 : 0}%`, backgroundColor: c.color }} />
-        ))}
-      </div>
-      <ul className="flex flex-col">
+    <div className="@container">
+    <div className="flex flex-col items-center gap-5 @md:flex-row @md:items-start">
+      <SegmentedRing size={136} stroke={13} ariaLabel={t('reports.byCategory')} className="@md:mt-1"
+        segments={items.map((c) => ({ key: c.id, value: c.amount, color: c.color }))}>
+        <span className="flex max-w-[96px] flex-col items-center">
+          <Amount cents={total} currency={currency} locale={locale} whole className="text-[17px] font-extrabold leading-tight tracking-[-0.03em]" />
+          <span className="text-[12px] font-semibold text-muted">{t('reports.expense')}</span>
+        </span>
+      </SegmentedRing>
+      <ul className="flex w-full min-w-0 flex-col @md:flex-1">
         {items.map((c) => (
           <li key={c.id} className="flex items-center gap-3.5 py-1.5">
             <CategoryIcon icon={c.icon} color={c.color} size="sm" />
@@ -105,7 +109,8 @@ function CategoryBreakdown({ items, currency, locale }: { items: CategoryItem[];
           </li>
         ))}
       </ul>
-    </>
+    </div>
+    </div>
   )
 }
 
@@ -153,18 +158,13 @@ export default function ReportsPage() {
         {groups.length > 0 && (
           <div className="min-w-0">
             <ControlLabel>{t('reports.scope')}</ControlLabel>
-            <div role="radiogroup" aria-label={t('reports.scope')} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-              {[{ id: 'personal', name: t('reports.personal') }, ...groups].map((g) => {
-                const on = g.id === 'personal' ? !group && !waitingGroup && !groupsFailed : g.id === group?.id
-                return (
-                  <button key={g.id} type="button" role="radio" aria-checked={on}
-                    onClick={() => update({ scope: g.id === 'personal' ? null : g.id, src: null, cur: null })}
-                    className={CHIP_BUTTON}>
-                    {g.name}
-                  </button>
-                )
-              })}
-            </div>
+            <ChipRadioGroup label={t('reports.scope')}
+              options={[{ id: 'personal', name: t('reports.personal') }, ...groups].map((g) => ({
+                value: g.id,
+                label: g.name,
+                checked: g.id === 'personal' ? !group && !waitingGroup && !groupsFailed : g.id === group?.id,
+              }))}
+              onChange={(id) => update({ scope: id === 'personal' ? null : id, src: null, cur: null })} />
           </div>
         )}
         <div className="min-w-0 lg:w-[26rem]">

@@ -137,7 +137,7 @@ export default function GroupDetailPage() {
           {/* Resumo */}
           {dataPending ? <Card><Loading /></Card> : dataError ? <QueryError onRetry={retry} /> : (
             <HeroCard
-              value={<Amount cents={stats.total} currency={group.currency} locale={locale} className={HERO_NUMBER} />}
+              value={<Amount cents={stats.total} currency={group.currency} locale={locale} smallSymbol className={HERO_NUMBER} />}
               label={t('groups.monthTotal')}
               detail={
                 <p className="mt-1 text-[13px] font-semibold text-muted">
@@ -147,7 +147,7 @@ export default function GroupDetailPage() {
                 </p>
               }
               ring={
-                <SegmentedRing size={112} stroke={12} ariaLabel={t('groups.memberRing')}
+                <SegmentedRing size={100} stroke={11} ariaLabel={t('groups.memberRing')}
                   segments={stats.byMember.map((m) => ({ key: m.user_id, value: m.amount, color: colorOf(m.user_id) }))}>
                   <Users className="size-7 text-muted" aria-hidden="true" />
                 </SegmentedRing>

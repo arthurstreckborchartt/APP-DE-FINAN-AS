@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ChartColumn, ChevronRight, Landmark, LogOut, PiggyBank, Repeat, Tags, Target } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { initials } from '../../lib/initials'
 import { supabase } from '../../lib/supabase'
 import { Button } from '../../components/ui/Button'
 import { IconTile, PageHeader, SectionHeader } from '../../components/ui/Card'
@@ -43,7 +44,6 @@ export default function SettingsPage() {
     }
   }
 
-  const initials = (profile.name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('') || '·').toUpperCase()
 
   return (
     <section className="mx-auto flex max-w-2xl flex-col gap-6">
@@ -51,7 +51,7 @@ export default function SettingsPage() {
 
       <div className="flex items-center gap-4 rounded-card bg-surface p-5">
         <span className="grid size-16 shrink-0 place-items-center rounded-full bg-ink text-xl font-extrabold text-ink-fg" aria-hidden="true">
-          {initials}
+          {initials(profile.name)}
         </span>
         <span className="min-w-0">
           <span className="block truncate text-lg font-extrabold tracking-[-0.01em]">{profile.name || '—'}</span>

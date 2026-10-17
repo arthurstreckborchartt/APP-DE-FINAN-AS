@@ -79,7 +79,7 @@ test('grupo: comparação entre membros e gastos por membro', () => {
 test.each(['/reports', '/reports?scope=g1'])('ocultar valores: nenhum valor vaza em %s (resumo, eixo, balão, tabela)', (url) => {
   privacy.hidden = true
   const { container } = renderAt(url)
-  const chart = screen.getByRole('img')
+  const chart = screen.getByRole('img', { name: /Receitas × despesas|Comparação entre membros/ })
   expect(chart.getAttribute('aria-label')).toContain('Valores ocultos')
   fireEvent.focus(chart)
   expect(screen.getByRole('tooltip')).toBeTruthy()

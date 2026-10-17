@@ -4,7 +4,7 @@ import { Plus, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { Button } from '../../components/ui/Button'
 import { IconTile, PageHeader, RowItem, RowList } from '../../components/ui/Card'
-import { HERO_NUMBER } from '../../components/ui/HeroCard'
+import { HERO_NUMBER, HeroValue } from '../../components/ui/HeroCard'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -113,10 +113,12 @@ export default function AccountsPage() {
       } />
 
       {totals.length > 0 && (
-        <section aria-labelledby="accounts-total" className="@container mt-6 rounded-card bg-surface p-5 sm:p-6">
+        <section aria-labelledby="accounts-total" className="mt-6 rounded-card bg-surface p-5 sm:p-6">
           {totals.slice(0, 1).map((s) => (
-            <Amount key={s.currency} cents={s.total} currency={s.currency} locale={locale}
-              className={`${HERO_NUMBER} ${s.total < 0 ? 'text-danger' : ''}`} />
+            <HeroValue key={s.currency}>
+              <Amount cents={s.total} currency={s.currency} locale={locale} smallSymbol
+                className={`${HERO_NUMBER} ${s.total < 0 ? 'text-danger' : ''}`} />
+            </HeroValue>
           ))}
           <p id="accounts-total" className="mt-1.5 text-[15px] font-semibold text-muted">{t('accounts.total')}</p>
           {totals.length > 1 && (

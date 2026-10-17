@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { CURRENCIES, currencyName, formatMoney } from './money'
+import { CURRENCIES, currencyName, formatMoney, formatMoneyParts } from './money'
 
 const clean = (s: string) => s.replace(/[\u00a0\u202f]/g, ' ')
 
@@ -19,4 +19,13 @@ describe('CURRENCIES', () => {
 
 describe('currencyName', () => {
   test('nome localizado', () => expect(currencyName('BRL', 'en')).toBe('Brazilian Real'))
+})
+
+describe('formatMoneyParts', () => {
+  test('símbolo antes (pt-BR) e o número sem o espaço', () => {
+    expect(formatMoneyParts(146663, 'BRL', 'pt-BR')).toEqual({ sign: '', before: 'R$', number: '1.466,63', after: '' })
+  })
+  test('símbolo depois (pt-PT) e sinal separado', () => {
+    expect(formatMoneyParts(-2450, 'EUR', 'pt-PT')).toEqual({ sign: '-', before: '', number: '24,50', after: '€' })
+  })
 })

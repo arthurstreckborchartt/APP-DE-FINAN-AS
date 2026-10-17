@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from 'react'
+import { useRef, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
 
 /**
  * Escolhas do mundo Cal AI: pílulas e ladrilhos no preenchimento `field` (Cloud sobre o branco, branco
@@ -48,5 +48,45 @@ export function ChoiceTile({ children, className = 'px-1.5 py-3', ...input }: Ch
       <input type="radio" className="sr-only" {...input} />
       {children}
     </label>
+  )
+}
+
+type RadioOption = { value: string; label: string; checked: boolean }
+
+/**
+ * Grupo de pílulas (role=radiogroup) com foco itinerante: só a marcada entra no Tab; setas, Home e
+ * End movem o foco e escolhem, como no SegmentedControl. Rola na horizontal quando não cabe.
+ */
+export function ChipRadioGroup({ label, options, onChange }: {
+  label: string
+  options: RadioOption[]
+  onChange: (value: string) => void
+}) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([])
+  const current = options.findIndex((o) => o.checked)
+
+  function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+    const n = options.length
+    const from = current < 0 ? 0 : current
+    let next: number
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (from + 1) % n
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (from - 1 + n) % n
+    else if (e.key === 'Home') next = 0
+    else if (e.key === 'End') next = n - 1
+    else return
+    e.preventDefault()
+    refs.current[next]?.focus()
+    onChange(options[next].value)
+  }
+
+  return (
+    <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+      {options.map((o, i) => (
+        <button key={o.value} ref={(el) => { refs.current[i] = el }} type="button" role="radio" aria-checked={o.checked}
+          tabIndex={o.checked || (current < 0 && i === 0) ? 0 : -1} onClick={() => onChange(o.value)} className={CHIP_BUTTON}>
+          {o.label}
+        </button>
+      ))}
+    </div>
   )
 }

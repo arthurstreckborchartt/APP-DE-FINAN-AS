@@ -41,9 +41,16 @@ export function GroupBudgetSection({ group, month, admin }: Props) {
 
   return (
     <section className="rounded-card bg-surface p-5 sm:p-6">
-      <div className="flex min-h-11 flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <h2 className="text-[19px] font-extrabold tracking-[-0.02em]">{t('budgets.group')}</h2>
-        {admin && rows.length > 0 && newButton()}
+      <div className="flex min-h-11 items-center justify-between gap-3">
+        <h2 className="min-w-0 text-[19px] font-extrabold tracking-[-0.02em]">{t('budgets.group')}</h2>
+        {admin && rows.length > 0 && (
+          <button type="button" aria-label={t('budgets.new')} onClick={() => setEditing('new')}
+            className="inline-flex size-11 shrink-0 items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-bold text-ink-fg transition
+              hover:bg-ink-hover active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto sm:px-5">
+            <Plus className="size-5 shrink-0 sm:size-4" aria-hidden="true" />
+            <span className="max-sm:hidden">{t('budgets.new')}</span>
+          </button>
+        )}
       </div>
       <p className="mb-4 text-[13px] font-medium text-muted">{t('budgets.groupHint')}</p>
       {pending ? (
