@@ -177,6 +177,50 @@ const groupEntries = [
   gEntry(USER_ID, 5, 1290, 'c-cafe', ''),
   gEntry(BRUNO, 6, 4500, 'c-tran', 'Uber da feira'),
 ]
+// Relatórios: 5 meses anteriores sintéticos + o mês atual (BRL e um pouco de EUR).
+const monthIso = (delta) => `${ym(delta)}-01`
+const rangeEntries = [...monthEntries]
+for (let delta = -5; delta <= -1; delta += 1) {
+  const k = -delta
+  const mk = (kind, amount, category_id, account_id = 'a-nu', currency = 'BRL', card_id = null) => ({
+    ...monthEntries[0], month: monthIso(delta), entry_id: `re${delta}-${category_id}-${amount}`, transaction_id: `rt${delta}${category_id}`,
+    kind, amount, currency, category_id, account_id, card_id, date: `${ym(delta)}-10`, purchase_date: `${ym(delta)}-10`, description: '',
+    installments_count: 1, total_amount: amount, group_id: null,
+  })
+  rangeEntries.push(
+    mk('income', 650000, 'c-sal'),
+    ...(k % 2 === 0 ? [mk('income', 90000 + k * 15000, 'c-free')] : []),
+    mk('expense', 180000, 'c-home'),
+    mk('expense', 52000 + k * 6100, 'c-groc'),
+    mk('expense', 31000 + ((k * 7919) % 23000), 'c-food'),
+    mk('expense', 14000 + k * 1800, 'c-util'),
+    mk('expense', 9000 + ((k * 3571) % 9000), 'c-tran', 'a-cash'),
+    mk('expense', 21000 + ((k * 5003) % 30000), 'c-leis', null, 'BRL', 'k-nu'),
+    mk('expense', 3990, 'c-subs', null, 'BRL', 'k-iti'),
+    mk('expense', 4200 + k * 650, 'c-food', 'a-eur', 'EUR'),
+  )
+}
+const inRange = (url, list) => {
+  const filters = url.searchParams.getAll('month')
+  const gte = filters.find((f) => f.startsWith('gte.'))?.slice(4)
+  const lte = filters.find((f) => f.startsWith('lte.'))?.slice(4)
+  return list.filter((e) => (!gte || e.month >= gte) && (!lte || e.month <= lte))
+}
+// Entradas do grupo Casa no período: o mês atual (groupEntries) e 5 meses anteriores.
+const groupPeriodEntries = groupEntries.map((e) => ({ ...e, month: monthIso(0) }))
+for (let delta = -5; delta <= -1; delta += 1) {
+  const k = -delta
+  const at = (e, amount) => ({ ...e, month: monthIso(delta), entry_id: `${e.entry_id}m${k}`, date: `${ym(delta)}-12`, amount })
+  groupPeriodEntries.push(
+    at(groupEntries[5], 180000),
+    at(groupEntries[0], 18000 + k * 2300),
+    at(groupEntries[1], 14000 + k * 900),
+    at(groupEntries[3], 7000 + ((k * 4111) % 9000)),
+    ...(k > 1 ? [at(groupEntries[4], 5000 + k * 700)] : []),
+    at(groupEntries[8], 3000 + k * 400),
+  )
+}
+
 const groupInvites = [
   { id: 'gi1', group_id: 'g-casa', token: 'k3f9Qx2LmP7aZt0R', expires_at: new Date(Date.now() + 6 * 864e5).toISOString(), revoked_at: null, created_at: new Date(Date.now() - 864e5).toISOString() },
 ]
@@ -195,7 +239,10 @@ async function mock(page) {
     if (path === '/rest/v1/accounts') return json(route, accounts.map(({ _balance, ...a }) => a))
     if (path === '/rest/v1/account_balances') return json(route, accounts.map((a) => ({ account_id: a.id, balance: a._balance })))
     if (path === '/rest/v1/categories') return json(route, categories)
-    if (path === '/rest/v1/month_entries') return json(route, monthEntries)
+    if (path === '/rest/v1/month_entries') {
+      if (url.searchParams.getAll('month').some((f) => f.startsWith('gte.'))) return json(route, inRange(url, rangeEntries))
+      return json(route, monthEntries)
+    }
     if (path === '/rest/v1/transactions') {
       const id = url.searchParams.get('id')
       if (id) return json(route, single ? transactions.find((t) => `eq.${t.id}` === id) : [])
@@ -210,6 +257,7 @@ async function mock(page) {
     if (path === '/rest/v1/rpc/my_groups') return json(route, groups)
     if (path === '/rest/v1/rpc/group_member_list') return json(route, groupMembers)
     if (path === '/rest/v1/rpc/group_month_entries') return json(route, groupEntries)
+    if (path === '/rest/v1/rpc/group_period_entries') return json(route, groupPeriodEntries)
     if (path === '/rest/v1/group_invites') return json(route, groupInvites)
     if (path === '/rest/v1/rpc/group_invite_preview') return json(route, [invitePreview])
     if (path === '/rest/v1/recurring') return json(route, recurring)
@@ -230,7 +278,8 @@ async function mock(page) {
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
   ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['budgets', '/budgets'], ['goals', '/goals'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
-]
+  ['reports', '/reports'], ['reports-group', '/reports?scope=g-casa'],
+].filter(([name]) => !process.env.SHOTS || process.env.SHOTS.split(',').includes(name))
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')
 
