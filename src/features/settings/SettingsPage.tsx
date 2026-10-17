@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ChevronRight, Landmark, LogOut, Repeat, Tags } from 'lucide-react'
+import { ChartColumn, ChevronRight, Landmark, LogOut, PiggyBank, Repeat, Tags, Target } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { Button } from '../../components/ui/Button'
@@ -65,6 +65,9 @@ export default function SettingsPage() {
             { to: '/accounts', label: t('accounts.title'), icon: Landmark },
             { to: '/categories', label: t('categories.title'), icon: Tags },
             { to: '/recurring', label: t('recurring.title'), icon: Repeat },
+            { to: '/budgets', label: t('budgets.title'), icon: Target },
+            { to: '/goals', label: t('goals.title'), icon: PiggyBank },
+            { to: '/reports', label: t('reports.title'), icon: ChartColumn },
           ].map(({ to, label, icon: Icon }) => (
             <Link key={to} to={to} className="flex min-h-14 items-center gap-3.5 rounded-2xl px-3 py-2 transition hover:bg-surface-2">
               <span className="grid size-10 place-items-center rounded-full bg-primary-soft text-primary">

@@ -74,6 +74,17 @@ const monthEntries = transactions.map((t) => ({
   installment_number: 1, installments_count: t.installments_count, total_amount: t.amount, recurring_id: t.recurring_id, group_id: t.group_id, created_at: t.created_at,
 }))
 
+// Orçamentos pessoais em BRL; gasto do mês (monthEntries): Lazer 204,50 (passou), Moradia 1.800 (90%, perto),
+// Contas 356 (71%), Mercado 214,37 (27%), Alimentação 38,50 (6%).
+const budget = (id, category_id, amount) => ({ id, user_id: USER_ID, group_id: null, category_id, amount, currency: 'BRL', created_at: '2026-10-01T00:00:00Z', updated_at: '' })
+const budgets = [
+  budget('b1', 'c-leis', 18000),
+  budget('b2', 'c-home', 200000),
+  budget('b3', 'c-util', 50000),
+  budget('b4', 'c-groc', 80000),
+  budget('b5', 'c-food', 60000),
+]
+
 const card = (id, name, color, limit, closing, due, used) => ({ id, user_id: USER_ID, name, limit_amount: limit, closing_day: closing, due_day: due, currency: 'BRL', color, archived: false, created_at: '2026-10-0' + (closing % 9 + 1) + 'T10:00:00Z', updated_at: '', _used: used })
 const cards = [
   card('k-nu', 'Nubank Ultravioleta', '#5b3df5', 800000, 5, 12, 215000),
@@ -176,6 +187,7 @@ async function mock(page) {
     if (path === '/rest/v1/group_invites') return json(route, groupInvites)
     if (path === '/rest/v1/rpc/group_invite_preview') return json(route, [invitePreview])
     if (path === '/rest/v1/recurring') return json(route, recurring)
+    if (path === '/rest/v1/budgets') return json(route, url.searchParams.get('user_id') ? budgets : [])
     if (path === '/rest/v1/installments') return json(route, installments)
     return json(route, [])
   })
@@ -183,7 +195,7 @@ async function mock(page) {
 
 const shots = [
   ['home', '/'], ['transactions', '/transactions'], ['new', '/new'], ['accounts', '/accounts'],
-  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
+  ['cards', '/cards'], ['card-detail', '/cards/k-nu'], ['categories', '/categories'], ['recurring', '/recurring'], ['budgets', '/budgets'], ['groups', '/groups'], ['group', '/groups/g-casa'], ['join', '/join/tok-demo'], ['settings', '/more'],
 ]
 const viewports = [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]
 const themes = (process.env.THEMES ?? 'light').split(',')

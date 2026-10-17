@@ -1,8 +1,9 @@
 import { useMemo, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, Ellipsis, Eye, EyeOff, Landmark, Plus, ReceiptText, Tags, Wallet } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, ChevronRight, Ellipsis, Eye, EyeOff, Landmark, Plus, ReceiptText, Tags, Target, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
+import { Interpolate } from '../../components/Interpolate'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { dayLabels, MoneyLineChart } from '../../components/MoneyLineChart'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -11,9 +12,13 @@ import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
 import { addDaysISO, dateFromISO, formatMonth, monthOf, todayISO } from '../../lib/dates'
 import { normalizeLocale } from '../../lib/locale'
 import { invoiceStatus, type InvoiceStatus } from '../../lib/invoice'
+import { budgetPct } from '../../lib/budget'
 import { setHideValues, useHideValues } from '../../lib/privacy'
 import { useAccounts } from '../accounts/api'
 import { balancesByCurrency } from '../accounts/totals'
+import { useBudgets } from '../budgets/api'
+import { BudgetBar, BudgetRow } from '../budgets/BudgetRow'
+import { budgetsWithSpent, budgetTotals } from '../budgets/rows'
 import { useCards } from '../cards/api'
 import { useAllOpenInvoices, usePaidInvoicesInMonth } from '../cards/invoicesApi'
 import type { CardWithLimit, InvoiceSummary } from '../cards/types'
@@ -29,6 +34,7 @@ import { TransactionRow } from '../transactions/TransactionRow'
 import { buildUpcoming, type UpcomingItem } from './upcoming'
 
 const TOP_CATEGORIES = 5
+const TOP_BUDGETS = 3
 
 function Sheet({ title, action, children, className = '' }: { title: string; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
@@ -154,6 +160,7 @@ export default function HomePage() {
   const invoicesQuery = useAllOpenInvoices()
   const paidQuery = usePaidInvoicesInMonth(month)
   const recurringQuery = useRecurring()
+  const budgetsQuery = useBudgets()
   const monthTx = monthQuery.data ?? []
   const recent = recentQuery.data ?? []
 
@@ -191,6 +198,11 @@ export default function HomePage() {
   const top = breakdown.slice(0, TOP_CATEGORIES)
   const rest = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.total, 0)
   const restShare = breakdown.slice(TOP_CATEGORIES).reduce((sum, c) => sum + c.share, 0)
+  // Orçamento do mês na moeda principal do perfil.
+  const mainCurrency = profile?.currency
+  const budgetRows = mainCurrency ? budgetsWithSpent(budgetsQuery.data ?? [], monthTx, mainCurrency) : []
+  const budgetTotal = budgetTotals(budgetRows)
+  const showBudget = showMonth || budgetRows.length > 0
   const firstName = profile?.name?.trim().split(/\s+/)[0]
 
   // Gráficos do mês: só até hoje (o resto do mês ainda não aconteceu).
@@ -281,6 +293,47 @@ export default function HomePage() {
       {activeAccounts.length === 0 && (
         <div className="max-lg:order-3"><EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
           action={<Link to="/accounts" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('accounts.new')}</Link>} /></div>
+      )}
+      {/* Orçamento do mês */}
+      {showBudget && (
+        <Sheet title={t('home.budget')} className="max-lg:order-4"
+          action={budgetRows.length > 0 && (
+            <Link to="/budgets" className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-primary hover:bg-primary-soft">
+              {t('home.seeAll')} <ChevronRight className="size-4" aria-hidden="true" />
+            </Link>
+          )}>
+          {budgetsQuery.isPending || monthQuery.isPending || categoriesQuery.isPending ? <Loading /> : budgetsQuery.isError || monthQuery.isError || categoriesQuery.isError ? (
+            <QueryError onRetry={() => { void budgetsQuery.refetch(); void monthQuery.refetch(); void categoriesQuery.refetch() }} />
+          ) : budgetRows.length === 0 ? (
+            <div className="flex flex-col items-start gap-3 py-1">
+              <p className="text-sm font-medium text-muted">{t('home.budgetEmpty')}</p>
+              <Link to="/budgets" className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-4 py-2.5 text-sm font-bold text-primary transition hover:bg-primary hover:text-primary-fg">
+                <Target className="size-4" aria-hidden="true" /> {t('home.budgetCta')}
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-baseline justify-between gap-3">
+                <p className="min-w-0 text-[15px] font-medium text-muted">
+                  <Interpolate i18nKey="budgets.spentOf" values={{
+                    spent: <Amount cents={budgetTotal.spent} currency={mainCurrency!} locale={locale} className="text-[20px] font-extrabold tracking-[-0.02em] text-fg" />,
+                    limit: <Amount cents={budgetTotal.limit} currency={mainCurrency!} locale={locale} className="font-bold" />,
+                  }} />
+                </p>
+                <span className="num shrink-0 text-[15px] font-extrabold">{t('budgets.pct', { pct: budgetPct(budgetTotal.spent, budgetTotal.limit) })}</span>
+              </div>
+              <BudgetBar spent={budgetTotal.spent} limit={budgetTotal.limit} className="mt-2.5" />
+              <ul className="mt-4 flex flex-col">
+                {budgetRows.slice(0, TOP_BUDGETS).map((r) => (
+                  <li key={r.budget.id}>
+                    <BudgetRow compact category={categoriesById.get(r.budget.category_id)} spent={r.spent}
+                      limit={r.budget.amount} currency={r.budget.currency} locale={locale} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </Sheet>
       )}
       {showMonth && (
         <>
