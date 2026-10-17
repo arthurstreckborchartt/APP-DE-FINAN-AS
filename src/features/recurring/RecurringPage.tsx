@@ -4,6 +4,7 @@ import { Plus, Repeat } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { Button } from '../../components/ui/Button'
+import { PageHeader, RowItem, RowList } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -123,16 +124,16 @@ export default function RecurringPage() {
     const source = accounts.find((a) => a.id === r.account_id)?.name ?? cards.find((c) => c.id === r.card_id)?.name
     const meta = [frequencyText(r), source].filter(Boolean).join(' · ')
     return (
-      <li key={r.id}>
+      <RowItem key={r.id}>
         <button type="button" onClick={() => open(r)}
-          className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3.5 text-left transition hover:bg-surface-2">
+          className="flex w-full items-center gap-3.5 px-3.5 py-3 text-left transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
           {cat && <CategoryIcon icon={cat.icon} color={cat.color} />}
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[15px] font-bold tracking-[-0.01em]">{r.description || label}</span>
             <span className="block truncate text-[13px] font-medium text-muted">{meta}</span>
             <span className="mt-1 block">
               {r.paused || ended(r) ? (
-                <span className="inline-block rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-extrabold text-muted">
+                <span className="inline-block rounded-full bg-bg px-2 py-0.5 text-[11px] font-extrabold text-muted dark:bg-surface-2">
                   {t(r.paused ? 'recurring.paused' : 'recurring.ended')}
                 </span>
               ) : (
@@ -143,7 +144,7 @@ export default function RecurringPage() {
           <Amount cents={r.amount} currency={r.currency} locale={locale} sign={r.kind}
             className={`shrink-0 whitespace-nowrap text-[15px] font-bold ${r.kind === 'income' ? 'text-success' : 'text-fg'}`} />
         </button>
-      </li>
+      </RowItem>
     )
   }
 
@@ -152,20 +153,18 @@ export default function RecurringPage() {
 
   return (
     <section className="mx-auto max-w-3xl">
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('recurring.title')}</h1>
-        <Button className="h-11 whitespace-nowrap px-4" onClick={() => open('new')}>
+      <PageHeader title={t('recurring.title')} subtitle={t('recurring.subtitle')} action={
+        <Button className="h-11 shrink-0 whitespace-nowrap px-4" onClick={() => open('new')}>
           <Plus className="size-5" aria-hidden="true" /> {t('recurring.new')}
         </Button>
-      </div>
-      <p className="mt-1 text-[15px] font-medium text-muted">{t('recurring.subtitle')}</p>
+      } />
 
       <div className="mt-6">
         {sorted.length === 0 ? (
           <EmptyState icon={Repeat} title={t('recurring.empty')} description={t('recurring.emptyBody')}
-            action={<Button className="h-10" onClick={() => open('new')}>{t('recurring.new')}</Button>} />
+            action={<Button className="h-11" onClick={() => open('new')}>{t('recurring.new')}</Button>} />
         ) : (
-          <ul className="flex flex-col rounded-[24px] bg-surface p-2 shadow-sheet">{sorted.map(row)}</ul>
+          <RowList>{sorted.map(row)}</RowList>
         )}
       </div>
 

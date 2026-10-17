@@ -5,6 +5,7 @@ import { ChartColumn, ChevronRight, Landmark, LogOut, PiggyBank, Repeat, Tags, T
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { Button } from '../../components/ui/Button'
+import { IconTile, PageHeader, SectionHeader } from '../../components/ui/Card'
 import { FullScreenSpinner } from '../../components/ui/Spinner'
 import { useAuth } from '../auth/auth-context'
 import { useProfile, useUpdateProfile } from '../profile/api'
@@ -46,10 +47,10 @@ export default function SettingsPage() {
 
   return (
     <section className="mx-auto flex max-w-2xl flex-col gap-6">
-      <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('settings.title')}</h1>
+      <PageHeader title={t('settings.title')} />
 
-      <div className="flex items-center gap-4 rounded-[24px] bg-surface p-5 shadow-sheet">
-        <span className="grid size-16 shrink-0 place-items-center rounded-full bg-primary text-xl font-extrabold text-primary-fg shadow-float">
+      <div className="flex items-center gap-4 rounded-card bg-surface p-5">
+        <span className="grid size-16 shrink-0 place-items-center rounded-full bg-ink text-xl font-extrabold text-ink-fg" aria-hidden="true">
           {initials}
         </span>
         <span className="min-w-0">
@@ -59,8 +60,9 @@ export default function SettingsPage() {
       </div>
 
       <section>
-        <h2 className="mb-2 px-2 text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('settings.money')}</h2>
-        <nav aria-label={t('settings.money')} className="flex flex-col rounded-[24px] bg-surface p-2 shadow-sheet">
+        <SectionHeader title={t('settings.money')} />
+        <nav aria-label={t('settings.money')} className="overflow-hidden rounded-card bg-surface">
+          <ul className="divide-y divide-bg">
           {[
             { to: '/accounts', label: t('accounts.title'), icon: Landmark },
             { to: '/categories', label: t('categories.title'), icon: Tags },
@@ -69,20 +71,22 @@ export default function SettingsPage() {
             { to: '/goals', label: t('goals.title'), icon: PiggyBank },
             { to: '/reports', label: t('reports.title'), icon: ChartColumn },
           ].map(({ to, label, icon: Icon }) => (
-            <Link key={to} to={to} className="flex min-h-14 items-center gap-3.5 rounded-2xl px-3 py-2 transition hover:bg-surface-2">
-              <span className="grid size-10 place-items-center rounded-full bg-primary-soft text-primary">
-                <Icon className="size-5" aria-hidden="true" />
-              </span>
-              <span className="flex-1 text-[15px] font-bold">{label}</span>
-              <ChevronRight className="size-5 text-muted" aria-hidden="true" />
-            </Link>
+            <li key={to}>
+              <Link to={to} className="flex min-h-15 items-center gap-3.5 px-4 py-2.5 transition hover:bg-surface-2
+                focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
+                <IconTile icon={Icon} size="sm" />
+                <span className="flex-1 text-[15px] font-bold">{label}</span>
+                <ChevronRight className="size-5 text-muted" aria-hidden="true" />
+              </Link>
+            </li>
           ))}
+          </ul>
         </nav>
       </section>
 
       <section>
-        <h2 className="mb-2 px-2 text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('settings.appearance')}</h2>
-        <form onSubmit={onSubmit} className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6">
+        <SectionHeader title={t('settings.appearance')} />
+        <form onSubmit={onSubmit} className="rounded-card bg-surface p-5 sm:p-6">
           <PreferencesFields value={value} onChange={setDraft} />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Button type="submit" loading={update.isPending} disabled={!draft}>{t('common.save')}</Button>

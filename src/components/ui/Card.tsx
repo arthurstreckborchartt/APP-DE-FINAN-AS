@@ -18,7 +18,7 @@ export function Card({ children, className = '', as: Tag = 'section' }: {
 /** Título de página: grande, pesado, sem eyebrow. */
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: ReactNode; action?: ReactNode }) {
   return (
-    <header className="flex items-end justify-between gap-3">
+    <header className="flex flex-wrap items-end justify-between gap-x-3 gap-y-3">
       <div className="min-w-0">
         <h1 className="text-[30px] font-extrabold leading-tight tracking-[-0.035em] text-balance lg:text-[34px]">{title}</h1>
         {subtitle && <p className="mt-1 text-[15px] font-medium text-muted">{subtitle}</p>}

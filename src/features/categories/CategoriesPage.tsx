@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Lock, Plus } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { PageHeader, RowItem, RowList } from '../../components/ui/Card'
 import { QueryError } from '../../components/ui/QueryError'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { Sheet } from '../../components/ui/Sheet'
@@ -77,10 +78,10 @@ export default function CategoriesPage() {
   const item = (c: Category) => {
     const system = c.user_id === null
     return (
-      <li key={c.id}>
+      <RowItem key={c.id}>
         <button type="button" disabled={system} onClick={() => open(c)}
-          className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3 text-left transition
-            enabled:hover:bg-surface-2 disabled:cursor-default">
+          className="flex w-full items-center gap-3.5 px-3.5 py-3 text-left transition
+            enabled:hover:bg-surface-2 disabled:cursor-default focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
           <CategoryIcon icon={c.icon} color={c.color} />
           <span className="min-w-0 flex-1 truncate text-[15px] font-bold">{categoryLabel(c, t)}</span>
           {system && (
@@ -90,7 +91,7 @@ export default function CategoriesPage() {
             </>
           )}
         </button>
-      </li>
+      </RowItem>
     )
   }
 
@@ -99,12 +100,11 @@ export default function CategoriesPage() {
 
   return (
     <section className="mx-auto max-w-3xl">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('categories.title')}</h1>
-        <Button className="h-11" onClick={() => open('new')}>
+      <PageHeader title={t('categories.title')} action={
+        <Button className="h-11 shrink-0" onClick={() => open('new')}>
           <Plus className="size-5" aria-hidden="true" /> {t('categories.new')}
         </Button>
-      </div>
+      } />
 
       <div className="mt-6 sm:max-w-sm">
         <SegmentedControl label={t('transactions.kindFilter')} value={kind} onChange={setKind}
@@ -114,15 +114,15 @@ export default function CategoriesPage() {
           ]} />
       </div>
 
-      <ul className="mt-5 grid rounded-[24px] bg-surface p-2 shadow-sheet sm:grid-cols-2 sm:gap-x-2">{active.map(item)}</ul>
+      <RowList className="mt-5 sm:grid sm:grid-cols-2">{active.map(item)}</RowList>
       <p className="mt-3 flex items-center gap-1.5 px-2 text-[13px] font-medium text-muted">
         <Lock className="size-3.5" aria-hidden="true" /> {t('categories.systemHint')}
       </p>
 
       {archived.length > 0 && (
         <details className="mt-6">
-          <summary className="cursor-pointer rounded-full px-2 py-2 text-sm font-bold text-muted">{t('categories.archivedSection')}</summary>
-          <ul className="mt-2 grid rounded-[24px] bg-surface p-2 opacity-75 shadow-sheet sm:grid-cols-2 sm:gap-x-2">{archived.map(item)}</ul>
+          <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-surface px-4 text-sm font-bold text-muted hover:text-fg">{t('categories.archivedSection')}</summary>
+          <RowList className="mt-3 opacity-75 sm:grid sm:grid-cols-2">{archived.map(item)}</RowList>
         </details>
       )}
 

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { Plus, Users } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { PageHeader, RowItem, RowList } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -44,26 +45,22 @@ export default function GroupsPage() {
 
   return (
     <section className="mx-auto max-w-3xl">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('groups.title')}</h1>
-          <p className="mt-1 max-w-xl text-[15px] text-muted">{t('groups.subtitle')}</p>
-        </div>
+      <PageHeader title={t('groups.title')} subtitle={t('groups.subtitle')} action={
         <Button className="h-11 shrink-0" onClick={show}>
           <Plus className="size-5" aria-hidden="true" /> {t('groups.new')}
         </Button>
-      </div>
+      } />
 
       <div className="mt-6">
         {groups.length === 0 ? (
           <EmptyState icon={Users} title={t('groups.empty')} description={t('groups.emptyBody')}
-            action={<Button className="h-10" onClick={show}>{t('groups.new')}</Button>} />
+            action={<Button className="h-11" onClick={show}>{t('groups.new')}</Button>} />
         ) : (
-          <ul className="flex flex-col rounded-[24px] bg-surface p-2 shadow-sheet">
+          <RowList>
             {groups.map((g) => (
-              <li key={g.id}>
+              <RowItem key={g.id}>
                 <Link to={`/groups/${g.id}`}
-                  className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3.5 transition hover:bg-surface-2">
+                  className="flex w-full items-center gap-3.5 px-3.5 py-3 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
                   <GroupIcon name={g.icon} />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[15px] font-bold">{g.name}</span>
@@ -73,12 +70,12 @@ export default function GroupsPage() {
                     {g.role === 'admin' && (
                       <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary">{t('groups.admin')}</span>
                     )}
-                    <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{g.currency}</span>
+                    <span className="rounded-full bg-bg px-2.5 py-1 text-xs font-bold text-muted dark:bg-surface-2">{g.currency}</span>
                   </span>
                 </Link>
-              </li>
+              </RowItem>
             ))}
-          </ul>
+          </RowList>
         )}
       </div>
       <p className="mt-4 px-2 text-xs text-muted">{t('groups.privacyNote')}</p>

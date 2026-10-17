@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Wallet } from 'lucide-react'
 import { AmountKeypad } from '../../components/ui/AmountKeypad'
 import { Button } from '../../components/ui/Button'
+import { ChoiceTile } from '../../components/ui/Chip'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
@@ -119,7 +120,7 @@ export default function TransactionFormPage() {
   if (selectableAccounts.length === 0 && selectableCards.length === 0) {
     return (
       <EmptyState icon={Wallet} title={t('transactions.noAccounts')}
-        action={<Link to="/accounts" className="font-semibold text-primary">{t('transactions.goToAccounts')}</Link>} />
+        action={<Link to="/accounts" className="mt-1 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-bold text-ink-fg hover:bg-ink-hover">{t('transactions.goToAccounts')}</Link>} />
     )
   }
   const showSource = form.kind === 'expense' && selectableCards.length > 0
@@ -208,11 +209,11 @@ export default function TransactionFormPage() {
           className="-ml-2 grid size-11 place-items-center rounded-full text-fg transition hover:bg-surface-2">
           <ChevronLeft className="size-6" aria-hidden="true" />
         </button>
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{id ? t('transactions.edit') : t('transactions.new')}</h1>
+        <h1 className="text-[30px] font-extrabold leading-tight tracking-[-0.035em] lg:text-[34px]">{id ? t('transactions.edit') : t('transactions.new')}</h1>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-6">
-        <section className="flex flex-col gap-5 rounded-[28px] bg-surface p-5 shadow-sheet sm:p-6 lg:sticky lg:top-10">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-8">
+        <section className="flex flex-col gap-5 rounded-card bg-surface p-5 sm:p-6 lg:sticky lg:top-10">
           <SegmentedControl label={t('transactions.kindFilter')} value={form.kind} onChange={changeKind}
             options={[
               { value: 'expense', label: t('transactions.expense') },
@@ -222,18 +223,15 @@ export default function TransactionFormPage() {
             label={t('transactions.amount')} error={errors.amount} tone={form.kind} />
         </section>
 
-        <section className="flex flex-col gap-6 rounded-[28px] bg-surface p-5 shadow-sheet sm:p-6">
+        <section className="flex flex-col gap-6">
           <fieldset>
             <legend className="mb-3 text-[13px] font-semibold text-muted">{t('transactions.category')}</legend>
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
               {selectableCategories.map((c) => (
-                <label key={c.id} className="flex cursor-pointer flex-col items-center gap-1.5 rounded-2xl border-2 border-transparent bg-surface-2 px-1.5 py-3 text-center transition
-                  hover:bg-surface-3 has-checked:border-primary has-checked:bg-primary-soft has-focus-visible:ring-4 has-focus-visible:ring-primary/25">
-                  <input type="radio" name="category" className="sr-only" value={c.id} checked={form.categoryId === c.id}
-                    onChange={() => set({ categoryId: c.id })} />
+                <ChoiceTile key={c.id} name="category" value={c.id} checked={form.categoryId === c.id} onChange={() => set({ categoryId: c.id })}>
                   <CategoryIcon icon={c.icon} color={c.color} size="sm" />
                   <span className="line-clamp-2 text-[12px] font-bold leading-tight">{categoryLabel(c, t)}</span>
-                </label>
+                </ChoiceTile>
               ))}
             </div>
             {errors.category && <p className="mt-2 text-[13px] font-medium text-danger">{errors.category}</p>}
@@ -303,8 +301,8 @@ export default function TransactionFormPage() {
 
           {saveError && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{t(saveError)}</p>}
 
-          <div className="sticky bottom-0 -mx-5 -mb-5 flex flex-col gap-2 rounded-b-[28px] bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-3
-            sm:static sm:mx-0 sm:mb-0 sm:flex-row-reverse sm:rounded-none sm:p-0">
+          <div className="sticky bottom-0 -mx-5 flex flex-col gap-2 bg-bg px-5 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3
+            sm:static sm:mx-0 sm:flex-row-reverse sm:p-0">
             <Button type="submit" className="sm:flex-1" full loading={create.isPending || update.isPending} disabled={remove.isPending}>{t('transactions.save')}</Button>
             {id && (
               <Button type="button" variant="danger" className="sm:flex-1" full loading={remove.isPending} disabled={create.isPending || update.isPending} onClick={() => void onDelete()}>

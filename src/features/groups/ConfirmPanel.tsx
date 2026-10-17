@@ -20,13 +20,13 @@ export function ConfirmPanel({ message, confirmLabel, loading, danger, onConfirm
     panelRef.current?.querySelector<HTMLButtonElement>('[data-confirm]')?.focus()
   }, [])
   return (
-    <div ref={panelRef} role="group" aria-label={confirmLabel} className="rounded-2xl bg-surface-2 p-4">
+    <div ref={panelRef} role="group" aria-label={confirmLabel} className="rounded-[20px] bg-surface-2 p-4">
       <p className="text-sm font-semibold">{message}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button type="button" variant="ghost" className="h-11 bg-surface" disabled={loading} onClick={onCancel}>
+        <Button type="button" variant="plain" className="h-11 px-4" disabled={loading} onClick={onCancel}>
           {t('common.cancel')}
         </Button>
-        <Button data-confirm type="button" variant={danger ? 'danger' : 'primary'} className={`h-11 ${danger ? 'bg-surface' : ''}`}
+        <Button data-confirm type="button" variant={danger ? 'plainDanger' : 'primary'} className="h-11 px-4"
           loading={loading} onClick={onConfirm}>
           {confirmLabel}
         </Button>

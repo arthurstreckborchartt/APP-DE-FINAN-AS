@@ -1,11 +1,14 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { Spinner } from './Spinner'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+type Variant = 'primary' | 'secondary' | 'plain' | 'plainDanger' | 'ghost' | 'danger'
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-ink text-ink-fg hover:bg-ink-hover active:scale-[0.98]',
   secondary: 'bg-surface text-fg hover:bg-surface-2 active:scale-[0.98]',
+  /** Pílula branca (preta no escuro), para ficar visível sobre um painel Cloud. */
+  plain: 'bg-bg text-fg hover:bg-surface-3 active:scale-[0.98]',
+  plainDanger: 'bg-bg text-danger hover:bg-surface-3 active:scale-[0.98]',
   ghost: 'bg-transparent text-fg hover:bg-surface',
   danger: 'bg-transparent text-danger hover:bg-danger/10',
 }

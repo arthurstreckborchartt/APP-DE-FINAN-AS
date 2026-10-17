@@ -18,11 +18,11 @@ export function ProfileErrorState({ onRetry }: { onRetry: () => void }) {
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-8">
-      <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-[28px] bg-surface p-6 text-center shadow-sheet sm:p-8">
+      <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-card bg-surface p-6 text-center sm:p-8">
         <AlertTriangle className="size-10 text-danger" aria-hidden="true" />
         <p role="alert">{t('common.profileLoadError')}</p>
         <Button full onClick={onRetry}>{t('common.retry')}</Button>
-        <Button full variant="ghost" onClick={() => void logout()}>{t('settings.logout')}</Button>
+        <Button full variant="plain" onClick={() => void logout()}>{t('settings.logout')}</Button>
       </div>
     </div>
   )

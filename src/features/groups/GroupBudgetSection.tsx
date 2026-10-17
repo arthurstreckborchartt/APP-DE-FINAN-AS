@@ -33,16 +33,16 @@ export function GroupBudgetSection({ group, month, admin }: Props) {
   const pending = budgetsQuery.isPending || entriesQuery.isPending || categoriesQuery.isPending
   const error = budgetsQuery.isError || entriesQuery.isError || categoriesQuery.isError
   const retry = () => { void budgetsQuery.refetch(); void entriesQuery.refetch(); void categoriesQuery.refetch() }
-  const newButton = (className = 'h-10') => (
+  const newButton = (className = 'h-11') => (
     <Button className={`${className} shrink-0 whitespace-nowrap`} onClick={() => setEditing('new')}>
       <Plus className="size-4" aria-hidden="true" /> {t('budgets.new')}
     </Button>
   )
 
   return (
-    <section className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6">
-      <div className="mb-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <h2 className="text-[17px] font-extrabold tracking-[-0.01em]">{t('budgets.group')}</h2>
+    <section className="rounded-card bg-surface p-5 sm:p-6">
+      <div className="flex min-h-11 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <h2 className="text-[19px] font-extrabold tracking-[-0.02em]">{t('budgets.group')}</h2>
         {admin && rows.length > 0 && newButton()}
       </div>
       <p className="mb-4 text-[13px] font-medium text-muted">{t('budgets.groupHint')}</p>
@@ -56,7 +56,7 @@ export function GroupBudgetSection({ group, month, admin }: Props) {
           {admin && newButton()}
         </div>
       ) : (
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col">
           {rows.map((r) => (
             <li key={r.budget.id}>
               <BudgetRow category={categoriesById.get(r.budget.category_id)} spent={r.spent} limit={r.budget.amount}

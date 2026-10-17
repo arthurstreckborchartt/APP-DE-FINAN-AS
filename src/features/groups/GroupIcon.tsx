@@ -11,11 +11,15 @@ export function groupIconComponent(name: string): LucideIcon {
   return EXTRA[name] ?? CATEGORY_ICONS[name] ?? Users
 }
 
-export function GroupIcon({ name, size = 'md' }: { name: string; size?: 'md' | 'sm' }) {
+const BOX = { sm: 'size-9 rounded-xl', md: 'size-11 rounded-[14px]', lg: 'size-16 rounded-[20px]' } as const
+const GLYPH = { sm: 'size-4', md: 'size-5', lg: 'size-7' } as const
+
+/** Ladrilho quadrado arredondado do grupo, tingido de violeta (a cor de destaque). */
+export function GroupIcon({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
   const Icon = groupIconComponent(name)
   return (
-    <span className={`grid shrink-0 place-items-center rounded-full bg-primary-soft text-primary ${size === 'md' ? 'size-11' : 'size-9'}`}>
-      <Icon className={size === 'md' ? 'size-5' : 'size-4'} aria-hidden="true" />
+    <span className={`grid shrink-0 place-items-center bg-primary-soft text-primary ${BOX[size]}`}>
+      <Icon className={GLYPH[size]} aria-hidden="true" />
     </span>
   )
 }

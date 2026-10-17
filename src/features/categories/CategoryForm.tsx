@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { ChoiceTile } from '../../components/ui/Chip'
 import { TextField } from '../../components/ui/TextField'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { onCardDark } from '../../lib/contrast'
@@ -35,28 +36,24 @@ export function CategoryForm({ initial, submitLabel, loading, error, onSubmit, c
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-sm font-medium">{t('categories.icon')}</legend>
+        <legend className="mb-2 text-[13px] font-semibold text-muted">{t('categories.icon')}</legend>
         <div className="grid grid-cols-6 gap-2 sm:grid-cols-9">
           {CATEGORY_ICON_NAMES.map((name, i) => {
             const Icon = CATEGORY_ICONS[name]
             return (
-              <label key={name} className="grid aspect-square cursor-pointer place-items-center rounded-2xl border-2 border-transparent bg-surface-2 text-muted transition hover:bg-surface-3
-                has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary
-                has-focus-visible:ring-2 has-focus-visible:ring-primary has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-surface">
-                <input type="radio" name="icon" value={name} className="sr-only" checked={value.icon === name}
-                  onChange={() => setValue({ ...value, icon: name })} aria-label={t('categories.iconOption', { n: i + 1 })} />
+              <ChoiceTile key={name} className="aspect-square max-h-14 text-muted" name="icon" value={name} checked={value.icon === name} onChange={() => setValue({ ...value, icon: name })} aria-label={t('categories.iconOption', { n: i + 1 })}>
                 <Icon className="size-5" aria-hidden="true" />
-              </label>
+              </ChoiceTile>
             )
           })}
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="mb-2 text-sm font-medium">{t('categories.color')}</legend>
+        <legend className="mb-2 text-[13px] font-semibold text-muted">{t('categories.color')}</legend>
         <div className="flex flex-wrap gap-2">
           {CATEGORY_COLORS.map((c, i) => (
-            <label key={c} className="grid size-10 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-surface
+            <label key={c} className="grid size-10 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-bg
               has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="color" value={c} className="sr-only" checked={value.color === c}
                 onChange={() => setValue({ ...value, color: c })} aria-label={t('categories.colorOption', { n: i + 1 })} />

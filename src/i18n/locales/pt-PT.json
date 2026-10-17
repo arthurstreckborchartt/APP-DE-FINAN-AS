@@ -287,7 +287,8 @@
     "emptyBody": "Registe os seus cartões para acompanhar extratos, prestações e o limite disponível.",
     "archivedSection": "Cartões arquivados",
     "deleteBlocked": "Este cartão tem movimentos. Arquive-o em vez de eliminar.",
-    "invoiceHistory": "Histórico de extratos"
+    "invoiceHistory": "Histórico de extratos",
+    "usedPct": "{{pct}}% do limite em uso"
   },
   "invoices": {
     "title": "Extratos do cartão",
@@ -420,7 +421,8 @@
       "open": "Abrir grupo",
       "full": "Este grupo já tem o máximo de 50 membros.",
       "removed": "Foi removido deste grupo. Para voltar, peça uma novo link ao administrador."
-    }
+    },
+    "memberRing": "Divisão das despesas por membro"
   },
   "budgets": {
     "title": "Orçamentos",
@@ -450,7 +452,10 @@
     "group": "Orçamento do grupo",
     "groupEmpty": "Sem orçamento no grupo.",
     "groupEmptyAdmin": "Defina limites mensais por categoria para todo o grupo.",
-    "groupHint": "Soma os movimentos do grupo de todos os membros."
+    "groupHint": "Soma os movimentos do grupo de todos os membros.",
+    "heroLeft": "Disponível no mês",
+    "heroOver": "Acima do orçamento no mês",
+    "byCategory": "Por categoria"
   },
   "goals": {
     "title": "Metas",

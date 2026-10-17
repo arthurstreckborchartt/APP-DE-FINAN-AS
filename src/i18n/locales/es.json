@@ -287,7 +287,8 @@
     "emptyBody": "Registra tus tarjetas para seguir resúmenes, cuotas y el límite disponible.",
     "archivedSection": "Tarjetas archivadas",
     "deleteBlocked": "Esta tarjeta tiene movimientos. Archívala en lugar de eliminarla.",
-    "invoiceHistory": "Historial de resúmenes"
+    "invoiceHistory": "Historial de resúmenes",
+    "usedPct": "{{pct}}% del límite en uso"
   },
   "invoices": {
     "title": "Resúmenes",
@@ -420,7 +421,8 @@
       "open": "Abrir grupo",
       "full": "Este grupo ya tiene el máximo de 50 miembros.",
       "removed": "Te quitaron de este grupo. Para volver, pida un nuevo enlace al administrador."
-    }
+    },
+    "memberRing": "Reparto de gastos por miembro"
   },
   "budgets": {
     "title": "Presupuestos",
@@ -450,7 +452,10 @@
     "group": "Presupuesto del grupo",
     "groupEmpty": "Sin presupuesto en el grupo.",
     "groupEmptyAdmin": "Define límites mensuales por categoría para todo el grupo.",
-    "groupHint": "Suma los movimientos del grupo de todos los miembros."
+    "groupHint": "Suma los movimientos del grupo de todos los miembros.",
+    "heroLeft": "Disponible en el mes",
+    "heroOver": "Por encima del presupuesto del mes",
+    "byCategory": "Por categoría"
   },
   "goals": {
     "title": "Metas",

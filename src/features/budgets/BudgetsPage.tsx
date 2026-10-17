@@ -5,6 +5,9 @@ import { Plus, Target } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { Interpolate } from '../../components/Interpolate'
 import { Button } from '../../components/ui/Button'
+import { PageHeader, RowItem, RowList, SectionHeader } from '../../components/ui/Card'
+import { HERO_NUMBER, HeroCard } from '../../components/ui/HeroCard'
+import { Ring } from '../../components/ui/Ring'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { MonthSwitcher } from '../../components/ui/MonthSwitcher'
 import { QueryError } from '../../components/ui/QueryError'
@@ -20,7 +23,7 @@ import { useProfile } from '../profile/api'
 import { useTransactions } from '../transactions/api'
 import { useBudgets } from './api'
 import { BudgetForm } from './BudgetForm'
-import { BudgetBar, BudgetRow } from './BudgetRow'
+import { BudgetRow } from './BudgetRow'
 import { budgetsWithSpent, budgetTotals } from './rows'
 import type { Budget } from './types'
 
@@ -60,60 +63,67 @@ export default function BudgetsPage() {
     </Button>
   )
 
+  const left = total.limit - total.spent
+  const ringText = t('home.heroBudgetRing', { pct: budgetPct(total.spent, total.limit) })
+
   return (
-    <section className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 max-w-xl">
-          <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('budgets.title')}</h1>
-          <p className="mt-1 text-[15px] font-medium text-muted">{t('budgets.subtitle')}</p>
-        </div>
-        {budgets.length > 0 && newButton}
-      </div>
+    <section className="flex flex-col gap-6">
+      <PageHeader title={t('budgets.title')} subtitle={t('budgets.subtitle')} action={budgets.length > 0 ? newButton : undefined} />
 
       {budgets.length === 0 ? (
         <EmptyState icon={Target} title={t('budgets.empty')} description={t('budgets.emptyBody')}
-          action={<Button className="h-10" onClick={() => setEditing('new')}>{t('budgets.new')}</Button>} />
+          action={<Button className="h-11" onClick={() => setEditing('new')}>{t('budgets.new')}</Button>} />
       ) : (
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8">
-          <aside className="flex flex-col gap-4 lg:sticky lg:top-10 lg:order-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-8">
+          <aside className="flex flex-col gap-4 lg:sticky lg:top-10">
             <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />
             {currencies.length > 1 && (
               <SegmentedControl label={t('budgets.currency')} value={currency} onChange={setPicked}
                 options={currencies.map((c) => ({ value: c, label: c }))} />
             )}
             {monthQuery.isSuccess && (
-              <div className="rounded-[24px] bg-surface p-5 shadow-sheet">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h2 className="text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('budgets.total')}</h2>
-                  <span className="num text-[15px] font-extrabold">{t('budgets.pct', { pct: budgetPct(total.spent, total.limit) })}</span>
-                </div>
-                <p className="mt-2 text-[15px] font-medium text-muted">
-                  <Interpolate i18nKey="budgets.spentOf" values={{
-                    spent: <Amount cents={total.spent} currency={currency} locale={locale} className="text-[22px] font-extrabold tracking-[-0.02em] text-fg" />,
-                    limit: <Amount cents={total.limit} currency={currency} locale={locale} className="font-bold" />,
-                  }} />
-                </p>
-                <BudgetBar spent={total.spent} limit={total.limit} label={t('budgets.total')} className="mt-3" />
-              </div>
+              <HeroCard
+                top={<>
+                  <h2 className="text-[15px] font-semibold text-muted">{t('budgets.total')}</h2>
+                  <span className="rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted">{currency}</span>
+                </>}
+                value={<Amount cents={Math.abs(left)} currency={currency} locale={locale} className={`${HERO_NUMBER} ${left < 0 ? 'text-danger' : ''}`} />}
+                label={t(left < 0 ? 'budgets.heroOver' : 'budgets.heroLeft')}
+                detail={
+                  <p className="mt-1 text-[13px] font-medium text-muted">
+                    <Interpolate i18nKey="budgets.spentOf" values={{
+                      spent: <Amount cents={total.spent} currency={currency} locale={locale} className="font-bold text-fg" />,
+                      limit: <Amount cents={total.limit} currency={currency} locale={locale} />,
+                    }} />
+                  </p>
+                }
+                caption={ringText}
+                ring={
+                  <Ring value={total.limit > 0 ? total.spent / total.limit : 0} size={112} stroke={10} color="var(--primary)"
+                    overflowColor="var(--danger)" ariaLabel={ringText}>
+                    <Target className="size-7 text-primary" aria-hidden="true" />
+                  </Ring>
+                } />
             )}
           </aside>
 
-          <div className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6 lg:order-1">
+          <section aria-labelledby="budgets-list" className="min-w-0">
+            <SectionHeader id="budgets-list" title={t('budgets.byCategory')} />
             {monthQuery.isPending ? (
               <div className="grid place-items-center py-8 text-primary"><Spinner /></div>
             ) : monthQuery.isError ? (
               <QueryError onRetry={() => void monthQuery.refetch()} />
             ) : (
-              <ul className="flex flex-col gap-1">
+              <RowList>
                 {rows.map((r) => (
-                  <li key={r.budget.id}>
-                    <BudgetRow category={categoriesById.get(r.budget.category_id)} spent={r.spent} limit={r.budget.amount}
+                  <RowItem key={r.budget.id}>
+                    <BudgetRow flush category={categoriesById.get(r.budget.category_id)} spent={r.spent} limit={r.budget.amount}
                       currency={r.budget.currency} locale={locale} onClick={() => setEditing(r.budget)} />
-                  </li>
+                  </RowItem>
                 ))}
-              </ul>
+              </RowList>
             )}
-          </div>
+          </section>
         </div>
       )}
 

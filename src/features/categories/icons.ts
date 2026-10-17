@@ -22,3 +22,8 @@ export const CATEGORY_COLORS = [
   '#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981', '#06b6d4',
   '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#64748b', '#94a3b8',
 ]
+
+/** Glifo de uma categoria pelo nome (desconhecido → etiqueta). */
+export function categoryGlyph(icon: string): LucideIcon {
+  return Object.hasOwn(CATEGORY_ICONS, icon) ? CATEGORY_ICONS[icon] : Tag
+}

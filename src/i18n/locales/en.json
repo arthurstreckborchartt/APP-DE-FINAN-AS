@@ -287,7 +287,8 @@
     "emptyBody": "Add your cards to follow bills, installments and your available limit.",
     "archivedSection": "Archived cards",
     "deleteBlocked": "This card has transactions. Archive it instead of deleting.",
-    "invoiceHistory": "Bill history"
+    "invoiceHistory": "Bill history",
+    "usedPct": "{{pct}}% of the limit in use"
   },
   "invoices": {
     "title": "Bills",
@@ -420,7 +421,8 @@
       "open": "Open group",
       "full": "This group already has the maximum of 50 members.",
       "removed": "You were removed from this group. To come back, ask the admin for a new link."
-    }
+    },
+    "memberRing": "Spending split by member"
   },
   "budgets": {
     "title": "Budgets",
@@ -450,7 +452,10 @@
     "group": "Group budget",
     "groupEmpty": "No group budget.",
     "groupEmptyAdmin": "Set monthly limits per category for the whole group.",
-    "groupHint": "Adds up group entries from every member."
+    "groupHint": "Adds up group entries from every member.",
+    "heroLeft": "Left to spend this month",
+    "heroOver": "Over budget this month",
+    "byCategory": "By category"
   },
   "goals": {
     "title": "Goals",

@@ -33,11 +33,11 @@ export function PreferencesFields({ value, onChange, nameRequired }: Props) {
       </SelectField>
       <fieldset className="flex flex-col gap-1.5">
         <legend className="mb-1.5 text-[13px] font-semibold text-muted">{t('preferences.theme')}</legend>
-        <div className="grid grid-cols-3 gap-1 rounded-full bg-surface-2 p-1">
+        <div className="field grid grid-cols-3 gap-1 rounded-full p-1 dark:bg-surface-2">
           {THEMES.map((th) => (
             <label key={th.value}
               className="flex h-11 cursor-pointer items-center justify-center rounded-full text-sm font-bold text-muted transition hover:text-fg
-                has-checked:bg-surface has-checked:text-fg has-checked:shadow-sheet has-focus-visible:ring-2 has-focus-visible:ring-primary">
+                has-checked:bg-ink has-checked:text-ink-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-primary">
               <input type="radio" name="theme" className="sr-only" value={th.value}
                 checked={value.theme === th.value} onChange={() => set('theme', th.value)} />
               {t(th.key)}

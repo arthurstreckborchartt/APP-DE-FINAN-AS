@@ -51,7 +51,7 @@ export function InstallPrompt() {
 
   return (
     <section aria-label={t('install.title')}
-      className="mb-5 flex items-start gap-3 rounded-[24px] bg-primary-soft p-4">
+      className="mb-5 flex items-start gap-3 rounded-card bg-surface p-4">
       <Download className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <p className="font-extrabold">{t('install.title')}</p>
@@ -62,10 +62,10 @@ export function InstallPrompt() {
             t('install.body')
           )}
         </p>
-        {deferred && <Button className="mt-3 h-10" onClick={install}>{t('install.button')}</Button>}
+        {deferred && <Button className="mt-3 h-11" onClick={install}>{t('install.button')}</Button>}
       </div>
       <button type="button" onClick={dismiss} aria-label={t('install.dismiss')}
-        className="grid size-8 place-items-center rounded-full text-muted hover:bg-surface-2">
+        className="-m-1.5 grid size-11 shrink-0 place-items-center rounded-full text-muted hover:bg-surface-2">
         <X className="size-4" aria-hidden="true" />
       </button>
     </section>

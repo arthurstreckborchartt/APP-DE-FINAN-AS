@@ -21,7 +21,7 @@ export function TransactionRow({ transaction: tx, category, account, card, local
   const installment = tx.installments_count > 1
   return (
     <Link to={`/transactions/${tx.id}/edit`}
-      className="group flex items-center gap-3.5 rounded-2xl px-3 py-3 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
+      className="group flex items-center gap-3.5 px-3.5 py-3 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
       {category && <CategoryIcon icon={category.icon} color={category.color} />}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[15px] font-bold tracking-[-0.01em]">{tx.description || label}</span>
