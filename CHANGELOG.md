@@ -9,6 +9,17 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.9.0.0 — 2026-10-18
+
+Novo visual no estilo do Cal AI.
+
+- Fundo branco (preto no tema escuro), cartões cinza-claro bem arredondados, sem bordas nem sombras.
+- Números grandes ao lado de anéis de progresso coloridos: cada métrica tem sua cor (entradas verde, saídas coral, limite azul, categorias com a própria cor).
+- Início redesenhado: faixa da semana com um anel por dia, cartão principal com "disponível para gastar" (ou saldo) ao lado do anel, três cartões com anéis (Entradas, Saídas, Limite livre) e "Para onde foi o dinheiro" em anel.
+- Botões principais pretos e botão + preto flutuando no canto; o violeta e o logo continuam como destaque.
+- Todas as telas no mesmo estilo: Lançamentos (filtros num botão só), Novo lançamento, Cartões, Contas, Categorias, Recorrentes, Grupos, Orçamentos e Metas (com anéis), Relatórios e Ajustes.
+- Tema escuro em preto puro.
+
 ## Atualização 1.8.0.0 — 2026-10-18
 
 Etapa 7: pronto para publicar.
