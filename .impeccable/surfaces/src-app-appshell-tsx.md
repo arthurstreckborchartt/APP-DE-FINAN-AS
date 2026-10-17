@@ -7,22 +7,22 @@ related_targets: ["src/features"]
 
 # Surface: FINANCE app shell and screens (whole PWA)
 
-Scope: every authenticated screen (Início, Lançamentos, Novo lançamento, Contas, Categorias, Configurações), the shell (mobile bottom bar, desktop sidebar), onboarding and auth pages. Mode: Operate.
+Scope: every authenticated screen (Início, Lançamentos, Novo lançamento, Cartões, Grupos, Orçamentos, Metas, Relatórios, Contas, Categorias, Recorrentes, Ajustes), the shell (mobile bottom bar, desktop sidebar), onboarding and auth pages. Mode: Operate.
 
-Audience/job: owner, family and friends planning and analyzing personal money on phone and PC; calm control; quick entry still a few taps away. Constraints: 4 locales, per-currency totals, light/dark/system theme, 44px targets, i18n parity.
+Audience/job: owner, family and friends planning and analyzing personal money on phone and PC; calm control; quick entry a tap away. Constraints: 4 locales, per-currency totals, light/dark/system theme, 44px targets, hide-values everywhere, i18n parity.
 
-Bar: category standard at the craft level of Nubank and Revolut/Monzo (user choice). Memorable moment: the balance header with a hide-values eye toggle and the month's spending broken down by category right on Início.
+Bar: user-pinned reference (2026-10-18): the Cal AI app's visual language, executed at its craft level, keeping FINANCE's violet accent and two-circle logo. Memorable moment: the Início ring dashboard (big remaining number beside a ring, three ring cards, week strip of day rings).
 
 ## Direction contract
 
-THESIS: A familiar banking app done impeccably — one confident balance header, everything else quiet and exact. Refuses the generic Tailwind-dashboard look (flat white cards, teal accent, default type) the app ships today.
+THESIS: Money read like Cal AI reads calories: one enormous "left this month" number beside its ring, then small ring cards — instead of the banking-app gradient header and stacked white sheets the app ships today.
 
-OWN-WORLD: Calm cobalt brand on deep ink; light theme on cool near-white with white sheets and soft offset shadows, dark theme near-black with layered graphite. One brand color for primary actions and the balance header; income green and expense coral only on amounts. Manrope with tabular figures; rounded 20–28px sheets, circular category avatars tinted from their color.
+OWN-WORLD: Pure white ground (dark: true black). Cards are flat Cloud gray (#f4f4f6 / dark #1c1c1e), 28px radius, no shadows, no borders. Ink-black pill buttons and a black circular FAB (dark: white with black glyph). Violet #5b3df5 is the accent: rings, active states, links, selected chips. Rings are thick (8–10px) rounded-cap arcs on a light track with an icon at the center; each metric owns one color (income green, expense coral, limit blue, category colors). Manrope 800 for huge tabular numbers (48–56px), quiet 500 labels. Rounded-square icon tiles for categories in lists.
 
-STORY: Open the app → see total balance (hideable), this month in vs out and where it went by category → tap + to record in seconds → review the month list grouped by day with daily totals → manage accounts and categories.
+STORY: Open → see what's left to spend this month and today's place in the week → glance at in/out/limit rings → tap + to record → drill into lists, budgets, goals, reports that all speak the same ring/card language.
 
-FIRST VIEWPORT: Mobile Início: brand balance header full-width (greeting, eye toggle, total per currency in large tabular type, accounts count) → row of four round quick actions (Novo, Contas, Categorias, Extrato) → "Este mês" sheet with income/expense bars and top categories with proportional bars → recent transactions. Desktop: sidebar left; header + month summary in the first row, category breakdown and recent side by side. Primary action: the + FAB (mobile) / "Novo lançamento" button (sidebar).
+FIRST VIEWPORT: Mobile Início: header (logo + FINANCE, avatar) → week strip of 7 day circles with spend rings, today highlighted → hero Cloud card: huge remaining/balance number + label left, large ring right → row of three ring cards (Entradas, Saídas, Cartões) → "Últimos lançamentos" gray rows. Black + FAB floats bottom-right above the white tab bar. Desktop: white sidebar, same cards in a two-column grid.
 
-FORM: Canon (category standard), standing exit chosen by the user; seed key fcc03456.
+FORM: User-pinned reference world (Cal AI), not rolled; seed: pinned-cal-ai.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

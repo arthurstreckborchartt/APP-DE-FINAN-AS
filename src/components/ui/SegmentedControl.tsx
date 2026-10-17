@@ -23,14 +23,14 @@ export function SegmentedControl<T extends string>({ value, options, onChange, l
 
   return (
     <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown}
-      className="grid auto-cols-fr grid-flow-col gap-1 rounded-full bg-surface-2 p-1">
+      className="grid auto-cols-fr grid-flow-col gap-1 field rounded-full p-1 dark:bg-surface-2">
       {options.map((o, i) => {
         const checked = o.value === value
         return (
           <button key={o.value} ref={(el) => { refs.current[i] = el }} type="button" role="radio" aria-checked={checked}
             tabIndex={checked || (!hasMatch && i === 0) ? 0 : -1} onClick={() => onChange(o.value)}
             className={`h-11 rounded-full text-sm font-bold transition duration-200 focus-visible:outline-2 focus-visible:outline-primary ${
-              checked ? 'bg-surface text-fg shadow-sheet' : 'text-muted hover:text-fg'
+              checked ? 'bg-ink text-ink-fg' : 'text-muted hover:text-fg'
             }`}>
             {o.label}
           </button>

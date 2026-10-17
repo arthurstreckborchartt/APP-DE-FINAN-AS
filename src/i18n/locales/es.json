@@ -248,7 +248,21 @@
     "invoiceOf": "Resumen {{card}}",
     "budget": "Presupuesto del mes",
     "budgetEmpty": "Define límites por categoría para seguir tus gastos.",
-    "budgetCta": "Crear presupuesto"
+    "budgetCta": "Crear presupuesto",
+    "leftToSpend": "Te queda para gastar este mes",
+    "overBudget": "Por encima del presupuesto este mes",
+    "heroBudgetRing": "{{pct}}% del presupuesto usado",
+    "heroIncomeRing": "{{pct}}% de tus entradas gastado",
+    "heroNoIncome": "Ninguna entrada este mes",
+    "ringIncome": "Tus entradas cubren el {{pct}}% de las salidas",
+    "ringExpense": "Tus salidas son el {{pct}}% de las entradas",
+    "ringCards": "{{pct}}% del límite de tus tarjetas en uso",
+    "cardsFree": "Límite libre",
+    "noCards": "Sin tarjetas",
+    "week": "Gastos de esta semana",
+    "weekDay": "{{date}}: {{amount}} en gastos",
+    "weekDayHidden": "{{date}}: {{pct}}% del promedio diario",
+    "weekDayNone": "{{date}}: sin gastos"
   },
   "cards": {
     "title": "Tarjetas",

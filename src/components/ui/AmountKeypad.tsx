@@ -18,8 +18,8 @@ type Props = {
 function Key({ children, onClick, label }: { children: ReactNode; onClick: () => void; label?: string }) {
   return (
     <button type="button" onClick={onClick} aria-label={label}
-      className="num grid h-14 place-items-center rounded-2xl bg-surface-2 text-[22px] font-bold text-fg transition duration-100
-        hover:bg-surface-3 active:scale-95 active:bg-primary-soft focus-visible:outline-2 focus-visible:outline-primary">
+      className="num grid h-14 place-items-center field rounded-[20px] text-[24px] font-bold text-fg transition duration-100
+        hover:bg-surface-2 active:scale-95 active:bg-surface-3 dark:bg-surface-2 dark:hover:bg-surface-3 focus-visible:outline-2 focus-visible:outline-primary">
       {children}
     </button>
   )
@@ -58,7 +58,7 @@ export function AmountKeypad({ value, onChange, currency, locale, label, error, 
     <div className="flex flex-col gap-3">
       <div role="textbox" tabIndex={0} aria-label={label} aria-readonly="true" aria-live="polite"
         aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined}
-        className={`num rounded-2xl px-2 py-4 text-center text-[36px] leading-tight sm:text-[44px] break-all font-extrabold tracking-[-0.03em] outline-none
+        className={`num rounded-2xl px-2 py-4 text-center text-[44px] leading-tight sm:text-[52px] break-all font-extrabold tracking-[-0.035em] outline-none
           focus-visible:ring-2 focus-visible:ring-primary ${value === 0 ? 'text-muted' : tone === 'income' ? 'text-success' : 'text-fg'}`}>
         {formatMoney(value, currency, locale)}
       </div>

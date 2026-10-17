@@ -12,8 +12,8 @@ export function SelectField({ label, id, className = '', children, ...rest }: Pr
       <div className="relative">
         <select
           id={selectId}
-          className="h-12 w-full appearance-none rounded-2xl border border-transparent bg-surface-2 pl-4 pr-11 text-base font-medium text-fg
-            outline-none transition hover:bg-surface-3 focus:border-primary focus:bg-surface focus:ring-4 focus:ring-primary/15 disabled:opacity-60"
+          className="h-13 w-full appearance-none field rounded-[18px] pl-4 pr-11 text-base font-semibold text-fg
+            outline-none transition hover:bg-surface-2 focus:ring-2 focus:ring-primary dark:bg-surface-2 dark:hover:bg-surface-3 disabled:opacity-60"
           {...rest}
         >
           {children}

@@ -248,7 +248,21 @@
     "invoiceOf": "{{card}} bill",
     "budget": "This month's budget",
     "budgetEmpty": "Set limits per category to keep track of your spending.",
-    "budgetCta": "Create budget"
+    "budgetCta": "Create budget",
+    "leftToSpend": "Left to spend this month",
+    "overBudget": "Over budget this month",
+    "heroBudgetRing": "{{pct}}% of budget used",
+    "heroIncomeRing": "{{pct}}% of income spent",
+    "heroNoIncome": "No income this month",
+    "ringIncome": "Income covers {{pct}}% of expenses",
+    "ringExpense": "Expenses are {{pct}}% of income",
+    "ringCards": "{{pct}}% of card limit in use",
+    "cardsFree": "Free limit",
+    "noCards": "No cards",
+    "week": "Spending this week",
+    "weekDay": "{{date}}: {{amount}} in expenses",
+    "weekDayHidden": "{{date}}: {{pct}}% of the daily average",
+    "weekDayNone": "{{date}}: no expenses"
   },
   "cards": {
     "title": "Cards",

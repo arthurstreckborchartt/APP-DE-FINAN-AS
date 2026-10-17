@@ -248,7 +248,21 @@
     "invoiceOf": "Fatura {{card}}",
     "budget": "Orçamento do mês",
     "budgetEmpty": "Defina limites por categoria para acompanhar seus gastos.",
-    "budgetCta": "Criar orçamento"
+    "budgetCta": "Criar orçamento",
+    "leftToSpend": "Disponível para gastar este mês",
+    "overBudget": "Acima do orçamento este mês",
+    "heroBudgetRing": "{{pct}}% do orçamento usado",
+    "heroIncomeRing": "{{pct}}% das entradas gastas",
+    "heroNoIncome": "Nenhuma entrada neste mês",
+    "ringIncome": "Entradas cobrem {{pct}}% das saídas",
+    "ringExpense": "Saídas somam {{pct}}% das entradas",
+    "ringCards": "{{pct}}% do limite dos cartões em uso",
+    "cardsFree": "Limite livre",
+    "noCards": "Sem cartões",
+    "week": "Gastos desta semana",
+    "weekDay": "{{date}}: {{amount}} em despesas",
+    "weekDayHidden": "{{date}}: {{pct}}% da média diária de gastos",
+    "weekDayNone": "{{date}}: sem despesas"
   },
   "cards": {
     "title": "Cartões",

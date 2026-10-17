@@ -1,12 +1,12 @@
 export const CURRENCIES = ['BRL', 'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'AUD', 'ARS', 'MXN'] as const
 export type CurrencyCode = (typeof CURRENCIES)[number]
 
-export function formatMoney(cents: number, currency: string, locale: string): string {
+export function formatMoney(cents: number, currency: string, locale: string, fractionDigits = 2): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(cents / 100)
 }
 
