@@ -9,6 +9,18 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.7.0.0 — 2026-10-17
+
+Etapa 6: orçamentos, metas e relatórios.
+
+- **Orçamentos**: limite mensal por categoria de despesa, em cada moeda. A barra fica amarela ao chegar em 80% ("Perto do limite") e vermelha ao passar de 100% ("Acima do limite"), mostrando quanto falta ou quanto passou. Compras parceladas contam parcela a parcela.
+- **Início**: novo quadro "Orçamento do mês" com o total e as categorias mais perto do limite.
+- **Orçamento do grupo**: o administrador define limites por categoria para o grupo todo, somando os lançamentos de todos os membros; todos acompanham na tela do grupo.
+- **Metas**: valor-alvo, prazo opcional, ícone e cor. Registre o que guardou ou retirou e veja o progresso, quanto falta e quanto guardar por mês até o prazo. Metas podem ser arquivadas. Os valores das metas não mexem no saldo das contas.
+- **Relatórios**: receitas × despesas mês a mês em gráfico de barras, gastos por categoria, resumo do período (saldo e média de gastos), filtros de 3, 6 ou 12 meses ou o ano, por conta/cartão e por moeda. No grupo: gastos por membro e comparação entre membros.
+- Relatórios, Orçamentos e Metas no menu lateral e em Ajustes.
+- Tudo atualiza ao vivo entre aparelhos e respeita o "ocultar valores".
+
 ## Atualização 1.6.0.0 — 2026-10-17
 
 Etapa 5: grupos e convites.
