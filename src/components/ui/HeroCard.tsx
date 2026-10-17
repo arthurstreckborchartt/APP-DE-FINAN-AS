@@ -59,7 +59,7 @@ export function HeroCard({ top, value, label, detail, ring, caption, children, c
       <div className="flex items-center justify-between gap-3 sm:gap-5">
         <div className="min-w-0 flex-1">
           <HeroValue>{value}</HeroValue>
-          <p id={labelId} className="mt-1.5 text-[15px] font-semibold text-muted">{label}</p>
+          <p id={labelId} className="mt-1.5 text-[15px] font-semibold text-balance text-muted">{label}</p>
           {detail}
           {caption && <p className="mt-1 text-[13px] font-semibold text-muted">{caption}</p>}
         </div>
