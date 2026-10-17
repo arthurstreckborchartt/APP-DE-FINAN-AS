@@ -9,6 +9,19 @@ Cada atualização recebe um número de versão `MAIOR.MENOR.CORREÇÃO.AJUSTE` 
 
 ---
 
+## Atualização 1.6.0.0 — 2026-10-17
+
+Etapa 5: grupos e convites.
+
+- Nova aba **Grupos** na barra inferior (Contas continua no menu lateral e em Ajustes).
+- Crie grupos com nome, moeda e ícone; quem cria é o administrador.
+- Convite por link válido por 7 dias, que várias pessoas podem usar; dá para copiar, compartilhar, revogar e gerar um novo. Quem abre o link sem estar logado volta para o convite depois de entrar ou criar a conta.
+- Ao lançar (ou criar uma recorrente), escolha um grupo da mesma moeda. O grupo vê **só** os lançamentos marcados para ele — nunca contas, cartões ou outros gastos de ninguém.
+- Tela do grupo: gasto do mês, sua parte, quem gastou quanto, gastos por categoria, lançamentos do grupo (compras parceladas contam parcela a parcela) e membros.
+- Administrador remove membros, passa a administração e exclui o grupo; membros podem sair. Os lançamentos de quem saiu continuam no histórico; quem foi removido só volta com um link novo.
+- Tempo real mais seguro: cada pessoa recebe avisos só dos próprios dados e dos grupos de que participa.
+- Lançamentos do grupo aparecem com um ícone no extrato.
+
 ## Atualização 1.5.0.0 — 2026-10-13
 
 Etapa 4: contas fixas e recorrentes.
