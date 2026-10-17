@@ -222,7 +222,12 @@
     "firstInvoice": "A primeira prestação entra no extrato de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este movimento está num extrato pago e não pode ser alterado. Anule o pagamento do extrato para o editar.",
-    "dailySpending": "Despesas por dia"
+    "dailySpending": "Despesas por dia",
+    "filters": "Filtros",
+    "filtersActive_one": "{{count}} ativo",
+    "filtersActive_other": "{{count}} ativos",
+    "clearFilters": "Limpar filtros",
+    "showResults": "Ver resultados"
   },
   "home": {
     "greeting": "Olá, {{name}}!",
@@ -248,7 +253,21 @@
     "invoiceOf": "Extrato {{card}}",
     "budget": "Orçamento do mês",
     "budgetEmpty": "Defina limites por categoria para acompanhar as suas despesas.",
-    "budgetCta": "Criar orçamento"
+    "budgetCta": "Criar orçamento",
+    "leftToSpend": "Disponível para gastar este mês",
+    "overBudget": "Acima do orçamento este mês",
+    "heroBudgetRing": "{{pct}}% do orçamento usado",
+    "heroIncomeRing": "{{pct}}% das entradas gastas",
+    "heroNoIncome": "Nenhuma entrada este mês",
+    "ringIncome": "Entradas cobrem {{pct}}% das saídas",
+    "ringExpense": "Saídas somam {{pct}}% das entradas",
+    "ringCards": "{{pct}}% do limite dos cartões em uso",
+    "cardsFree": "Limite livre",
+    "noCards": "Sem cartões",
+    "week": "Gastos desta semana",
+    "weekDay": "{{date}}: {{amount}} em despesas",
+    "weekDayHidden": "{{date}}: {{pct}}% da média diária de gastos",
+    "weekDayNone": "{{date}}: sem despesas"
   },
   "cards": {
     "title": "Cartões",
@@ -273,7 +292,8 @@
     "emptyBody": "Registe os seus cartões para acompanhar extratos, prestações e o limite disponível.",
     "archivedSection": "Cartões arquivados",
     "deleteBlocked": "Este cartão tem movimentos. Arquive-o em vez de eliminar.",
-    "invoiceHistory": "Histórico de extratos"
+    "invoiceHistory": "Histórico de extratos",
+    "usedPct": "{{pct}}% do limite em uso"
   },
   "invoices": {
     "title": "Extratos do cartão",
@@ -406,7 +426,8 @@
       "open": "Abrir grupo",
       "full": "Este grupo já tem o máximo de 50 membros.",
       "removed": "Foi removido deste grupo. Para voltar, peça uma novo link ao administrador."
-    }
+    },
+    "memberRing": "Divisão das despesas por membro"
   },
   "budgets": {
     "title": "Orçamentos",
@@ -436,7 +457,10 @@
     "group": "Orçamento do grupo",
     "groupEmpty": "Sem orçamento no grupo.",
     "groupEmptyAdmin": "Defina limites mensais por categoria para todo o grupo.",
-    "groupHint": "Soma os movimentos do grupo de todos os membros."
+    "groupHint": "Soma os movimentos do grupo de todos os membros.",
+    "heroLeft": "Disponível no mês",
+    "heroOver": "Acima do orçamento no mês",
+    "byCategory": "Por categoria"
   },
   "goals": {
     "title": "Metas",

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EllipsisVertical } from 'lucide-react'
+import { initials } from '../../lib/initials'
 import { ConfirmPanel } from './ConfirmPanel'
 import { groupErrorKey } from './display'
 import type { GroupMember } from './types'
@@ -24,7 +25,7 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
   const [pending, setPending] = useState<Action | null>(null)
   const [error, setError] = useState<string | null>(null)
   const left = member.left_at !== null
-  const initial = (member.name.trim() || displayName).charAt(0).toUpperCase()
+  const avatar = initials(member.name.trim() || displayName)
 
   async function run() {
     if (!pending) return
@@ -41,16 +42,16 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
 
   return (
     <div className="py-1">
-      <div className="flex items-center gap-3.5 rounded-2xl px-3 py-2">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary-soft text-[15px] font-extrabold text-primary" aria-hidden="true">
-          {initial}
+      <div className="flex items-center gap-3.5 rounded-[18px] px-2 py-1.5">
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-bg text-[13px] font-extrabold text-fg dark:bg-surface-2" aria-hidden="true">
+          {avatar}
         </span>
         <span className="min-w-0 flex-1 truncate text-[15px] font-bold">{displayName}</span>
         <span className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
           {member.role === 'admin' && !left && (
             <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary">{t('groups.admin')}</span>
           )}
-          {left && <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{t('groups.left')}</span>}
+          {left && <span className="rounded-full bg-bg px-2.5 py-1 text-xs font-bold text-muted dark:bg-surface-2">{t('groups.left')}</span>}
         </span>
         {manageable && (
           <button type="button" aria-expanded={menu} aria-label={t('groups.memberOptions', { name: displayName })}
@@ -61,7 +62,7 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
         )}
       </div>
       {manageable && menu && (
-        <div className="mx-3 mb-2">
+        <div className="mx-2 mb-2">
           {pending ? (
             <ConfirmPanel
               message={t(pending === 'makeAdmin' ? 'groups.makeAdminConfirm' : 'groups.removeConfirm', { name: displayName })}
@@ -69,13 +70,13 @@ export function MemberRow({ member, displayName, manageable, busy, onMakeAdmin, 
               danger={pending === 'remove'} loading={busy}
               onConfirm={() => void run()} onCancel={() => { setPending(null); setError(null) }} />
           ) : (
-            <div className="flex flex-col rounded-2xl bg-surface-2 p-1.5">
+            <div className="flex flex-col rounded-[20px] bg-bg p-1.5 dark:bg-surface-2">
               <button type="button" onClick={() => setPending('makeAdmin')}
-                className="h-11 rounded-xl px-3 text-left text-sm font-bold transition hover:bg-surface-3 focus-visible:outline-2 focus-visible:outline-primary">
+                className="h-11 rounded-[14px] px-3 text-left text-sm font-bold transition hover:bg-surface focus-visible:outline-2 focus-visible:outline-primary">
                 {t('groups.makeAdmin')}
               </button>
               <button type="button" onClick={() => setPending('remove')}
-                className="h-11 rounded-xl px-3 text-left text-sm font-bold text-danger transition hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary">
+                className="h-11 rounded-[14px] px-3 text-left text-sm font-bold text-danger transition hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary">
                 {t('groups.remove')}
               </button>
             </div>

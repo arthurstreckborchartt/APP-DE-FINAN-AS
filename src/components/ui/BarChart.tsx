@@ -173,7 +173,7 @@ export function BarChart({ labels, series, format, formatTick = format, titles =
 
         {active !== null && (
           <div id={tipId} role="tooltip"
-            className="pointer-events-none absolute top-0 z-20 grid min-w-36 gap-1.5 rounded-xl bg-surface px-3 py-2 text-xs"
+            className="pointer-events-none absolute top-0 z-20 grid min-w-36 gap-1.5 rounded-xl bg-bg px-3 py-2 text-xs dark:bg-surface-2"
             style={{
               left: activeX,
               transform: tipOnLeft ? `translateX(calc(-100% - ${groupW / 2 + 12}px))` : `translateX(${groupW / 2 + 12}px)`,

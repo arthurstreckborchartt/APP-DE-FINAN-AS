@@ -27,13 +27,12 @@ afterEach(() => {
   act(() => setHideValues(false))
 })
 
-test('atingida: "Meta atingida", 100% e barra cheia na cor da meta', () => {
-  const { container } = renderCard(goal({ saved: 120000, deadline: '2026-01-31' }))
+test('atingida: "Meta atingida", 100% e anel cheio na cor da meta', () => {
+  renderCard(goal({ saved: 120000, deadline: '2026-01-31' }))
   expect(screen.getByText('Meta atingida')).toBeTruthy()
   expect(screen.getByText('100%')).toBeTruthy()
-  const bar = container.querySelector('[data-goal-bar]') as HTMLElement
-  expect(bar.style.width).toBe('100%')
-  expect(bar.style.backgroundColor).toBe('rgb(59, 130, 246)')
+  expect(screen.getByRole('progressbar').getAttribute('aria-valuenow')).toBe('100')
+  expect(screen.getByTestId('ring-arc').getAttribute('stroke')).toBe('#3b82f6')
   expect(screen.queryByText(/prazo passou/)).toBeNull()
 })
 

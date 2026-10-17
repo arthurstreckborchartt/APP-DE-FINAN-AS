@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { groupErrorKey, groupSaveErrorKey, joinErrorKey, memberDisplayName, splitAtSlot } from './display'
+import { describe, expect, it, test } from 'vitest'
+import { groupErrorKey, groupSaveErrorKey, joinErrorKey, memberColorOf, memberDisplayName, splitAtSlot } from './display'
 
 const t = (key: string) => `[${key}]`
 
@@ -55,5 +55,15 @@ describe('groupSaveErrorKey', () => {
     expect(groupSaveErrorKey({ hint: 'not_group_member' })).toBe('groups.notMember')
     expect(groupSaveErrorKey({ hint: 'group_currency' })).toBe('groups.groupCurrency')
     expect(groupSaveErrorKey({ hint: 'paid_invoice' })).toBeNull()
+  })
+})
+
+describe('memberColorOf', () => {
+  test('a cor segue a posição na lista de membros e repete depois de 6', () => {
+    const members = Array.from({ length: 7 }, (_, i) => ({ user_id: `u${i}` }))
+    const colorOf = memberColorOf(members)
+    expect(colorOf('u0')).toBe('var(--chart-1)')
+    expect(colorOf('u2')).toBe('var(--chart-3)')
+    expect(colorOf('u6')).toBe('var(--chart-1)')
   })
 })

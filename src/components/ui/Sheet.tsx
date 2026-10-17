@@ -64,17 +64,18 @@ export function Sheet({ open, onClose, title, children }: Props) {
   if (!open) return null
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[rgb(8_10_20/0.48)] lg:items-center lg:p-4"
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[rgb(0_0_0/0.4)] lg:items-center lg:p-4"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}>
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
-        className="max-h-[92dvh] w-full overflow-y-auto rounded-t-[28px] bg-surface p-5 shadow-sheet pb-[calc(env(safe-area-inset-bottom)+1.25rem)]
-          lg:max-w-lg lg:rounded-3xl lg:pb-6">
+        className="max-h-[92dvh] w-full overflow-y-auto rounded-t-card bg-bg px-5 pt-2 shadow-pop pb-[calc(env(safe-area-inset-bottom)+1.25rem)]
+          dark:bg-surface lg:max-w-lg lg:rounded-card lg:p-6">
+        <div className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-surface-3 lg:hidden" aria-hidden="true" />
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 id={titleId} className="text-xl font-extrabold tracking-[-0.02em]">{title}</h2>
+          <h2 id={titleId} className="text-[22px] font-extrabold tracking-[-0.02em]">{title}</h2>
           <button type="button" onClick={onClose} aria-label={t('common.close')}
-            className="grid size-11 place-items-center rounded-full text-muted hover:bg-surface-2
+            className="grid size-11 place-items-center rounded-full bg-surface text-fg hover:bg-surface-2
               focus-visible:outline-2 focus-visible:outline-primary">
             <X className="size-5" aria-hidden="true" />
           </button>

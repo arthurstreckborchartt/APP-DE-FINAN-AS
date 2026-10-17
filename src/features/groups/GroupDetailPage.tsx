@@ -1,10 +1,13 @@
-import { createElement, useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router'
 import { ChevronLeft, ReceiptText, Settings2, UserPlus, Users } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { Button } from '../../components/ui/Button'
+import { Card, RowItem, RowList, SectionHeader } from '../../components/ui/Card'
+import { HERO_NUMBER, HeroCard } from '../../components/ui/HeroCard'
+import { SegmentedRing } from '../../components/ui/SegmentedRing'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { MonthSwitcher } from '../../components/ui/MonthSwitcher'
 import { QueryError } from '../../components/ui/QueryError'
@@ -14,12 +17,13 @@ import { normalizeLocale } from '../../lib/locale'
 import { useAuth } from '../auth/auth-context'
 import { categoryLabel } from '../categories/label'
 import { useGroupEntries, useGroupMembers, useMyGroups, useRemoveMember, useTransferAdmin } from './api'
-import { memberDisplayName, splitAtSlot } from './display'
+import { memberColorOf, memberDisplayName, splitAtSlot } from './display'
 import { GroupBudgetSection } from './GroupBudgetSection'
-import { groupIconComponent } from './GroupIcon'
+import { GroupIcon } from './GroupIcon'
 import { GroupSettingsSheet } from './GroupSettingsSheet'
 import { InviteSheet } from './InviteSheet'
 import { MemberRow } from './MemberRow'
+import { MemberShares } from './MemberShares'
 import { groupMonthStats } from './stats'
 import type { GroupEntry } from './types'
 
@@ -27,18 +31,10 @@ const AMOUNT_SLOT = '⁣AMOUNT⁣'
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6">
-      <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h2>
+    <Card>
+      <SectionHeader title={title} />
       {children}
-    </section>
-  )
-}
-
-function LargeGroupIcon({ name }: { name: string }) {
-  return (
-    <span className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-      {createElement(groupIconComponent(name), { className: 'size-7', 'aria-hidden': true })}
-    </span>
+    </Card>
   )
 }
 
@@ -74,6 +70,7 @@ export default function GroupDetailPage() {
   const members = useMemo(() => membersQuery.data ?? [], [membersQuery.data])
   const entries = useMemo(() => [...(entriesQuery.data ?? [])].sort(byDateDesc), [entriesQuery.data])
   const stats = useMemo(() => groupMonthStats(entries, members), [entries, members])
+  const colorOf = useMemo(() => memberColorOf(members), [members])
   const namesById = useMemo(
     () => new Map(members.map((m) => [m.user_id, memberDisplayName(m, myId, t)])),
     [members, myId, t],
@@ -86,7 +83,7 @@ export default function GroupDetailPage() {
   if (!group) {
     return (
       <EmptyState icon={Users} title={t('groups.notFound')}
-        action={<Link to="/groups" className="mt-1 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-fg">{t('groups.title')}</Link>} />
+        action={<Link to="/groups" className="mt-1 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-bold text-ink-fg hover:bg-ink-hover">{t('groups.title')}</Link>} />
     )
   }
 
@@ -100,7 +97,7 @@ export default function GroupDetailPage() {
   const nameOf = (userId: string) => namesById.get(userId) ?? t('groups.unnamed')
 
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
         <Link to="/groups" className="inline-flex h-11 items-center gap-1 rounded-full pr-3 text-sm font-bold text-muted hover:text-fg">
           <ChevronLeft className="size-5" aria-hidden="true" /> {t('common.back')}
@@ -112,19 +109,19 @@ export default function GroupDetailPage() {
             </Button>
           )}
           <button type="button" onClick={() => setSettingsOpen(true)} aria-label={t('groups.settings')}
-            className="grid size-11 place-items-center rounded-full bg-surface text-fg shadow-sheet transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
+            className="grid size-11 place-items-center rounded-full bg-surface text-fg transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
             <Settings2 className="size-5" aria-hidden="true" />
           </button>
         </div>
       </div>
 
       <header className="flex items-center gap-4">
-        <LargeGroupIcon name={group.icon} />
+        <GroupIcon name={group.icon} size="lg" />
         <div className="min-w-0">
-          <h1 className="truncate text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{group.name}</h1>
+          <h1 className="truncate text-[30px] font-extrabold leading-tight tracking-[-0.035em] lg:text-[34px]">{group.name}</h1>
           <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[15px] font-medium text-muted">
             {t('groups.members', { count: group.members })}
-            <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{group.currency}</span>
+            <span className="rounded-full bg-surface px-2.5 py-1 text-xs font-bold text-muted">{group.currency}</span>
           </p>
         </div>
       </header>
@@ -135,47 +132,32 @@ export default function GroupDetailPage() {
         <MonthSwitcher month={month} locale={locale} onChange={(m) => setParams({ m }, { replace: true })} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2 lg:items-start lg:gap-6">
-        <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-6">
           {/* Resumo */}
-          <section className="rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6">
-            <p className="text-[15px] font-semibold text-muted">{t('groups.monthTotal')}</p>
-            {dataPending ? <Loading /> : dataError ? <div className="mt-3"><QueryError onRetry={retry} /></div> : (
-              <>
-                <Amount cents={stats.total} currency={group.currency} locale={locale}
-                  className="mt-1 block text-[38px] font-extrabold leading-tight tracking-[-0.03em]" />
-                <p className="mt-2 text-[15px] font-semibold text-muted">
+          {dataPending ? <Card><Loading /></Card> : dataError ? <QueryError onRetry={retry} /> : (
+            <HeroCard
+              value={<Amount cents={stats.total} currency={group.currency} locale={locale} smallSymbol className={HERO_NUMBER} />}
+              label={t('groups.monthTotal')}
+              detail={
+                <p className="mt-1 text-[13px] font-semibold text-muted">
                   {beforeAmount}
                   <Amount cents={mine?.amount ?? 0} currency={group.currency} locale={locale} className="font-bold text-fg" />
                   {afterAmount}
                 </p>
-              </>
-            )}
-          </section>
+              }
+              ring={
+                <SegmentedRing size={100} stroke={11} ariaLabel={t('groups.memberRing')}
+                  segments={stats.byMember.map((m) => ({ key: m.user_id, value: m.amount, color: colorOf(m.user_id) }))}>
+                  <Users className="size-7 text-muted" aria-hidden="true" />
+                </SegmentedRing>
+              } />
+          )}
 
           {/* Quem gastou quanto */}
           <Panel title={t('groups.byMember')}>
             {dataPending ? <Loading /> : dataError ? <QueryError onRetry={retry} /> : (
-              <ul className="flex flex-col gap-4">
-                {stats.byMember.map((m) => {
-                  const self = m.user_id === myId
-                  return (
-                    <li key={m.user_id}>
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="flex min-w-0 items-center gap-2">
-                          <span className="truncate text-[15px] font-bold">{memberDisplayName(m, myId, t)}</span>
-                          {m.left && <span className="shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{t('groups.left')}</span>}
-                        </span>
-                        <Amount cents={m.amount} currency={group.currency} locale={locale} className="shrink-0 text-[15px] font-bold" />
-                      </div>
-                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-                        <div className={`h-full rounded-full ${self ? 'bg-primary' : 'bg-muted'}`} style={{ width: `${m.share}%` }} />
-                      </div>
-                      <p className="mt-1 text-[13px] font-medium text-muted">{t('groups.share', { pct: m.share })}</p>
-                    </li>
-                  )
-                })}
-              </ul>
+              <MemberShares members={stats.byMember} myId={myId} currency={group.currency} locale={locale} colorOf={colorOf} />
             )}
           </Panel>
 
@@ -185,7 +167,7 @@ export default function GroupDetailPage() {
               <p className="py-2 text-sm font-medium text-muted">{t('groups.entriesEmpty')}</p>
             ) : (
               <>
-                <div className="mb-5 flex h-3 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
+                <div className="mb-4 flex h-3 gap-0.5 overflow-hidden rounded-full bg-ring-track" aria-hidden="true">
                   {stats.byCategory.map((c) => (
                     <div key={c.category_id} className="h-full"
                       style={{ width: `${stats.total > 0 ? (c.amount / stats.total) * 100 : 0}%`, backgroundColor: c.color }} />
@@ -195,7 +177,7 @@ export default function GroupDetailPage() {
                   {stats.byCategory.map((c) => {
                     const pct = stats.total > 0 ? Math.round((c.amount / stats.total) * 100) : 0
                     return (
-                      <li key={c.category_id} className="flex items-center gap-3.5 py-2">
+                      <li key={c.category_id} className="flex items-center gap-3.5 py-1.5">
                         <CategoryIcon icon={c.icon} color={c.color} size="sm" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[15px] font-bold">{categoryLabel({ name: c.name, i18n_key: c.key }, t)}</span>
@@ -214,20 +196,14 @@ export default function GroupDetailPage() {
           <GroupBudgetSection group={group} month={month} admin={admin} />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
+        <div className="flex min-w-0 flex-col gap-6">
           {/* Lançamentos do grupo */}
-          <section className="rounded-[24px] bg-surface p-2 shadow-sheet sm:p-3">
-            <h2 className="px-3 pb-2 pt-3 text-[17px] font-extrabold tracking-[-0.01em] sm:pt-3">{t('groups.entries')}</h2>
-            {dataPending ? <Loading /> : dataError ? <div className="p-3"><QueryError onRetry={retry} /></div> : entries.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
-                <span className="grid size-14 place-items-center rounded-full bg-primary-soft text-primary">
-                  <ReceiptText className="size-7" aria-hidden="true" />
-                </span>
-                <p className="text-[15px] font-bold">{t('groups.entriesEmpty')}</p>
-                <p className="max-w-sm text-sm text-muted">{t('groups.entriesHint')}</p>
-              </div>
+          <section aria-labelledby="group-entries">
+            <SectionHeader id="group-entries" title={t('groups.entries')} />
+            {dataPending ? <Loading /> : dataError ? <QueryError onRetry={retry} /> : entries.length === 0 ? (
+              <EmptyState icon={ReceiptText} title={t('groups.entriesEmpty')} description={t('groups.entriesHint')} />
             ) : (
-              <ul className="flex flex-col">
+              <RowList>
                 {entries.map((e) => {
                   const label = categoryLabel({ name: e.category_name, i18n_key: e.category_key }, t)
                   const meta = [nameOf(e.user_id), shortDate(e.date)]
@@ -244,27 +220,27 @@ export default function GroupDetailPage() {
                         className={`shrink-0 text-[15px] font-bold ${e.kind === 'income' ? 'text-success' : 'text-fg'}`} />
                     </>
                   )
-                  const row = 'flex items-center gap-3.5 rounded-2xl px-3 py-3'
+                  const row = 'flex items-center gap-3.5 px-3.5 py-3'
                   return (
-                    <li key={e.entry_id}>
+                    <RowItem key={e.entry_id}>
                       {e.user_id === myId ? (
                         <Link to={`/transactions/${e.transaction_id}/edit`}
-                          className={`${row} transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary`}>
+                          className={`${row} transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary`}>
                           {content}
                         </Link>
                       ) : (
                         <div className={row}>{content}</div>
                       )}
-                    </li>
+                    </RowItem>
                   )
                 })}
-              </ul>
+              </RowList>
             )}
           </section>
 
           {/* Membros */}
-          <section className="rounded-[24px] bg-surface p-2 shadow-sheet sm:p-3">
-            <h2 className="px-3 pb-1 pt-3 text-[17px] font-extrabold tracking-[-0.01em]">{t('groups.membersTitle')}</h2>
+          <section aria-labelledby="group-members" className="rounded-card bg-surface p-3 sm:p-4">
+            <div className="px-2"><SectionHeader id="group-members" title={t('groups.membersTitle')} /></div>
             {membersQuery.isPending ? <Loading /> : membersQuery.isError ? (
               <div className="p-3"><QueryError onRetry={() => void membersQuery.refetch()} /></div>
             ) : (

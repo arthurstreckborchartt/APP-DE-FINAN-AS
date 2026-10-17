@@ -71,17 +71,17 @@ export default function OnboardingPage() {
     <div className="flex gap-1.5" role="img"
       aria-label={step === 'preferences' ? `1/2 · ${t('onboarding.stepPreferences')}` : `2/2 · ${t('onboarding.stepAccount')}`}>
       <span className="h-1.5 flex-1 rounded-full bg-primary" />
-      <span className={`h-1.5 flex-1 rounded-full ${step === 'account' ? 'bg-primary' : 'bg-surface-3'}`} />
+      <span className={`h-1.5 flex-1 rounded-full ${step === 'account' ? 'bg-primary' : 'bg-surface-2'}`} />
     </div>
   )
 
   if (step === 'account') {
     return (
-      <div className="flex min-h-full items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md rounded-[28px] bg-surface p-6 shadow-sheet sm:p-8">
+      <div className="flex min-h-full items-center justify-center bg-bg px-5 py-8">
+        <div className="w-full max-w-md">
           {indicator}
           <BrandMark size={44} withName={false} className="mt-5" />
-          <h1 className="mt-5 text-[28px] font-extrabold tracking-[-0.03em]">{t('onboarding.accountTitle')}</h1>
+          <h1 className="mt-5 text-[32px] font-extrabold leading-tight tracking-[-0.035em]">{t('onboarding.accountTitle')}</h1>
           <p className="mt-2 text-[15px] font-medium text-muted">{t('onboarding.accountSubtitle')}</p>
           <div className="mt-6">
             <AccountForm
@@ -101,11 +101,11 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4 py-8">
-      <form onSubmit={onSubmit} className="w-full max-w-md rounded-[28px] bg-surface p-6 shadow-sheet sm:p-8">
+    <div className="flex min-h-full items-center justify-center bg-bg px-5 py-8">
+      <form onSubmit={onSubmit} className="w-full max-w-md">
         {indicator}
         <BrandMark size={44} withName={false} className="mt-5" />
-        <h1 className="mt-5 text-[28px] font-extrabold tracking-[-0.03em]">{t('onboarding.title')}</h1>
+        <h1 className="mt-5 text-[32px] font-extrabold leading-tight tracking-[-0.035em]">{t('onboarding.title')}</h1>
         <p className="mt-2 text-[15px] font-medium text-muted">{t('onboarding.subtitle')}</p>
         <div className="mt-6">
           <PreferencesFields value={current} onChange={onChange} nameRequired />

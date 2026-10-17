@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PiggyBank, Plus } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { PageHeader } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -36,7 +37,7 @@ export default function GoalsPage() {
   const close = () => setOpen(null)
 
   const grid = (list: Goal[]) => (
-    <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
+    <ul className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-2 lg:gap-4">
       {list.map((g) => (
         <li key={g.id}>
           <GoalCard goal={g} locale={locale} today={today} onClick={() => setOpen({ kind: 'view', id: g.id })} />
@@ -46,28 +47,22 @@ export default function GoalsPage() {
   )
 
   return (
-    <section className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 max-w-xl">
-          <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('goals.title')}</h1>
-          <p className="mt-1 text-[15px] font-medium text-muted">{t('goals.subtitle')}</p>
-        </div>
-        {goals.length > 0 && (
-          <Button className="h-11" onClick={() => setOpen({ kind: 'new' })}>
-            <Plus className="size-5" aria-hidden="true" /> {t('goals.new')}
-          </Button>
-        )}
-      </div>
+    <section className="flex flex-col gap-6">
+      <PageHeader title={t('goals.title')} subtitle={t('goals.subtitle')} action={goals.length > 0 ? (
+        <Button className="h-11 shrink-0" onClick={() => setOpen({ kind: 'new' })}>
+          <Plus className="size-5" aria-hidden="true" /> {t('goals.new')}
+        </Button>
+      ) : undefined} />
 
       {active.length === 0 ? (
         <EmptyState icon={PiggyBank} title={t('goals.empty')} description={t('goals.emptyBody')}
-          action={<Button className="h-10" onClick={() => setOpen({ kind: 'new' })}>{t('goals.new')}</Button>} />
+          action={<Button className="h-11" onClick={() => setOpen({ kind: 'new' })}>{t('goals.new')}</Button>} />
       ) : grid(active)}
 
       {archived.length > 0 && (
         <details>
-          <summary className="cursor-pointer rounded-full px-2 py-2 text-sm font-bold text-muted">{t('goals.archived')}</summary>
-          <div className="mt-2 opacity-75">{grid(archived)}</div>
+          <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-surface px-4 text-sm font-bold text-muted hover:text-fg">{t('goals.archived')}</summary>
+          <div className="mt-3 opacity-75">{grid(archived)}</div>
         </details>
       )}
 

@@ -1,49 +1,223 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-11T00:00:00Z",
+  "generatedAt": "2026-10-17T00:00:00Z",
   "title": "Design System: FINANCE",
   "extensions": {
     "colorMeta": {
-      "primary": { "role": "primary", "displayName": "Serene Violet", "canonical": "#5b3df5", "dark": "#a996ff", "tonalRamp": ["#0e1a45", "#2a1a8a", "#4a2ee0", "#5b3df5", "#5a7ae0", "#bcadff", "#d6ccff", "#efebff"] },
-      "primary-strong": { "role": "primary", "displayName": "Pressed Violet", "canonical": "#4a2ee0", "dark": "#bcadff", "tonalRamp": ["#0c173f", "#152a78", "#1d3897", "#4a2ee0", "#4a66c9", "#7b92dc", "#b5c3ef", "#e4e9fa"] },
-      "primary-fg": { "role": "primary", "displayName": "On Violet", "canonical": "#ffffff", "dark": "#160a4a", "tonalRamp": ["#160a4a", "#2a3352", "#4e5672", "#757c94", "#9ea4b7", "#c5c9d6", "#e6e8ee", "#ffffff"] },
-      "primary-soft": { "role": "primary", "displayName": "Violet Mist", "canonical": "#efebff", "dark": "#231b52", "tonalRamp": ["#231b52", "#2a3a7a", "#4560b8", "#a996ff", "#a3b6f7", "#d6ccff", "#dde4fb", "#efebff"] },
-      "brand-1": { "role": "primary", "displayName": "Balance Violet", "canonical": "#5b3df5", "dark": "#4a2ee0", "tonalRamp": ["#0d1844", "#2a1a8a", "#2241ac", "#5b3df5", "#5674dc", "#8aa0e8", "#d6ccff", "#eef2fd"] },
-      "brand-2": { "role": "primary", "displayName": "Deep Ink Blue", "canonical": "#2a1a8a", "dark": "#1a0f5c", "tonalRamp": ["#08103a", "#1a0f5c", "#2a1a8a", "#2241ac", "#4561c4", "#7c91d6", "#b8c4ec", "#e6eaf8"] },
-      "brand-fg": { "role": "primary", "displayName": "On Brand", "canonical": "#ffffff", "dark": "#ffffff", "tonalRamp": ["#2a1a8a", "#3a4d9a", "#5e6fb0", "#8592c6", "#aab4d9", "#d6ccff", "#e6eafb", "#ffffff"] },
-      "brand-muted": { "role": "primary", "displayName": "Brand Haze", "canonical": "#d6ccff", "dark": "#cfc4ff", "tonalRamp": ["#1a2766", "#5b3df5", "#5a7ae0", "#8aa0ea", "#aebcf3", "#d6ccff", "#dfe6fd", "#f1f4fe"] },
-      "success": { "role": "secondary", "displayName": "Ledger Green", "canonical": "#0f7a55", "dark": "#45d19a", "tonalRamp": ["#05301f", "#0a4d36", "#0f7a55", "#1f9a6d", "#45d19a", "#82e3bd", "#c2f2de", "#eafbf3"] },
-      "danger": { "role": "secondary", "displayName": "Statement Coral", "canonical": "#cc3b31", "dark": "#ff7b6f", "tonalRamp": ["#4a110d", "#7f1f18", "#a92e25", "#cc3b31", "#e8584d", "#ff7b6f", "#ffbdb6", "#ffecea"] },
-      "bg": { "role": "neutral", "displayName": "Cool Paper", "canonical": "#f4f3f9", "dark": "#09080f", "tonalRamp": ["#09080f", "#13111d", "#1c1929", "#272339", "#e5e2ef", "#e3e0f0", "#efedf7", "#f4f3f9"] },
-      "surface": { "role": "neutral", "displayName": "Sheet White", "canonical": "#ffffff", "dark": "#13111d", "tonalRamp": ["#13111d", "#1c1929", "#272339", "#5d5973", "#a39fb8", "#e3e0f0", "#efedf7", "#ffffff"] },
-      "surface-2": { "role": "neutral", "displayName": "Fog", "canonical": "#efedf7", "dark": "#1c1929", "tonalRamp": ["#1c1929", "#272339", "#3a4152", "#5d5973", "#a39fb8", "#d3d9e3", "#e3e0f0", "#efedf7"] },
-      "surface-3": { "role": "neutral", "displayName": "Steel Fog", "canonical": "#e3e0f0", "dark": "#272339", "tonalRamp": ["#1c1929", "#272339", "#3a4152", "#5d5973", "#a39fb8", "#c8cfdb", "#e3e0f0", "#efedf7"] },
-      "fg": { "role": "neutral", "displayName": "Ink", "canonical": "#110e24", "dark": "#f1effa", "tonalRamp": ["#110e24", "#1f2737", "#363f52", "#5d5973", "#7f889b", "#a39fb8", "#c8cfdb", "#f1effa"] },
-      "muted": { "role": "neutral", "displayName": "Slate", "canonical": "#5d5973", "dark": "#a39fb8", "tonalRamp": ["#1f2737", "#363f52", "#4a5366", "#5d5973", "#7f889b", "#a39fb8", "#c8cfdb", "#e6e9ef"] },
-      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "#e5e2ef", "dark": "#262238", "tonalRamp": ["#13111d", "#262238", "#363f52", "#5d5973", "#a39fb8", "#c8cfdb", "#e5e2ef", "#f4f3f9"] }
+      "primary": {
+        "role": "primary",
+        "displayName": "FINANCE Violet",
+        "canonical": "#5b3df5",
+        "tonalRamp": [
+          "#1a0f5c",
+          "#2a1a8a",
+          "#4a2ee0",
+          "#5b3df5",
+          "#7f68f8",
+          "#a996ff",
+          "#cfc4ff",
+          "#efebff"
+        ]
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "FINANCE Violet (dark theme)",
+        "canonical": "#a996ff"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground White",
+        "canonical": "#ffffff"
+      },
+      "ground-dark": {
+        "role": "neutral",
+        "displayName": "True Black",
+        "canonical": "#000000"
+      },
+      "cloud": {
+        "role": "neutral",
+        "displayName": "Cloud",
+        "canonical": "#f4f4f6",
+        "tonalRamp": [
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6b6b75",
+          "#9a9aa3",
+          "#dedee4",
+          "#ebebef",
+          "#f4f4f6"
+        ]
+      },
+      "cloud-dark": {
+        "role": "neutral",
+        "displayName": "Cloud (dark theme)",
+        "canonical": "#1c1c1e"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0b0b0f"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Graphite",
+        "canonical": "#6b6b75"
+      },
+      "ring-track": {
+        "role": "neutral",
+        "displayName": "Ring Track",
+        "canonical": "#e4e4ea"
+      },
+      "income": {
+        "role": "secondary",
+        "displayName": "Income Green",
+        "canonical": "#1fae6b",
+        "tonalRamp": [
+          "#063d24",
+          "#0b5c37",
+          "#0f7a55",
+          "#1fae6b",
+          "#34d184",
+          "#6fe0a8",
+          "#a9eeca",
+          "#e2f9ec"
+        ]
+      },
+      "expense": {
+        "role": "secondary",
+        "displayName": "Expense Coral",
+        "canonical": "#ff6a4d",
+        "tonalRamp": [
+          "#5c1508",
+          "#8a2410",
+          "#cc3b31",
+          "#ff6a4d",
+          "#ff7a61",
+          "#ffa08c",
+          "#ffc8bc",
+          "#fff0ec"
+        ]
+      },
+      "limit": {
+        "role": "secondary",
+        "displayName": "Limit Blue",
+        "canonical": "#3a7bfd",
+        "tonalRamp": [
+          "#0b2463",
+          "#123a9a",
+          "#2a5fd6",
+          "#3a7bfd",
+          "#5b95ff",
+          "#8db5ff",
+          "#c2d7ff",
+          "#edf3ff"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Danger",
+        "canonical": "#cc3b31"
+      },
+      "success": {
+        "role": "neutral",
+        "displayName": "Success",
+        "canonical": "#0f7a55"
+      },
+      "warning": {
+        "role": "neutral",
+        "displayName": "Warning",
+        "canonical": "#b7791f"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Main balance in the brand panel (38px, 46px from sm); siblings at 34-44px for account total, amount entry and auth tagline." },
-      "headline": { "displayName": "Headline", "purpose": "One page title per screen; 28px rising to 34px at lg." },
-      "title": { "displayName": "Title", "purpose": "Sheet titles; dialog titles step up to 20px." },
-      "body": { "displayName": "Body", "purpose": "List-row primary text, nav items, button labels at 15px; inputs at 16px medium." },
-      "body-sm": { "displayName": "Body small", "purpose": "Row metadata, field labels, helper and error text in Slate." },
-      "label": { "displayName": "Label", "purpose": "Uppercase day-group headers and settings section headings; 12px variant for summary terms." },
-      "amount": { "displayName": "Amount", "purpose": "Every money value in rows and summaries, tabular figures, hideable." }
+      "hero-number": {
+        "displayName": "Hero Number",
+        "purpose": "The single main amount in a HeroCard; fits its column from 56px down to 26px, currency symbol at 0.48em raised."
+      },
+      "headline": {
+        "displayName": "Page Title",
+        "purpose": "Page titles, 30px (34px desktop). No eyebrow above."
+      },
+      "title": {
+        "displayName": "Section Title",
+        "purpose": "Section headers and ring-card values."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Body copy and subtitles."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, card labels, captions, in muted."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "All pill buttons."
+      },
+      "headline-wide": {
+        "displayName": "Page Title (desktop)",
+        "purpose": "Page titles from lg up."
+      },
+      "sheet-title": {
+        "displayName": "Sheet Title",
+        "purpose": "Titles of bottom sheets and dialogs."
+      },
+      "keypad-key": {
+        "displayName": "Keypad Key",
+        "purpose": "Digits on the amount keypad."
+      },
+      "row-amount": {
+        "displayName": "Row Amount",
+        "purpose": "Amounts on list, budget and goal rows."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Week-day initials and small captions."
+      },
+      "nav-label": {
+        "displayName": "Nav Label",
+        "purpose": "Bottom-bar labels."
+      }
     },
     "shadows": [
-      { "name": "sheet", "value": "0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12)", "dark": "0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7)", "purpose": "Resting white sheets, month switcher, selected segment, quick-action discs, dialogs." },
-      { "name": "float", "value": "0 10px 30px -10px rgb(36 69 184 / 0.55)", "dark": "0 10px 30px -10px rgb(0 0 0 / 0.8)", "purpose": "Violet glow under the balance panel, primary buttons and the FAB." }
+      {
+        "name": "float",
+        "value": "0 6px 14px -4px rgb(11 11 15 / 0.32), 0 14px 32px -12px rgb(11 11 15 / 0.28)",
+        "purpose": "The FAB only. Dark: 0 6px 16px -4px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06)."
+      },
+      {
+        "name": "pop",
+        "value": "0 2px 6px rgb(11 11 15 / 0.06), 0 24px 48px -20px rgb(11 11 15 / 0.28)",
+        "purpose": "Sheets, dialogs and popovers over a 40% black scrim."
+      }
     ],
     "motion": [
-      { "name": "settle", "value": "640ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Balance panel enters from translateY(10px) scale(0.985); reduced-motion off only." },
-      { "name": "unblur", "value": "360ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Values reveal from blur(6px) and 0.35 opacity when shown or hidden." },
-      { "name": "state", "value": "150ms ease", "purpose": "Default color and background transitions on buttons, rows and nav." },
-      { "name": "press", "value": "scale(0.98)", "purpose": "Active state of buttons; round quick actions and FAB press to 0.95." }
+      {
+        "name": "ring-draw",
+        "value": "stroke-dashoffset 1100ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Ring arcs draw in on mount; off under reduced motion."
+      },
+      {
+        "name": "value-reveal",
+        "value": "unblur 360ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Amounts unblur when hide-values is toggled; only without reduced motion."
+      },
+      {
+        "name": "press",
+        "value": "transform scale(0.98) 150ms",
+        "purpose": "Press feedback on buttons, ring cards (FAB 0.95)."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "lg", "value": "1024px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
     ]
   },
   "components": [
@@ -51,100 +225,126 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Violet pill for the main action on a screen, with the Float shadow.",
-      "html": "<button class=\"ds-btn-primary\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg>Novo lançamento</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border: none; border-radius: 9999px; background: var(--primary, #5b3df5); color: var(--primary-fg, #fff); font-family: 'Manrope Variable', system-ui, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; box-shadow: var(--shadow-float, 0 10px 30px -10px rgb(36 69 184 / 0.55)); cursor: pointer; transition: background 150ms, transform 150ms; } .ds-btn-primary:hover { background: var(--primary-strong, #4a2ee0); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
+      "description": "Ink pill for the committing action on a screen or sheet.",
+      "html": "<button class=\"ds-btn-primary\">Salvar</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 24px; border: 0; border-radius: 9999px; background: var(--ink, #0b0b0f); color: var(--ink-fg, #fff); font: 700 15px/1 'Manrope Variable', system-ui, sans-serif; letter-spacing: -0.01em; cursor: pointer; transition: background-color 150ms, transform 150ms; } .ds-btn-primary:hover { background: var(--ink-hover, #26262d); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Fog pill for secondary actions beside a primary.",
+      "description": "Cloud pill for the secondary action.",
       "html": "<button class=\"ds-btn-secondary\">Cancelar</button>",
-      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; border: none; border-radius: 9999px; background: var(--surface-2, #efedf7); color: var(--fg, #110e24); font-family: 'Manrope Variable', system-ui, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; cursor: pointer; transition: background 150ms, transform 150ms; } .ds-btn-secondary:hover { background: var(--surface-3, #e3e0f0); } .ds-btn-secondary:active { transform: scale(0.98); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 24px; border: 0; border-radius: 9999px; background: var(--surface, #f4f4f6); color: var(--fg, #0b0b0f); font: 700 15px/1 'Manrope Variable', system-ui, sans-serif; letter-spacing: -0.01em; cursor: pointer; transition: background-color 150ms, transform 150ms; } .ds-btn-secondary:hover { background: var(--surface-2, #ebebef); } .ds-btn-secondary:active { transform: scale(0.98); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
     },
     {
-      "name": "Danger Button",
-      "kind": "button",
-      "refersTo": "button-danger",
-      "description": "Transparent pill with coral label for destructive actions.",
-      "html": "<button class=\"ds-btn-danger\">Excluir</button>",
-      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; border: none; border-radius: 9999px; background: transparent; color: var(--danger, #cc3b31); font-family: 'Manrope Variable', system-ui, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 150ms; } .ds-btn-danger:hover { background: color-mix(in srgb, var(--danger, #cc3b31) 10%, transparent); } .ds-btn-danger:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
-    },
-    {
-      "name": "Text Field",
-      "kind": "input",
-      "refersTo": "text-field",
-      "description": "Fog-filled 16px field with label above; turns white with a violet ring on focus.",
-      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-f1\">Descrição</label><input class=\"ds-field-input\" id=\"ds-f1\" placeholder=\"Mercado\"></div>",
-      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-field-label { font-size: 13px; font-weight: 600; color: var(--muted, #5d5973); } .ds-field-input { height: 48px; padding: 0 16px; border: 1px solid transparent; border-radius: 16px; background: var(--surface-2, #efedf7); color: var(--fg, #110e24); font: inherit; font-size: 16px; font-weight: 500; outline: none; transition: background 150ms, border-color 150ms, box-shadow 150ms; } .ds-field-input::placeholder { color: var(--muted, #5d5973); font-weight: 400; } .ds-field-input:hover { background: var(--surface-3, #e3e0f0); } .ds-field-input:focus { background: var(--surface, #fff); border-color: var(--primary, #5b3df5); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary, #5b3df5) 15%, transparent); }"
+      "name": "Choice Chips",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "Pill radiogroup; the selected option is ink, never violet.",
+      "html": "<div class=\"ds-chips\" role=\"radiogroup\" aria-label=\"Tipo\"><button class=\"ds-chip\" role=\"radio\" aria-checked=\"true\">Todos</button><button class=\"ds-chip\" role=\"radio\" aria-checked=\"false\">Entradas</button><button class=\"ds-chip\" role=\"radio\" aria-checked=\"false\">Saídas</button></div>",
+      "css": ".ds-chips { display: flex; gap: 8px; } .ds-chip { height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: var(--surface, #f4f4f6); color: var(--fg, #0b0b0f); font: 700 14px/1 'Manrope Variable', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms; } .ds-chip[aria-checked='false']:hover { background: var(--surface-2, #ebebef); } .ds-chip[aria-checked='true'] { background: var(--ink, #0b0b0f); color: var(--ink-fg, #fff); } .ds-chip:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
     },
     {
       "name": "Segmented Control",
       "kind": "chip",
-      "refersTo": "segmented-control",
-      "description": "Pill radiogroup; the selected option lifts as a white pill with the Sheet shadow.",
-      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Tipo\"><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"true\">Despesa</button><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\">Receita</button></div>",
-      "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 9999px; background: var(--surface-2, #efedf7); font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-seg-opt { height: 44px; border: none; border-radius: 9999px; background: transparent; color: var(--muted, #5d5973); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 200ms; } .ds-seg-opt:hover { color: var(--fg, #110e24); } .ds-seg-opt[aria-checked=\"true\"] { background: var(--surface, #fff); color: var(--fg, #110e24); box-shadow: var(--shadow-sheet, 0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12)); } .ds-seg-opt:focus-visible { outline: 2px solid var(--primary, #5b3df5); }"
+      "refersTo": "segment-selected",
+      "description": "Pill track with an ink selected segment.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Tipo\"><button role=\"radio\" aria-checked=\"true\">Saída</button><button role=\"radio\" aria-checked=\"false\">Entrada</button></div>",
+      "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 9999px; background: var(--surface, #f4f4f6); } .ds-seg button { height: 44px; border: 0; border-radius: 9999px; background: transparent; color: var(--muted, #6b6b75); font: 700 14px/1 'Manrope Variable', system-ui, sans-serif; cursor: pointer; transition: color 200ms, background-color 200ms; } .ds-seg button:hover { color: var(--fg, #0b0b0f); } .ds-seg button[aria-checked='true'] { background: var(--ink, #0b0b0f); color: var(--ink-fg, #fff); } .ds-seg button:focus-visible { outline: 2px solid var(--primary, #5b3df5); }"
     },
     {
-      "name": "Balance Panel",
-      "kind": "custom",
-      "refersTo": "balance-panel",
-      "description": "Signature brand panel: violet gradient, display balance in tabular figures, eye toggle and accounts pill.",
-      "html": "<section class=\"ds-balance\"><div class=\"ds-balance-top\"><div><p class=\"ds-balance-muted\">Olá, Ana</p><p class=\"ds-balance-muted ds-balance-label\">Saldo total</p></div><button class=\"ds-balance-eye\" aria-label=\"Ocultar valores\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button></div><p class=\"ds-balance-amount\">R$ 12.480,35</p><a class=\"ds-balance-pill\" href=\"#\">3 contas</a></section>",
-      "css": ".ds-balance { position: relative; overflow: hidden; padding: 24px; border-radius: 28px; color: var(--brand-fg, #fff); font-family: 'Manrope Variable', system-ui, sans-serif; background: radial-gradient(120% 140% at 100% 0%, rgb(255 255 255 / 0.14) 0%, transparent 55%), linear-gradient(160deg, var(--brand-1, #5b3df5) 0%, var(--brand-2, #2a1a8a) 100%); box-shadow: var(--shadow-float, 0 10px 30px -10px rgb(36 69 184 / 0.55)); } .ds-balance-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; } .ds-balance-muted { margin: 0; font-size: 15px; font-weight: 600; color: var(--brand-muted, #d6ccff); } .ds-balance-label { margin-top: 20px; font-weight: 500; } .ds-balance-amount { margin: 4px 0 0; font-size: 38px; font-weight: 800; line-height: 1.25; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; } .ds-balance-eye { display: grid; place-items: center; width: 44px; height: 44px; border: none; border-radius: 9999px; background: rgb(255 255 255 / 0.12); color: #fff; cursor: pointer; transition: background 150ms; } .ds-balance-eye:hover, .ds-balance-pill:hover { background: rgb(255 255 255 / 0.2); } .ds-balance-eye:focus-visible { outline: 2px solid #fff; outline-offset: 2px; } .ds-balance-pill { display: inline-flex; margin-top: 24px; padding: 8px 16px; border-radius: 9999px; background: rgb(255 255 255 / 0.12); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: background 150ms; }"
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Borderless Cloud field with a muted label above; violet ring on focus.",
+      "html": "<label class=\"ds-field\"><span>Descrição</span><input placeholder=\"Mercado\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-field span { font-size: 13px; font-weight: 600; color: var(--muted, #6b6b75); } .ds-field input { height: 52px; padding: 0 16px; border: 0; border-radius: 18px; background: var(--surface, #f4f4f6); color: var(--fg, #0b0b0f); font: 600 16px 'Manrope Variable', system-ui, sans-serif; outline: none; transition: background-color 150ms, box-shadow 150ms; } .ds-field input::placeholder { color: var(--muted, #6b6b75); font-weight: 500; } .ds-field input:hover { background: var(--surface-2, #ebebef); } .ds-field input:focus { box-shadow: 0 0 0 2px var(--primary, #5b3df5); }"
     },
     {
-      "name": "Transaction Row in Sheet",
+      "name": "Hero Card",
       "kind": "card",
-      "refersTo": "sheet-card",
-      "description": "White 24px sheet holding a day group: uppercase label header with day net, rows with a tinted category avatar and tabular amount.",
-      "html": "<section class=\"ds-sheet\"><header class=\"ds-sheet-head\"><h2 class=\"ds-label\">Hoje</h2><span class=\"ds-day-net\">−R$ 84,90</span></header><a class=\"ds-row\" href=\"#\"><span class=\"ds-avatar\" style=\"--cat:#e8590c\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"21\" r=\"1\"/><circle cx=\"19\" cy=\"21\" r=\"1\"/><path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\"/></svg></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Mercado</span><span class=\"ds-row-meta\">Alimentação · Nubank</span></span><span class=\"ds-amount\">−R$ 84,90</span></a></section>",
-      "css": ".ds-sheet { padding: 12px; border-radius: 24px; background: var(--surface, #fff); box-shadow: var(--shadow-sheet, 0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12)); font-family: 'Manrope Variable', system-ui, sans-serif; color: var(--fg, #110e24); } .ds-sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 12px 4px; } .ds-label { margin: 0; font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted, #5d5973); } .ds-day-net { font-size: 13px; font-weight: 700; color: var(--muted, #5d5973); font-variant-numeric: tabular-nums; } .ds-row { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 16px; color: inherit; text-decoration: none; transition: background 150ms; } .ds-row:hover { background: var(--surface-2, #efedf7); } .ds-row:focus-visible { outline: 2px solid var(--primary, #5b3df5); } .ds-avatar { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 9999px; color: var(--cat); background: color-mix(in srgb, var(--cat) 12%, transparent); } .ds-row-text { flex: 1; min-width: 0; } .ds-row-title { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; } .ds-row-meta { display: block; font-size: 13px; font-weight: 500; color: var(--muted, #5d5973); } .ds-amount { flex-shrink: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }"
+      "refersTo": "card",
+      "description": "Flat Cloud card: huge tabular number and label left, thick ring right.",
+      "html": "<section class=\"ds-hero\"><div><div class=\"ds-hero-num\"><small>R$</small>2.480,15</div><p>Disponível no mês</p></div><svg class=\"ds-ring\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><circle cx=\"50\" cy=\"50\" r=\"45\" fill=\"none\" stroke=\"var(--ring-track, #e4e4ea)\" stroke-width=\"10\"/><circle cx=\"50\" cy=\"50\" r=\"45\" fill=\"none\" stroke=\"var(--primary, #5b3df5)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"282.7\" stroke-dashoffset=\"98.9\" transform=\"rotate(-90 50 50)\"/></svg></section>",
+      "css": ".ds-hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px; border-radius: 28px; background: var(--surface, #f4f4f6); color: var(--fg, #0b0b0f); font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-hero-num { font-size: 48px; font-weight: 800; line-height: 1.05; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-hero-num small { font-size: 0.48em; font-weight: 700; vertical-align: 0.42em; letter-spacing: normal; margin-right: 0.08em; } .ds-hero p { margin: 6px 0 0; font-size: 15px; font-weight: 600; color: var(--muted, #6b6b75); } .ds-ring { flex-shrink: 0; }"
     },
     {
-      "name": "Bottom Navigation",
+      "name": "Ring Card",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Small Cloud card: value, label and a 64px metric-colored ring with an icon.",
+      "html": "<a class=\"ds-ringcard\" href=\"#\"><span class=\"ds-rc-val\">R$ 6.200</span><span class=\"ds-rc-lbl\">Entradas</span><svg width=\"64\" height=\"64\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"var(--ring-track, #e4e4ea)\" stroke-width=\"8\"/><circle cx=\"32\" cy=\"32\" r=\"28\" fill=\"none\" stroke=\"var(--income, #1fae6b)\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-dasharray=\"175.9\" stroke-dashoffset=\"44\" transform=\"rotate(-90 32 32)\"/><path d=\"M32 38V26M26 32l6-6 6 6\" stroke=\"var(--income, #1fae6b)\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-ringcard { display: flex; flex-direction: column; width: 140px; padding: 16px; border-radius: 28px; background: var(--surface, #f4f4f6); color: var(--fg, #0b0b0f); text-decoration: none; font-family: 'Manrope Variable', system-ui, sans-serif; transition: background-color 150ms, transform 150ms; } .ds-ringcard:hover { background: var(--surface-2, #ebebef); } .ds-ringcard:active { transform: scale(0.98); } .ds-ringcard:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; } .ds-rc-val { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; } .ds-rc-lbl { margin-top: 2px; font-size: 13px; font-weight: 600; color: var(--muted, #6b6b75); } .ds-ringcard svg { margin-top: 12px; align-self: center; }"
+    },
+    {
+      "name": "Mobile Navigation",
       "kind": "nav",
-      "refersTo": "nav-item-active",
-      "description": "Mobile bottom bar: tabs with a Violet Mist pill on the active icon and a raised 60px violet FAB in the center.",
-      "html": "<nav class=\"ds-tabbar\" aria-label=\"Menu\"><a class=\"ds-tab is-active\" href=\"#\"><span class=\"ds-tab-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg></span>Início</a><a class=\"ds-tab\" href=\"#\"><span class=\"ds-tab-icon\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01\"/></svg></span>Extrato</a><a class=\"ds-fab\" href=\"#\" aria-label=\"Novo lançamento\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg></a></nav>",
-      "css": ".ds-tabbar { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; justify-items: center; max-width: 448px; background: var(--surface, #fff); border-top: 1px solid var(--line, #e5e2ef); box-shadow: 0 -8px 24px -16px rgb(12 18 34 / 0.18); font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%; height: 64px; font-size: 11px; font-weight: 700; color: var(--muted, #5d5973); text-decoration: none; transition: color 150ms; } .ds-tab-icon { display: grid; place-items: center; width: 48px; height: 28px; border-radius: 9999px; transition: background 150ms; } .ds-tab.is-active { color: var(--primary, #5b3df5); } .ds-tab.is-active .ds-tab-icon { background: var(--primary-soft, #efebff); } .ds-tab:focus-visible, .ds-fab:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; } .ds-fab { display: grid; place-items: center; width: 60px; height: 60px; margin-top: -24px; border-radius: 9999px; background: var(--primary, #5b3df5); color: var(--primary-fg, #fff); box-shadow: 0 0 0 6px var(--bg, #f4f3f9), var(--shadow-float, 0 10px 30px -10px rgb(36 69 184 / 0.55)); transition: transform 150ms; } .ds-fab:active { transform: scale(0.95); }"
+      "refersTo": "fab",
+      "description": "White bottom bar with a violet active dot, and the black FAB floating above.",
+      "html": "<div class=\"ds-navwrap\"><a class=\"ds-fab\" href=\"#\" aria-label=\"Novo lançamento\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg></a><nav class=\"ds-tabbar\"><a href=\"#\" aria-current=\"page\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10l9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z\"/></svg>Início<i></i></a><a href=\"#\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\"><path d=\"M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01\"/></svg>Lançamentos<i></i></a></nav></div>",
+      "css": ".ds-navwrap { position: relative; padding-top: 84px; font-family: 'Manrope Variable', system-ui, sans-serif; } .ds-fab { position: absolute; right: 20px; top: 0; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 9999px; background: var(--ink, #0b0b0f); color: var(--ink-fg, #fff); box-shadow: 0 6px 14px -4px rgb(11 11 15 / 0.32), 0 14px 32px -12px rgb(11 11 15 / 0.28); transition: background-color 150ms, transform 150ms; } .ds-fab:hover { background: var(--ink-hover, #26262d); } .ds-fab:active { transform: scale(0.95); } .ds-tabbar { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line, #ebebef); background: var(--bg, #fff); } .ds-tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 64px; color: var(--muted, #6b6b75); font-size: 11px; font-weight: 700; text-decoration: none; transition: color 150ms; } .ds-tabbar a:hover, .ds-tabbar a[aria-current='page'] { color: var(--fg, #0b0b0f); } .ds-tabbar i { width: 4px; height: 4px; border-radius: 9999px; background: transparent; } .ds-tabbar a[aria-current='page'] i { background: var(--primary, #5b3df5); } .ds-tabbar a:focus-visible, .ds-fab:focus-visible { outline: 2px solid var(--primary, #5b3df5); outline-offset: 2px; }"
     }
   ],
   "narrative": {
-    "northStar": "The Quiet Bank",
-    "overview": "FINANCE looks like the banking app people already trust, done with care. One confident violet balance panel carries the brand; everything below it is quiet, white and exact. Content sits on rounded white sheets floating on a cool near-white ground (light theme) or layered graphite on near-black (dark theme). Density is comfortable rather than packed: generous 20–24px sheet padding, 48px controls, 44px minimum targets.\n\nThe system is conventional on purpose. The owner chose the category standard (the craft level of Nubank, Revolut, Monzo), so the identity lives in finish rather than novelty: Manrope with tabular figures for every amount, one brand hue used sparingly, pill-shaped actions, circular category avatars tinted from each category's own color, and a single authored motion moment where the balance panel settles and values unblur.\n\nIt replaces the earlier generic Tailwind-dashboard look (flat white cards, teal accent, default type), which is the confirmed anti-reference.",
+    "northStar": "The Ring Ledger",
+    "overview": "FINANCE borrows the Cal AI app's visual language (user-pinned reference, 2026-10-18) and keeps its own violet accent and two-circle logo. Money is read the way Cal AI reads calories: one enormous tabular number beside a thick ring, then small ring cards, then calm gray rows. The ground is pure white (true black in dark); everything that holds content is a flat Cloud slab with a generous 28px radius, no border and no shadow. Depth comes from tone, not from elevation.\n\nThe system is quiet and dense in the right places. Black ink does the work of committing (primary buttons, the floating + button, the selected chip or segment); violet is rationed to the things that measure and lead (rings, links, the active-navigation dot and icon, focus). Each metric owns one color for life: income green, expense coral, limit blue, and each category its own hue, so a ring is legible before its label is read.\n\nMoney rules are non-negotiable and come before style: tabular figures everywhere, every amount rendered through the Amount component so the hide-values mask works, explicit + / − signs with color on transactions, and totals always per currency, never converted.",
     "keyCharacteristics": [
-      "One brand surface per screen: the violet balance panel (or the auth side panel).",
-      "White sheets with soft offset shadows on a cool ground; no borders on cards.",
-      "Every money value uses tabular figures and is hideable.",
-      "Green and coral appear only on amounts and their bars, never as decoration.",
-      "Pills for actions and toggles, 16px fields, 24px sheets, 28px brand panels.",
-      "Light, dark and system themes are first-class and share one token set."
+      "Pure white / true black ground; flat Cloud cards (28px), no borders, no card shadows.",
+      "Ink pills for primary actions; black circular FAB (white in dark).",
+      "Selected chips and segments are ink, not violet.",
+      "Thick rounded-cap rings, one color per metric, icon at center.",
+      "Hero number (up to 56px, Manrope 800) beside its ring, currency symbol small and raised.",
+      "Tabular figures, hide-values mask, signed and colored amounts, per-currency totals."
     ],
     "rules": [
-      { "name": "The One Brand Surface Rule", "body": "The brand gradient appears once per screen, on the balance panel (Início, Contas) or the auth side panel. Other sheets stay white.", "section": "colors" },
-      { "name": "The Money-Only Semantics Rule", "body": "Ledger Green and Statement Coral color amounts, their bars and errors only. Expense amounts in a list stay Ink; only the net total turns coral. Signs (+ / −) always accompany color so meaning never rests on color alone.", "section": "colors" },
-      { "name": "The Category Tint Rule", "body": "Category avatars take the category's own color for the glyph and the same color at roughly 12% alpha for the disc. The category bar on Início uses the full color.", "section": "colors" },
-      { "name": "The Tabular Money Rule", "body": "Every money value renders through the Amount component with tabular figures and a -0.01em track, so columns align and hidden values become a fixed \"••••\" mask.", "section": "typography" },
-      { "name": "The Weight Carries Hierarchy Rule", "body": "Hierarchy comes from weight and size steps (800 for titles and amounts, 500–600 for meta), not from color or extra faces.", "section": "typography" },
-      { "name": "The Two Shadows Rule", "body": "Only Sheet and Float exist. Sheet means \"resting surface\"; Float means \"brand or primary action\". Disabled primaries drop their shadow.", "section": "elevation" }
+      {
+        "name": "The Ink Commits Rule",
+        "body": "Anything that means \"this is chosen\" or \"do it\" is ink: primary button, FAB, selected chip, selected segment, selected tile, today's date. Violet never fills a control.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Color Per Metric Rule",
+        "body": "A metric keeps its color everywhere it appears (ring, amount, chart). Income is green, expense coral, limit blue, a category its own hue. Don't recolor a metric for decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rationed Violet Rule",
+        "body": "Violet marks measurement and navigation only: rings, links, active-nav indicator, focus. If a screen's violet is mostly fills, it is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Money Rule",
+        "body": "Every amount carries tabular figures (tnum, -0.01em) and is rendered through Amount, so it aligns in columns and obeys the hide-values mask (••••, unblur reveal).",
+        "section": "typography"
+      },
+      {
+        "name": "The Small Symbol Rule",
+        "body": "In hero-sized numbers the currency symbol shrinks to about half size and rides high; the digits get the width.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Shadow Card Rule",
+        "body": "Cards, rows, tiles and chips never carry a shadow or a border. If a surface needs separation, change its tone.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Do route every money value through tabular figures and the hide-values mask.",
-      "Do keep the brand gradient to one panel per screen and put everything else on white sheets with the Sheet shadow.",
-      "Do use pills for actions and toggles, 16px for fields and rows, 24px for sheets, 28px for brand panels.",
-      "Do pair income/expense color with a + / − sign and with bars that have text labels.",
-      "Do keep controls at 48px and every target at 44px or more.",
-      "Do reference role tokens (primary, surface-2, muted) so light and dark themes stay in parity."
+      "Do put the one number that matters at hero size beside its ring, with a small raised currency symbol.",
+      "Do use ink for every committing fill and every selected state (chips, segments, tiles, today).",
+      "Do keep violet for rings, links, the active-nav indicator and focus.",
+      "Do give each metric its fixed color: income green, expense coral, limit blue, categories their own hue.",
+      "Do render all money through Amount: tabular figures, hide-values mask, +/− with color, totals per currency.",
+      "Do separate content by tone (Cloud on white, white on Cloud), with 28px cards and 22px rows.",
+      "Do keep targets at 44px and every ring labeled for screen readers."
     ],
     "donts": [
-      "Don't return to the flat white cards, teal accent and default type of the previous look.",
-      "Don't use green or coral for decoration, icons or backgrounds outside money values, their bars and errors.",
-      "Don't add borders around sheets; separate with the ground color and the Sheet shadow.",
-      "Don't introduce shadows beyond Sheet and Float, or a second typeface.",
-      "Don't print an expense amount in coral inside a list; only the net total turns coral."
+      "Don't add shadows or borders to cards, rows, chips or tiles; shadows are for the FAB, sheets and popovers only.",
+      "Don't fill buttons, chips or segments with violet.",
+      "Don't bring back the gradient brand header or stacked white sheets of the previous banking look.",
+      "Don't put eyebrows or kickers above page titles.",
+      "Don't sum or convert across currencies in a single total.",
+      "Don't introduce a second typeface; contrast comes from Manrope's weights."
     ]
   }
 }

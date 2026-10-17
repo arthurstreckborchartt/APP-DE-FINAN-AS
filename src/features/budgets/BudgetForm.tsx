@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../components/ui/Button'
+import { ChoiceTile } from '../../components/ui/Chip'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { SelectField } from '../../components/ui/SelectField'
 import { TextField } from '../../components/ui/TextField'
@@ -93,13 +94,13 @@ export function BudgetForm(props: Props) {
   }
 
   const currencyPill = (
-    <span className="self-start rounded-full bg-surface-2 px-2.5 py-1 text-[12px] font-extrabold text-muted">{currency}</span>
+    <span className="self-start rounded-full bg-bg px-2.5 py-1 text-[12px] font-extrabold text-muted">{currency}</span>
   )
 
   return (
     <form onSubmit={(e) => void submit(e)} className="flex flex-col gap-4">
       {budget ? (
-        <div className="flex items-center gap-3.5 rounded-2xl bg-surface-2 px-3 py-3">
+        <div className="flex items-center gap-3.5 rounded-[20px] bg-surface px-3.5 py-3">
           {editingCategory && <CategoryIcon icon={editingCategory.icon} color={editingCategory.color} size="sm" />}
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-semibold text-muted">{t('budgets.category')}</span>
@@ -123,17 +124,14 @@ export function BudgetForm(props: Props) {
           <fieldset>
             <legend className="mb-3 text-[13px] font-semibold text-muted">{t('budgets.category')}</legend>
             {selectable.length === 0 ? (
-              <p className="rounded-2xl bg-surface-2 px-4 py-3 text-sm font-medium text-muted">{t('budgets.allBudgeted')}</p>
+              <p className="rounded-[18px] bg-surface px-4 py-3 text-sm font-medium text-muted">{t('budgets.allBudgeted')}</p>
             ) : (
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {selectable.map((c) => (
-                  <label key={c.id} className="flex cursor-pointer flex-col items-center gap-1.5 rounded-2xl border-2 border-transparent bg-surface-2 px-1.5 py-3 text-center transition
-                    hover:bg-surface-3 has-checked:border-primary has-checked:bg-primary-soft has-focus-visible:ring-4 has-focus-visible:ring-primary/25">
-                    <input type="radio" name="budget-category" className="sr-only" value={c.id} checked={selected === c.id}
-                      onChange={() => { setCategoryId(c.id); setCategoryError(undefined) }} />
+                  <ChoiceTile key={c.id} name="budget-category" value={c.id} checked={selected === c.id} onChange={() => { setCategoryId(c.id); setCategoryError(undefined) }}>
                     <CategoryIcon icon={c.icon} color={c.color} size="sm" />
                     <span className="line-clamp-2 text-[12px] font-bold leading-tight">{categoryLabel(c, t)}</span>
-                  </label>
+                  </ChoiceTile>
                 ))}
               </div>
             )}

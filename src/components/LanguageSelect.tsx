@@ -10,7 +10,7 @@ export function LanguageSelect({ value, onChange }: Props) {
   const { t, i18n } = useTranslation()
   const current = value ?? normalizeLocale(i18n.language)
   return (
-    <label className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 py-1 text-sm font-semibold text-muted shadow-sheet focus-within:ring-2 focus-within:ring-primary hover:bg-surface-2">
+    <label className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 py-1 text-sm font-semibold text-muted focus-within:ring-2 focus-within:ring-primary hover:bg-surface-2">
       <Languages className="size-4" aria-hidden="true" />
       <span className="sr-only">{t('preferences.language')}</span>
       <select

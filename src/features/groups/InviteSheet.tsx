@@ -110,7 +110,7 @@ function InviteContent({ group }: { group: Group }) {
           <label className="flex flex-col gap-1.5">
             <span className="sr-only">{t('groups.inviteTitle')}</span>
             <input readOnly value={url} onFocus={(e) => e.currentTarget.select()}
-              className="h-12 w-full rounded-2xl bg-surface-2 px-4 text-sm font-semibold text-fg outline-none focus:bg-surface focus:outline-2 focus:outline-primary" />
+              className="field h-13 w-full rounded-[18px] px-4 text-sm font-semibold text-fg outline-none focus:ring-2 focus:ring-primary dark:bg-surface-2" />
           </label>
           <p className="text-[13px] font-medium text-muted">{t('groups.expiresOn', { date: longDate(current.expires_at) })}</p>
           <div className={`grid gap-2 ${canShare ? 'grid-cols-2' : 'grid-cols-1'}`}>
@@ -127,14 +127,14 @@ function InviteContent({ group }: { group: Group }) {
           <p className="sr-only" aria-live="polite">{copied ? t('groups.copied') : ''}</p>
         </div>
       ) : (
-        <p className="rounded-2xl bg-surface-2 px-4 py-3 text-sm font-semibold">{t('groups.noActiveInvite')}</p>
+        <p className="rounded-[18px] bg-surface px-4 py-3 text-sm font-semibold">{t('groups.noActiveInvite')}</p>
       )}
 
       {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
 
       {active.length > 0 && (
         <section className="border-t border-line pt-4">
-          <h3 className="mb-2 text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('groups.activeInvites')}</h3>
+          <h3 className="mb-2 text-[17px] font-extrabold tracking-[-0.02em]">{t('groups.activeInvites')}</h3>
           <ul className="flex flex-col gap-1">
             {active.map((inv) => (
               <li key={inv.id}>
@@ -143,7 +143,7 @@ function InviteContent({ group }: { group: Group }) {
                     loading={revoke.isPending} onConfirm={() => void confirmRevoke()} onCancel={() => setRevoking(null)} />
                 ) : (
                   <div className="flex items-center gap-3 py-1.5">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface-2 text-muted">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-surface text-muted">
                       <Link2 className="size-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">

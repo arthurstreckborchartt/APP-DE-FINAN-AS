@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CreditCard, Plus } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { PageHeader } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -44,30 +45,29 @@ export default function CardsPage() {
   }
 
   const grid = (list: CardWithLimit[]) => (
-    <ul className="grid gap-6 sm:grid-cols-2">
+    <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2">
       {list.map((c) => <li key={c.id}><CardTile card={c} locale={locale} /></li>)}
     </ul>
   )
 
   return (
     <section className="mx-auto max-w-3xl">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('cards.title')}</h1>
-        <Button className="h-11" onClick={open}>
+      <PageHeader title={t('cards.title')} action={
+        <Button className="h-11 shrink-0" onClick={open}>
           <Plus className="size-5" aria-hidden="true" /> {t('cards.new')}
         </Button>
-      </div>
+      } />
 
       <div className="mt-6">
         {active.length === 0 ? (
           <EmptyState icon={CreditCard} title={t('cards.empty')} description={t('cards.emptyBody')}
-            action={<Button className="h-10" onClick={open}>{t('cards.new')}</Button>} />
+            action={<Button className="h-11" onClick={open}>{t('cards.new')}</Button>} />
         ) : grid(active)}
       </div>
 
       {archived.length > 0 && (
         <details className="mt-8">
-          <summary className="cursor-pointer rounded-full px-2 py-2 text-sm font-bold text-muted">{t('cards.archivedSection')}</summary>
+          <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-surface px-4 text-sm font-bold text-muted hover:text-fg">{t('cards.archivedSection')}</summary>
           <div className="mt-3">{grid(archived)}</div>
         </details>
       )}

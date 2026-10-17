@@ -1,301 +1,327 @@
 ---
 name: FINANCE
-description: A calm, familiar banking app for personal and shared money, with violet on ink, white sheets and tabular figures.
+description: Personal and group money, read like Cal AI reads calories — one big number beside its ring.
 colors:
   primary: "#5b3df5"
   primary-strong: "#4a2ee0"
-  primary-fg: "#ffffff"
   primary-soft: "#efebff"
-  brand-1: "#5b3df5"
-  brand-2: "#2a1a8a"
-  brand-fg: "#ffffff"
-  brand-muted: "#d6ccff"
-  success: "#0f7a55"
+  primary-dark: "#a996ff"
+  ground: "#ffffff"
+  ground-dark: "#000000"
+  cloud: "#f4f4f6"
+  cloud-dark: "#1c1c1e"
+  cloud-2: "#ebebef"
+  cloud-2-dark: "#2c2c2e"
+  cloud-3: "#dedee4"
+  cloud-3-dark: "#3a3a3c"
+  ink: "#0b0b0f"
+  ink-hover: "#26262d"
+  ink-dark: "#ffffff"
+  muted: "#6b6b75"
+  muted-dark: "#9a9aa3"
+  line: "#ebebef"
+  ring-track: "#e4e4ea"
+  ring-track-dark: "#2e2e32"
+  income: "#1fae6b"
+  income-dark: "#34d184"
+  expense: "#ff6a4d"
+  expense-dark: "#ff7a61"
+  limit: "#3a7bfd"
+  limit-dark: "#5b95ff"
   danger: "#cc3b31"
+  success: "#0f7a55"
   warning: "#b7791f"
-  bg: "#f4f3f9"
-  surface: "#ffffff"
-  surface-2: "#efedf7"
-  surface-3: "#e3e0f0"
-  fg: "#110e24"
-  muted: "#5d5973"
-  line: "#e5e2ef"
+  chart-1: "#5b3df5"
+  chart-2: "#eb6834"
+  chart-3: "#1baf7a"
+  chart-4: "#eda100"
+  chart-5: "#e87ba4"
+  chart-6: "#2a78d6"
 typography:
-  display:
+  hero-number:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
-    fontSize: "38px"
+    fontSize: "56px"
     fontWeight: 800
-    lineHeight: 1.25
-    letterSpacing: "-0.03em"
+    lineHeight: 1.05
+    letterSpacing: "-0.04em"
     fontFeature: "\"tnum\""
   headline:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
-    fontSize: "28px"
+    fontSize: "30px"
     fontWeight: 800
-    letterSpacing: "-0.03em"
+    lineHeight: 1.25
+    letterSpacing: "-0.035em"
+  headline-wide:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "34px"
+    fontWeight: 800
+    letterSpacing: "-0.035em"
+  sheet-title:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "22px"
+    fontWeight: 800
+    letterSpacing: "-0.02em"
+  keypad-key:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "24px"
+    fontWeight: 700
+    fontFeature: "\"tnum\""
   title:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
-    fontSize: "17px"
+    fontSize: "19px"
     fontWeight: 800
-    letterSpacing: "-0.01em"
+    letterSpacing: "-0.02em"
   body:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
     fontSize: "15px"
-    fontWeight: 600
-    fontFeature: "\"cv11\", \"ss01\""
-  body-sm:
-    fontFamily: "Manrope Variable, system-ui, sans-serif"
-    fontSize: "13px"
     fontWeight: 500
+    fontFeature: "\"cv11\", \"ss01\""
+  row-amount:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "17px"
+    fontWeight: 800
+    letterSpacing: "-0.02em"
+    fontFeature: "\"tnum\""
   label:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
     fontSize: "13px"
-    fontWeight: 800
-    letterSpacing: "0.06em"
-  amount:
+    fontWeight: 600
+  caption:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "12px"
+    fontWeight: 700
+  nav-label:
+    fontFamily: "Manrope Variable, system-ui, sans-serif"
+    fontSize: "11px"
+    fontWeight: 700
+  button:
     fontFamily: "Manrope Variable, system-ui, sans-serif"
     fontSize: "15px"
     fontWeight: 700
     letterSpacing: "-0.01em"
-    fontFeature: "\"tnum\""
 rounded:
-  field: "16px"
-  sheet: "24px"
-  panel: "28px"
+  icon-sm: "12px"
+  icon: "14px"
+  field: "18px"
+  tile: "20px"
+  row: "22px"
+  card: "28px"
   pill: "9999px"
 spacing:
-  xs: "4px"
-  sm: "8px"
-  md: "12px"
-  lg: "16px"
-  xl: "20px"
-  2xl: "24px"
-  3xl: "32px"
+  gap-row: "8px"
+  card-pad: "20px"
+  card-pad-wide: "24px"
+  page-x: "20px"
+  page-x-wide: "40px"
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-fg}"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ground}"
+    typography: "{typography.button}"
     rounded: "{rounded.pill}"
+    height: "52px"
     padding: "0 24px"
-    height: "48px"
   button-primary-hover:
-    backgroundColor: "{colors.primary-strong}"
+    backgroundColor: "{colors.ink-hover}"
   button-secondary:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.fg}"
+    backgroundColor: "{colors.cloud}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
     rounded: "{rounded.pill}"
-    height: "48px"
+    height: "52px"
   button-secondary-hover:
-    backgroundColor: "{colors.surface-3}"
-  button-ghost:
-    textColor: "{colors.fg}"
-    rounded: "{rounded.pill}"
-    height: "48px"
-  button-danger:
-    textColor: "{colors.danger}"
-    rounded: "{rounded.pill}"
-    height: "48px"
-  text-field:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.fg}"
-    rounded: "{rounded.field}"
-    padding: "0 16px"
-    height: "48px"
-  text-field-focus:
-    backgroundColor: "{colors.surface}"
-  sheet-card:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.sheet}"
-    padding: "20px"
-  balance-panel:
-    backgroundColor: "{colors.brand-1}"
-    textColor: "{colors.brand-fg}"
-    rounded: "{rounded.panel}"
-    padding: "24px"
-  segmented-control:
-    backgroundColor: "{colors.surface-2}"
-    rounded: "{rounded.pill}"
-    padding: "4px"
-  segmented-option-selected:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.fg}"
+    backgroundColor: "{colors.cloud-2}"
+  card:
+    backgroundColor: "{colors.cloud}"
+    rounded: "{rounded.card}"
+    padding: "{spacing.card-pad}"
+  row-item:
+    backgroundColor: "{colors.cloud}"
+    rounded: "{rounded.row}"
+  chip:
+    backgroundColor: "{colors.cloud}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.pill}"
     height: "44px"
-  nav-item-active:
-    backgroundColor: "{colors.primary-soft}"
-    textColor: "{colors.primary}"
+    padding: "0 16px"
+  chip-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ground}"
+  segment-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ground}"
+    rounded: "{rounded.pill}"
+    height: "44px"
+  input:
+    backgroundColor: "{colors.cloud}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.field}"
-    height: "48px"
+    height: "52px"
+    padding: "0 16px"
   fab:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-fg}"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ground}"
     rounded: "{rounded.pill}"
-    size: "60px"
-  currency-chip:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.pill}"
-    padding: "4px 10px"
-  category-avatar:
-    rounded: "{rounded.pill}"
-    size: "44px"
+    size: "64px"
+  link:
+    textColor: "{colors.primary}"
 ---
 
 # Design System: FINANCE
 
 ## Overview
 
-**Creative North Star: "The Quiet Bank"**
+**Creative North Star: "The Ring Ledger"**
 
-FINANCE looks like the banking app people already trust, done with care. One confident violet balance panel carries the brand; everything below it is quiet, white and exact. Content sits on rounded white sheets floating on a cool near-white ground (light theme) or layered graphite on near-black (dark theme). Density is comfortable rather than packed: generous 20–24px sheet padding, 48px controls, 44px minimum targets.
+FINANCE borrows the Cal AI app's visual language (user-pinned reference, 2026-10-18) and keeps its own violet accent and two-circle logo. Money is read the way Cal AI reads calories: one enormous tabular number beside a thick ring, then small ring cards, then calm gray rows. The ground is pure white (true black in dark); everything that holds content is a flat Cloud slab with a generous 28px radius, no border and no shadow. Depth comes from tone, not from elevation.
 
-The system is conventional on purpose. The owner chose the category standard (the craft level of Nubank, Revolut, Monzo), so the identity lives in finish rather than novelty: Manrope with tabular figures for every amount, one brand hue used sparingly, pill-shaped actions, circular category avatars tinted from each category's own color, and a single authored motion moment where the balance panel settles and values unblur.
+The system is quiet and dense in the right places. Black ink does the work of committing (primary buttons, the floating + button, the selected chip or segment); violet is rationed to the things that measure and lead (rings, links, the active-navigation dot and icon, focus). Each metric owns one color for life: income green, expense coral, limit blue, and each category its own hue, so a ring is legible before its label is read.
 
-It replaces the earlier generic Tailwind-dashboard look (flat white cards, teal accent, default type), which is the confirmed anti-reference.
+Money rules are non-negotiable and come before style: tabular figures everywhere, every amount rendered through the Amount component so the hide-values mask works, explicit + / − signs with color on transactions, and totals always per currency, never converted.
 
 **Key Characteristics:**
-- One brand surface per screen: the violet balance panel (or the auth side panel).
-- White sheets with soft offset shadows on a cool ground; no borders on cards.
-- Every money value uses tabular figures and is hideable.
-- Green and coral appear only on amounts and their bars, never as decoration.
-- Pills for actions and toggles, 16px fields, 24px sheets, 28px brand panels.
-- Light, dark and system themes are first-class and share one token set.
+- Pure white / true black ground; flat Cloud cards (28px), no borders, no card shadows.
+- Ink pills for primary actions; black circular FAB (white in dark).
+- Selected chips and segments are ink, not violet.
+- Thick rounded-cap rings, one color per metric, icon at center.
+- Hero number (up to 56px, Manrope 800) beside its ring, currency symbol small and raised.
+- Tabular figures, hide-values mask, signed and colored amounts, per-currency totals.
 
 ## Colors
 
-A calm violet on deep ink, set against cool, slightly blue neutrals, with two semantic hues reserved for money.
+A near-monochrome white/Cloud/ink world with one violet accent and a small, fixed set of metric colors.
 
 ### Primary
-- **Serene Violet** (primary): primary buttons, the + FAB, focus outlines, caret, text selection, active nav text, links such as "See all".
-- **Pressed Violet** (primary-strong): hover and pressed state of primary actions.
-- **Violet Mist** (primary-soft): active nav pill, avatar initials background, empty-state icon disc, hover tint on quick actions and text links.
-- **Balance Violet to Deep Ink Blue** (brand-1 to brand-2): the 160deg gradient of the balance panel and the auth side panel, also the BrandMark monogram. Brand-muted is the secondary text on that panel; brand-fg is its primary text.
+- **FINANCE Violet** (`primary`; dark `primary-dark`): the brand accent. Used for ring arcs that have no metric of their own (budgets total, week strip), "See all" links, the active nav icon and dot, focus outlines, text caret and selection. `primary-soft` is the hover wash behind violet links. Never a button fill, never the selected state of a chip.
 
-### Secondary
-- **Ledger Green** (success): income amounts, income bars, positive net.
-- **Statement Coral** (danger): expense bars, negative net, destructive buttons, field errors.
-- **Amber Notice** (warning): closed-invoice status dot.
+### Secondary (metric colors)
+- **Income Green** (`income`): income ring, + amounts.
+- **Expense Coral** (`expense`): expense ring, − amounts, and the overflow color when a ring passes 100%.
+- **Limit Blue** (`limit`): credit-limit ring.
+- **Category / chart hues** (`chart-1`…`chart-6`, plus user-chosen category and card colors): category rings, icon tiles (glyph in the hue on a 14% tint), chart series.
 
 ### Neutral
-- **Cool Paper** (bg): the app ground behind sheets; also the ring that cuts the FAB out of the bottom bar.
-- **Sheet White** (surface): every card, dialog, sidebar and bottom bar.
-- **Fog** (surface-2): input fills, secondary buttons, segmented-control track, list-row hover, progress tracks.
-- **Steel Fog** (surface-3): hover on fog fills, the "other" segment in the category bar, scrollbar thumb.
-- **Ink** (fg): primary text and expense amounts in lists.
-- **Slate** (muted): labels, metadata, inactive nav.
-- **Hairline** (line): sidebar edge, bottom-bar top edge, the divider above a net total.
-
-### Dark theme
-The same role names remap under `.dark`: bg #09080f, surface #13111d, surface-2 #1c1929, surface-3 #272339, fg #f1effa, muted #a39fb8, line #262238, primary #a996ff, primary-strong #bcadff, primary-fg #160a4a, primary-soft #231b52, brand-1 #4a2ee0, brand-2 #1a0f5c, brand-muted #cfc4ff, success #45d19a, danger #ff7b6f, warning #f2b84b. Components only reference role names, never theme-specific values.
+- **Ground** (`ground` / `ground-dark`): page background, sheets on mobile, fields inside a Cloud card.
+- **Cloud** (`cloud` / `cloud-dark`): cards, list rows, fields and chips on the ground, sidebar active item.
+- **Cloud 2 / Cloud 3**: hover on Cloud surfaces; Cloud 3 also the sheet grabber and scrollbar thumb.
+- **Ink** (`ink` / `ink-dark` white): primary text and every committing fill (primary button, FAB, today's date, selected chip/segment/tile, avatar).
+- **Muted** (`muted` / `muted-dark`): labels, captions, inactive nav.
+- **Line** (`line`): the only hairlines — sidebar edge and bottom-bar top edge. Not used on cards.
+- **Ring Track** (`ring-track` / `ring-track-dark`): the unfilled ring; dashed when the day has no value.
+- **Danger / Success / Warning**: form errors, destructive text buttons, status text.
 
 ### Named Rules
-**The One Brand Surface Rule.** The brand gradient appears once per screen, on the balance panel (Início, Contas) or the auth side panel. Other sheets stay white.
+**The Ink Commits Rule.** Anything that means "this is chosen" or "do it" is ink: primary button, FAB, selected chip, selected segment, selected tile, today's date. Violet never fills a control.
 
-**The Money-Only Semantics Rule.** Ledger Green and Statement Coral color amounts, their bars and errors only. Expense amounts in a list stay Ink; only the net total turns coral. Signs (+ / −) always accompany color so meaning never rests on color alone.
+**The One Color Per Metric Rule.** A metric keeps its color everywhere it appears (ring, amount, chart). Income is green, expense coral, limit blue, a category its own hue. Don't recolor a metric for decoration.
 
-**The Category Tint Rule.** Category avatars take the category's own color for the glyph and the same color at roughly 12% alpha for the disc. The category bar on Início uses the full color.
+**The Rationed Violet Rule.** Violet marks measurement and navigation only: rings, links, active-nav indicator, focus. If a screen's violet is mostly fills, it is wrong.
 
 ## Typography
 
 **Display Font:** Manrope Variable (with system-ui, sans-serif)
-**Body Font:** Manrope Variable
-**Label/Mono Font:** Manrope with tabular figures (`.num`), no separate mono
+**Body Font:** Manrope Variable (same family; stylistic sets cv11 + ss01 on)
 
-**Character:** One geometric-humanist family across the whole app, set heavy (600–800) and tightly tracked at large sizes so numbers read as solid, confident figures. Stylistic sets cv11 and ss01 are on globally.
+**Character:** One geometric sans at two volumes: extra-bold 800 for numbers and titles with tight negative tracking, quiet 500–600 for labels. The contrast is weight and size, never a second family.
 
 ### Hierarchy
-- **Display** (800, 38px rising to 46px from sm, line-height 1.25, -0.03em, tabular): the main balance in the brand panel. Siblings: account total 34px→40px, amount entry 36px→44px, auth tagline 44px at line-height 1.05 and -0.035em.
-- **Headline** (800, 28px rising to 34px at lg, -0.03em): one page title per screen. Auth card title uses 30px.
-- **Title** (800, 17px, -0.01em): sheet titles. Dialog titles step up to 20px with -0.02em.
-- **Body** (600–700, 15px): list-row primary text (700, -0.01em), nav items, button labels (700), subtitles (500). Inputs use 16px medium to avoid mobile zoom.
-- **Body-sm** (500, 13px, muted): row metadata, field labels (600), helper and error text.
-- **Label** (800, 13px, +0.06em, uppercase, muted): day-group headers in Lançamentos and settings section headings; 12px bold for summary terms. Bottom-nav labels are 11px bold, sentence case.
-- **Amount** (700–800, 15–17px, -0.01em, tabular): every money value in rows and summaries.
+- **Hero number** (800, 56px shrinking to fit down to 26px, 1.05, -0.04em, tabular): the single main amount in a HeroCard. Currency symbol at 0.48em, bold, raised.
+- **Amount keypad display** (800, 44–52px, -0.035em): the value being entered on the new-transaction screen.
+- **Headline** (800, 30px; 34px on desktop, -0.035em): page titles. No eyebrow or kicker above them.
+- **Sheet title** (800, 22px, -0.02em).
+- **Title** (800, 19px, -0.02em): section headers; ring-card values (16–22px, -0.03em).
+- **Row amount** (800, 17px, tabular): amounts on list rows, goal and budget rows.
+- **Body / button** (500–700, 15px): body text, buttons (700, -0.01em).
+- **Label** (600, 13px, muted): field labels, card labels, captions. Chips 13–14px bold. Captions and week-day initials 12px bold. Nav labels 11px bold.
 
 ### Named Rules
-**The Tabular Money Rule.** Every money value renders through the Amount component with tabular figures and a -0.01em track, so columns align and hidden values become a fixed "••••" mask.
+**The Tabular Money Rule.** Every amount carries tabular figures (`tnum`, -0.01em) and is rendered through Amount, so it aligns in columns and obeys the hide-values mask (`••••`, unblur reveal).
 
-**The Weight Carries Hierarchy Rule.** Hierarchy comes from weight and size steps (800 for titles and amounts, 500–600 for meta), not from color or extra faces.
+**The Small Symbol Rule.** In hero-sized numbers the currency symbol shrinks to about half size and rides high; the digits get the width.
 
 ## Layout
 
-Mobile first, one column with a 20px gap between sheets and 16px side margins. A sticky translucent header (bg at 90% with blur) holds the BrandMark and avatar; a fixed white bottom bar holds four tabs plus a raised center FAB, and hides on the transaction form so the keypad and Save button own the screen. Content reserves 128px bottom padding for the bar.
+Mobile first: 20px page gutter, sticky white header (logo left, avatar right), content, then a fixed 4-item white bottom bar with a hairline top edge and a black 64px FAB floating above it at the right. On the new/edit transaction form the bottom bar and FAB step aside. Desktop (lg, 1024px+): a 17rem white sidebar with logo, a full-width ink "New transaction" pill, pill nav links and a profile row; content in a max-width 72rem column with 40px gutters, cards arranged in a two-column grid.
 
-At lg (1024px) the shell becomes a 17rem white sidebar (BrandMark, primary "Novo lançamento" pill, nav list, profile card pinned to the bottom) beside a content column capped at 72rem with 40px side padding. Início becomes a 7fr / 5fr grid (balance and category breakdown left, month summary and recent right); Lançamentos puts the list left and a sticky 20rem aside (month switcher, totals, filters) right. Auth splits 50/50 with the brand panel on the left.
-
-Rhythm runs on a 4px base: 4, 8, 12, 16, 20, 24, 32. Controls are 48px tall; icon buttons and segmented options are 44px; the FAB is 60px; quick-action discs are 56px.
+Rhythm: list rows are separate Cloud rows 8px apart (never a single bordered table); card padding 20px (24px from sm). Home reads top-down as week strip of seven day rings → HeroCard → three RingCards side by side → recent rows. Touch targets are at least 44px everywhere.
 
 ## Elevation & Depth
 
-Hybrid: tonal layering does most of the work (bg, then surface, then surface-2 fills inside), and two soft, offset shadows lift the things that float. There are no borders on cards. In dark theme the shadows deepen to near-black and the graphite surface steps carry the layering.
+Flat by default. Depth is tonal: Cloud on white, white on Cloud (fields and plain buttons invert inside a card), Cloud 2/3 for hover. Shadows exist only for things that float above the page.
 
 ### Shadow Vocabulary
-- **Sheet** (`0 1px 2px rgb(12 18 34 / 0.04), 0 8px 24px -12px rgb(12 18 34 / 0.12)`): every white sheet, the month switcher, selected segmented option, quick-action discs, dialogs.
-- **Float** (`0 10px 30px -10px rgb(36 69 184 / 0.55)`): violet-tinted glow under the balance panel, primary buttons, the FAB and the primary quick action. Dark: `0 10px 30px -10px rgb(0 0 0 / 0.8)`.
+- **Float** (`box-shadow: 0 6px 14px -4px rgb(11 11 15 / 0.32), 0 14px 32px -12px rgb(11 11 15 / 0.28)`; dark adds a 1px white 6% ring): the FAB only.
+- **Pop** (`box-shadow: 0 2px 6px rgb(11 11 15 / 0.06), 0 24px 48px -20px rgb(11 11 15 / 0.28)`): sheets/dialogs and popovers, over a 40% black scrim.
 
 ### Named Rules
-**The Two Shadows Rule.** Only Sheet and Float exist. Sheet means "resting surface"; Float means "brand or primary action". Disabled primaries drop their shadow.
+**The No-Shadow Card Rule.** Cards, rows, tiles and chips never carry a shadow or a border. If a surface needs separation, change its tone.
 
 ## Shapes
 
-Soft and rounded throughout, scaled to the object: pills for anything pressable or toggled (buttons, segmented controls, chips, nav indicators, icon buttons, avatars), 16px for fields, keypad keys, list rows and nav items, 24px for sheets and empty states, 28px for brand panels and the auth card. Bottom-sheet dialogs round only the top at 28px on mobile and become 24px floating dialogs on desktop. Category avatars and icon discs are always circles. Progress bars are 8px (month) or 12px (category stack) pill tracks.
+Soft, generous rounding that grows with the surface: 12–14px icon tiles, 18px fields and icon buttons, 20px choice tiles and keypad keys, 22px list rows and payment cards, 24px small ring cards on mobile, 28px cards, sheets (top corners on mobile) and hero. Every button, chip, segment, avatar and FAB is a full pill or circle. Rings use round caps. No borders on shapes; the only lines are the shell's two hairlines.
 
 ## Components
 
 ### Buttons
-Confident, round and heavy.
-- **Shape:** full pill, 48px tall, 24px horizontal padding, 15px bold label with -0.01em track.
-- **Primary:** Serene Violet fill, white label, Float shadow; hover to Pressed Violet; press scales to 0.98.
-- **Secondary:** Fog fill, Ink label; hover to Steel Fog.
-- **Ghost:** transparent, Ink label; hover Fog.
-- **Danger:** transparent, coral label; hover coral at 10%.
-- **Focus / Disabled:** 2px violet outline offset 2px; disabled at 50% opacity with no shadow; loading shows an inline spinner.
+- **Shape:** full pill, 52px tall, 24px horizontal padding, 15px bold.
+- **Primary:** ink fill, ground text; hover ink-hover; press scales to 0.98.
+- **Secondary:** Cloud fill, ink text; hover Cloud 2.
+- **Plain / Plain danger:** ground fill so it shows on a Cloud card; danger variant uses danger text.
+- **Ghost / Danger:** transparent; Cloud or 10% danger wash on hover.
+- **Focus:** 2px violet outline, 2px offset. Disabled at 50% opacity.
 
 ### Chips
-- **Currency chip:** Fog pill, 12px extrabold Slate code; tags each per-currency block when more than one currency exists.
-- **On-brand pill:** white at 12% on the balance panel (accounts link, eye toggle), white at 20% on hover.
+- **Style:** 44px pill on the field fill (Cloud on white, white inside a Cloud card), 13–14px bold ink text.
+- **State:** selected = ink fill with ground text; hover on unselected = Cloud 2. Groups are radiogroups with roving focus and scroll horizontally. Choice tiles (category icon + name) follow the same rule at 20px radius.
+
+### Segmented control
+A pill track on the field fill with 4px inset; the selected segment is an ink pill, others muted text that darkens on hover. Arrow/Home/End keys move selection.
 
 ### Cards / Containers
-- **Corner Style:** 24px (sheet), 28px (brand panel, auth card).
-- **Background:** Sheet White; brand gradient for the balance panel only.
-- **Shadow Strategy:** Sheet; brand panel uses Float.
+- **Corner Style:** 28px.
+- **Background:** Cloud.
+- **Shadow Strategy:** none (see Elevation).
 - **Border:** none.
-- **Internal Padding:** 20px, 24px from sm; list sheets use 8–12px so rows carry their own 12px padding.
+- **Internal Padding:** 20px, 24px from sm.
+- **List rows:** separate Cloud rows at 22px, 8px apart, hover on the inner link.
 
 ### Inputs / Fields
-- **Style:** Fog fill, transparent 1px border, 16px radius, 48px tall, 16px medium text; 13px semibold Slate label above, 6px gap.
-- **Focus:** fill turns Sheet White, border turns violet, 4px violet ring at 15%.
-- **Error / Disabled:** coral border and ring, 13px coral message below; disabled at 60% opacity. Selects share the field and add a muted chevron.
+- **Style:** 52px, 18px radius, field fill, 16px semibold text; label above in 13px semibold muted.
+- **Focus:** 2px violet ring. **Error:** 2px danger ring and a 13px danger message linked by aria-describedby. Disabled at 60%.
+- **Date picker** glyph is the app's own calendar icon in muted, violet on hover/focus.
 
 ### Navigation
-- **Mobile bottom bar:** white with hairline top and a soft upward shadow; tabs are 64px tall with an icon in a 48×28 pill (Violet Mist when active) over an 11px bold label; active is violet, inactive Slate. The center + FAB is a 60px violet circle raised 24px, cut out by a 6px bg-colored ring.
-- **Desktop sidebar:** 48px rows at 16px radius, 15px semibold; active is Violet Mist with violet text, hover Fog. The primary pill sits above the list.
+- **Mobile bottom bar:** white, hairline top edge, four items with 22px icon and 11px bold label; active = ink text, heavier stroke, and a 4px violet dot below.
+- **Desktop sidebar:** pill links 48px tall; active = Cloud fill, ink text, violet icon.
+- **FAB:** 64px ink circle with a + glyph, float shadow; white with black glyph in dark.
 
-### Segmented Control
-Fog pill track with 4px padding; 44px options; selected option is a Sheet White pill with the Sheet shadow and Ink text, others Slate. Behaves as a keyboard radiogroup.
+### Ring (signature)
+Thick round-cap arc on the ring track, drawn on mount with a 1100ms expo-out stroke-dashoffset (skipped under reduced motion). Sizes: 100px/10px stroke in heroes, 64px/8px in ring cards, 44px/4px in the week strip, 48px/6px in list rows. Past 100% the arc turns to its overflow color (expense coral). An icon in the metric color sits in the center; a dashed track marks "no value yet".
 
-### Balance Panel (signature)
-The brand moment. A 160deg gradient from brand-1 to brand-2 with a white radial highlight in the top-right corner, 28px radius, Float shadow. Greeting and "Saldo" in brand-muted, the display amount below, extra currencies at 20px in brand-muted, and an eye toggle that hides all values app-wide. On open it settles up 10px from 0.985 scale over 640ms; toggling values unblurs them over 360ms, both on `cubic-bezier(0.16, 1, 0.3, 1)` and only without reduced motion.
+### HeroCard
+A Cloud card with the hero number and its muted label on the left and a ~100px ring on the right, side by side at every width. The number fits its column (56px down to 26px).
 
-### Transaction Row
-16px-radius row with 12px padding: 44px category avatar, 15px bold description over 13px Slate "category · account", amount right-aligned (green with + for income, Ink with − for expense). Rows group by day inside a sheet under an uppercase Label header with the day's net at right.
+### RingCard
+Small Cloud card: value (16–22px extrabold), 13px muted label, 64px ring with centered icon. Three sit side by side on Home (Income, Expenses, Cards).
 
-### Amount Keypad
-3-column grid of 56px Fog keys at 16px radius with 22px bold tabular digits, under a 36–44px extrabold entry display.
+### Payment card tile
+The one place a surface takes a user color: a 1.586-ratio card at 22px radius filled with the card's color, two soft translucent circles top-right echoing the logo, name, currency and closing/due days; a gentle pointer tilt (10°, 1.03 scale) on hover. A Cloud summary row sits below it.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** route every money value through tabular figures and the hide-values mask.
-- **Do** keep the brand gradient to one panel per screen and put everything else on white sheets with the Sheet shadow.
-- **Do** use pills for actions and toggles, 16px for fields and rows, 24px for sheets, 28px for brand panels.
-- **Do** pair income/expense color with a + / − sign and with bars that have text labels.
-- **Do** keep controls at 48px and every target at 44px or more.
-- **Do** reference role tokens (primary, surface-2, muted) so light and dark themes stay in parity.
+- **Do** put the one number that matters at hero size beside its ring, with a small raised currency symbol.
+- **Do** use ink for every committing fill and every selected state (chips, segments, tiles, today).
+- **Do** keep violet for rings, links, the active-nav indicator and focus.
+- **Do** give each metric its fixed color: income green, expense coral, limit blue, categories their own hue.
+- **Do** render all money through Amount: tabular figures, hide-values mask, +/− with color, totals per currency.
+- **Do** separate content by tone (Cloud on white, white on Cloud), with 28px cards and 22px rows.
+- **Do** keep targets at 44px and every ring labeled for screen readers.
 
 ### Don't:
-- **Don't** return to the flat white cards, teal accent and default type of the previous look.
-- **Don't** use green or coral for decoration, icons or backgrounds outside money values, their bars and errors.
-- **Don't** add borders around sheets; separate with the ground color and the Sheet shadow.
-- **Don't** introduce shadows beyond Sheet and Float, or a second typeface.
-- **Don't** print an expense amount in coral inside a list; only the net total turns coral.
+- **Don't** add shadows or borders to cards, rows, chips or tiles; shadows are for the FAB, sheets and popovers only.
+- **Don't** fill buttons, chips or segments with violet.
+- **Don't** bring back the gradient brand header or stacked white sheets of the previous banking look.
+- **Don't** put eyebrows or kickers above page titles.
+- **Don't** sum or convert across currencies in a single total.
+- **Don't** introduce a second typeface; contrast comes from Manrope's weights.

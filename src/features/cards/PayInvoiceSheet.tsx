@@ -57,7 +57,7 @@ export function PayInvoiceSheet({ invoice, locale, open, onClose }: Props) {
         ) : isError || !accounts ? (
           <QueryError onRetry={() => void refetch()} />
         ) : eligible.length === 0 ? (
-          <div className="rounded-2xl bg-surface-2 px-4 py-3 text-sm font-medium">
+          <div className="rounded-[18px] bg-surface px-4 py-3 text-sm font-medium">
             <p>{t('invoices.noAccountInCurrency', { currency: invoice.currency })}</p>
             <Link to="/accounts" className="mt-2 inline-block font-bold text-primary underline-offset-2 hover:underline">{t('accounts.title')}</Link>
           </div>

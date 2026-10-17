@@ -1,11 +1,13 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Amount } from '../../components/Amount'
+import { Ring } from '../../components/ui/Ring'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { onCardDark } from '../../lib/contrast'
 import type { CardWithLimit } from './types'
 
-export function CardTile({ card, locale }: { card: CardWithLimit; locale: string }) {
+/** Arte do cartão (inclina ao passar o dedo) e, por baixo, o limite livre ao lado de um anel do uso. */
+export function CardTile({ card, locale, summary = true }: { card: CardWithLimit; locale: string; summary?: boolean }) {
   const { t } = useTranslation()
   const dark = onCardDark(card.color)
   const pct = card.limit_amount > 0 ? Math.min(100, Math.max(0, (card.used / card.limit_amount) * 100)) : 0
@@ -13,7 +15,7 @@ export function CardTile({ card, locale }: { card: CardWithLimit; locale: string
   const motif = dark ? '17 14 36' : '255 255 255'
   return (
     <div>
-      <TiltCard tiltLimit={10} scale={1.03} className="rounded-[22px] shadow-sheet">
+      <TiltCard tiltLimit={10} scale={1.03} className="rounded-[22px]">
       <Link to={`/cards/${card.id}`}
         className={`relative block aspect-[1.586] overflow-hidden rounded-[22px] p-5 transition active:scale-[0.99] ${dark ? 'text-[#110e24]' : 'text-white'}`}
         style={{
@@ -33,19 +35,21 @@ export function CardTile({ card, locale }: { card: CardWithLimit; locale: string
         </span>
       </Link>
       </TiltCard>
-      <div className="mt-3 px-1">
-        <div className="h-2 overflow-hidden rounded-full bg-surface-2" role="img"
-          aria-label={`${t('cards.used')}: ${Math.round(pct)}%`}>
-          <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: card.color }} />
-        </div>
-        <div className="mt-2 flex items-baseline justify-between gap-2">
-          <span className="text-[13px] font-semibold text-muted">{t('cards.available')}</span>
-          <span className="text-[13px] font-medium text-muted">
-            <Amount cents={card.available} currency={card.currency} locale={locale} className="text-[15px] font-extrabold text-fg" />{' '}
-            {limitParts[0]}<Amount cents={card.limit_amount} currency={card.currency} locale={locale} />{limitParts[1]}
+      {summary && (
+        <div className="mt-2 flex items-center gap-3.5 rounded-[22px] bg-surface px-4 py-3">
+          <span className="min-w-0 flex-1">
+            <Amount cents={card.available} currency={card.currency} locale={locale}
+              className="block truncate text-[19px] font-extrabold tracking-[-0.03em]" />
+            <span className="block truncate text-[13px] font-medium text-muted">
+              {t('cards.available')} · {limitParts[0]}<Amount cents={card.limit_amount} currency={card.currency} locale={locale} />{limitParts[1]}
+            </span>
           </span>
+          <Ring value={card.limit_amount > 0 ? card.used / card.limit_amount : 0} size={48} stroke={6} color={card.color}
+            overflowColor="var(--danger)" ariaLabel={t('cards.usedPct', { pct: Math.round(pct) })}>
+            <span className="num text-[11px] font-extrabold">{Math.round(pct)}%</span>
+          </Ring>
         </div>
-      </div>
+      )}
     </div>
   )
 }

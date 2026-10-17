@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Plus, Wallet } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { Button } from '../../components/ui/Button'
+import { IconTile, PageHeader, RowItem, RowList } from '../../components/ui/Card'
+import { HERO_NUMBER, HeroValue } from '../../components/ui/HeroCard'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
@@ -84,12 +86,10 @@ export default function AccountsPage() {
   const row = (a: AccountWithBalance) => {
     const Icon = ACCOUNT_TYPE_ICONS[a.type]
     return (
-      <li key={a.id}>
+      <RowItem key={a.id}>
         <button type="button" onClick={() => open(a)}
-          className="flex w-full items-center gap-3.5 rounded-2xl px-3 py-3.5 text-left transition hover:bg-surface-2">
-          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
-            <Icon className="size-5" aria-hidden="true" />
-          </span>
+          className="flex w-full items-center gap-3.5 px-3.5 py-3 text-left transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary">
+          <IconTile icon={Icon} />
           <span className="min-w-0 flex-1">
             <span className="block truncate text-[15px] font-bold">{a.name}</span>
             <span className="block text-[13px] font-medium text-muted">{t(`accounts.types.${a.type}`)} · {a.currency}</span>
@@ -97,7 +97,7 @@ export default function AccountsPage() {
           <Amount cents={a.balance} currency={a.currency} locale={locale}
             className={`shrink-0 whitespace-nowrap text-[15px] font-extrabold ${a.balance < 0 ? 'text-danger' : ''}`} />
         </button>
-      </li>
+      </RowItem>
     )
   }
 
@@ -106,36 +106,45 @@ export default function AccountsPage() {
 
   return (
     <section className="mx-auto max-w-3xl">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('accounts.title')}</h1>
-        <Button className="h-11" onClick={() => open('new')}>
+      <PageHeader title={t('accounts.title')} action={
+        <Button className="h-11 shrink-0" onClick={() => open('new')}>
           <Plus className="size-5" aria-hidden="true" /> {t('accounts.new')}
         </Button>
-      </div>
+      } />
 
       {totals.length > 0 && (
-        <div className="brand-panel mt-6 rounded-[28px] p-6 shadow-float sm:p-7">
-          <p className="text-[15px] font-medium text-brand-muted">{t('accounts.total')}</p>
-          {totals.map((s, i) => (
-            <Amount key={s.currency} cents={s.total} currency={s.currency} locale={locale}
-              className={`block ${i === 0 ? 'mt-1 text-[34px] font-extrabold tracking-[-0.03em] sm:text-[40px]' : 'text-lg font-bold text-brand-muted'}`} />
+        <section aria-labelledby="accounts-total" className="mt-6 rounded-card bg-surface p-5 sm:p-6">
+          {totals.slice(0, 1).map((s) => (
+            <HeroValue key={s.currency}>
+              <Amount cents={s.total} currency={s.currency} locale={locale} smallSymbol
+                className={`${HERO_NUMBER} ${s.total < 0 ? 'text-danger' : ''}`} />
+            </HeroValue>
           ))}
-        </div>
+          <p id="accounts-total" className="mt-1.5 text-[15px] font-semibold text-muted">{t('accounts.total')}</p>
+          {totals.length > 1 && (
+            <p className="mt-3 flex flex-wrap gap-2">
+              {totals.slice(1).map((s) => (
+                <Amount key={s.currency} cents={s.total} currency={s.currency} locale={locale}
+                  className="rounded-full bg-bg px-3 py-1.5 text-[15px] font-bold dark:bg-surface-2" />
+              ))}
+            </p>
+          )}
+        </section>
       )}
 
       <div className="mt-6">
         {active.length === 0 ? (
           <EmptyState icon={Wallet} title={t('accounts.empty')} description={t('accounts.emptyBody')}
-            action={<Button className="h-10" onClick={() => open('new')}>{t('accounts.new')}</Button>} />
+            action={<Button className="h-11" onClick={() => open('new')}>{t('accounts.new')}</Button>} />
         ) : (
-          <ul className="flex flex-col rounded-[24px] bg-surface p-2 shadow-sheet">{active.map(row)}</ul>
+          <RowList>{active.map(row)}</RowList>
         )}
       </div>
 
       {archived.length > 0 && (
         <details className="mt-6">
-          <summary className="cursor-pointer rounded-full px-2 py-2 text-sm font-bold text-muted">{t('accounts.archivedSection')}</summary>
-          <ul className="mt-2 flex flex-col rounded-[24px] bg-surface p-2 opacity-75 shadow-sheet">{archived.map(row)}</ul>
+          <summary className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-surface px-4 text-sm font-bold text-muted hover:text-fg">{t('accounts.archivedSection')}</summary>
+          <RowList className="mt-3 opacity-75">{archived.map(row)}</RowList>
         </details>
       )}
 

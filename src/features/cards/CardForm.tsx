@@ -69,10 +69,10 @@ export function CardForm({ initial, currencyEditable, submitLabel, loading, erro
       )}
 
       <fieldset>
-        <legend className="mb-2 text-sm font-medium">{t('cards.color')}</legend>
+        <legend className="mb-2 text-[13px] font-semibold text-muted">{t('cards.color')}</legend>
         <div className="flex flex-wrap gap-2">
           {CARD_COLORS.map((c, i) => (
-            <label key={c} className="grid size-10 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-surface
+            <label key={c} className="grid size-10 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-bg
               has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="color" value={c} className="sr-only" checked={color === c}
                 onChange={() => setColor(c)} aria-label={t('categories.colorOption', { n: i + 1 })} />

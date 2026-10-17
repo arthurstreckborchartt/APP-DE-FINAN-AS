@@ -3,29 +3,43 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* FINANCE — "Equilíbrio": violeta sereno sobre tinta, folhas claras, números tabulares. */
+/*
+ * FINANCE — mundo "Cal AI": chão branco, cartões Cloud planos (sem sombra, sem borda),
+ * botões de tinta, anéis grossos e números enormes tabulares. Violeta é o acento.
+ */
 :root {
-  --bg: #f4f3f9;
-  --surface: #ffffff;
-  --surface-2: #efedf7;
-  --surface-3: #e3e0f0;
-  --fg: #110e24;
-  --muted: #5d5973;
-  --line: #e5e2ef;
+  --bg: #ffffff;
+  --surface: #f4f4f6;        /* Cloud: cartões, campos, linhas de lista */
+  --surface-2: #ebebef;      /* Cloud mais escuro: hover, pílulas dentro de cartões */
+  --surface-3: #dedee4;
+  --fg: #0b0b0f;
+  --muted: #6b6b75;
+  --line: #ebebef;
   --primary: #5b3df5;
   --primary-strong: #4a2ee0;
   --primary-fg: #ffffff;
   --primary-soft: #efebff;
+  /* Tinta: preenchimento dos botões principais e do FAB. */
+  --ink: #0b0b0f;
+  --ink-fg: #ffffff;
+  --ink-hover: #26262d;
+  /* Anéis: trilho e uma cor por métrica. */
+  --ring-track: #e4e4ea;
+  --income: #1fae6b;
+  --expense: #ff6a4d;
+  --limit: #3a7bfd;
+  /* Legado: o painel de marca agora é um cartão Cloud comum. */
   --brand-1: #5b3df5;
   --brand-2: #2a1a8a;
-  --brand-fg: #ffffff;
-  --brand-muted: #d6ccff;
+  --brand-fg: var(--fg);
+  --brand-muted: var(--muted);
   --danger: #cc3b31;
   --success: #0f7a55;
   --warning: #b7791f;
-  --shadow-sheet: 0 1px 2px rgb(17 14 36 / 0.04), 0 8px 24px -12px rgb(17 14 36 / 0.12);
-  --shadow-float: 0 10px 30px -10px rgb(74 46 224 / 0.55);
-  /* Séries de gráficos (ordem fixa; validadas para daltonismo sobre --surface). */
+  /* Sombras só para o que flutua: FAB, folhas/diálogos, popovers. Cartões são planos. */
+  --shadow-sheet: 0 0 #0000;
+  --shadow-pop: 0 2px 6px rgb(11 11 15 / 0.06), 0 24px 48px -20px rgb(11 11 15 / 0.28);
+  --shadow-float: 0 6px 14px -4px rgb(11 11 15 / 0.32), 0 14px 32px -12px rgb(11 11 15 / 0.28);
   --chart-1: #5b3df5;
   --chart-2: #eb6834;
   --chart-3: #1baf7a;
@@ -36,26 +50,32 @@
 }
 
 .dark {
-  --bg: #09080f;
-  --surface: #13111d;
-  --surface-2: #1c1929;
-  --surface-3: #272339;
-  --fg: #f1effa;
-  --muted: #a39fb8;
-  --line: #262238;
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-3: #3a3a3c;
+  --fg: #f5f5f7;
+  --muted: #9a9aa3;
+  --line: #2c2c2e;
   --primary: #a996ff;
   --primary-strong: #bcadff;
   --primary-fg: #160a4a;
   --primary-soft: #231b52;
+  --ink: #ffffff;
+  --ink-fg: #000000;
+  --ink-hover: #e4e4ea;
+  --ring-track: #2e2e32;
+  --income: #34d184;
+  --expense: #ff7a61;
+  --limit: #5b95ff;
   --brand-1: #4a2ee0;
   --brand-2: #1a0f5c;
-  --brand-fg: #ffffff;
-  --brand-muted: #cfc4ff;
   --danger: #ff7b6f;
   --success: #45d19a;
   --warning: #f2b84b;
-  --shadow-sheet: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -16px rgb(0 0 0 / 0.7);
-  --shadow-float: 0 10px 30px -10px rgb(0 0 0 / 0.8);
+  --shadow-sheet: 0 0 #0000;
+  --shadow-pop: 0 2px 6px rgb(0 0 0 / 0.5), 0 24px 48px -20px rgb(0 0 0 / 0.9);
+  --shadow-float: 0 6px 16px -4px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06);
   --chart-1: #9085e9;
   --chart-2: #d95926;
   --chart-3: #199e70;
@@ -77,6 +97,13 @@
   --color-primary-strong: var(--primary-strong);
   --color-primary-fg: var(--primary-fg);
   --color-primary-soft: var(--primary-soft);
+  --color-ink: var(--ink);
+  --color-ink-fg: var(--ink-fg);
+  --color-ink-hover: var(--ink-hover);
+  --color-ring-track: var(--ring-track);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-limit: var(--limit);
   --color-brand-1: var(--brand-1);
   --color-brand-2: var(--brand-2);
   --color-brand-fg: var(--brand-fg);
@@ -85,11 +112,13 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --shadow-sheet: var(--shadow-sheet);
+  --shadow-pop: var(--shadow-pop);
   --shadow-float: var(--shadow-float);
-  --color-background: var(--surface);
+  --color-background: var(--bg);
   --color-foreground: var(--fg);
   --color-muted-foreground: var(--muted);
   --font-sans: "Manrope Variable", system-ui, sans-serif;
+  --radius-card: 28px;
 }
 
 html, body, #root { height: 100%; }
@@ -111,9 +140,33 @@ body {
   outline-offset: 2px;
 }
 
+a { text-underline-offset: 0.2em; }
+
+/* Ícone do calendário dos campos de data: o glifo do app (lucide), na cor da paleta. */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  background: var(--muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Crect width='18' height='18' x='3' y='4' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E") center / 20px 20px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Crect width='18' height='18' x='3' y='4' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E") center / 20px 20px no-repeat;
+  transition: background-color 150ms;
+}
+input[type="date"]:hover::-webkit-calendar-picker-indicator,
+input[type="date"]:focus::-webkit-calendar-picker-indicator { background: var(--primary); }
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--surface-3) transparent;
+}
+
+/*
+ * Preenchimento de campos (inputs, selects, teclas, trilho do segmentado): Cloud sobre o chão branco;
+ * dentro de um cartão Cloud vira branco para continuar visível. Em camada para os utilitários de hover vencerem.
+ */
+@layer components {
+  .field { background-color: var(--surface); }
+  .bg-surface .field { background-color: var(--bg); }
 }
 
 /* Valores de dinheiro: algarismos tabulares, alinhados em coluna. */
@@ -123,28 +176,18 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Painel de saldo: o motivo da marca (dois círculos que se encontram) como material do painel. */
+/* Legado: o antigo painel em degradê vira um cartão Cloud plano. */
 .brand-panel {
-  background:
-    radial-gradient(circle at calc(100% - 7rem) 3.5rem, rgb(255 255 255 / 0.13) 0 5.5rem, transparent 5.55rem),
-    radial-gradient(circle at calc(100% - 2.5rem) 3.5rem, rgb(201 189 255 / 0.16) 0 5.5rem, transparent 5.55rem),
-    linear-gradient(160deg, var(--brand-1) 0%, var(--brand-2) 100%);
-  color: var(--brand-fg);
+  background: var(--surface);
+  color: var(--fg);
+  box-shadow: none !important;
 }
 
-/* Momento autoral: o painel de saldo assenta e os valores "revelam" ao abrir ou ao mostrar/ocultar. */
+/* Momento autoral: os anéis se desenham ao abrir e os valores "revelam" ao mostrar/ocultar. */
 @media (prefers-reduced-motion: no-preference) {
-  .balance-reveal {
-    animation: settle 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
   :root[data-revealing] .reveal {
     animation: unblur 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-}
-
-@keyframes settle {
-  from { transform: translateY(10px) scale(0.985); box-shadow: none; }
-  to { transform: none; }
 }
 
 @keyframes unblur {

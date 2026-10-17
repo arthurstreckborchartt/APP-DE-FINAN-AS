@@ -279,6 +279,7 @@ export function LineChart({
         const containerHeight = (containerWidth * VIEWBOX_H) / VIEWBOX_W;
         const cursorYpx = activeYPct * containerHeight;
         const tooltipOnLeft = activeXPct > 0.5;
+        const tooltipY = `clamp(0px, calc(${cursorYpx}px - 50%), calc(${containerHeight}px - 100%))`;
         return (
           <>
             <div
@@ -308,9 +309,10 @@ export function LineChart({
             <div
               className="absolute pointer-events-none z-20 grid min-w-32 items-start gap-1.5 rounded-lg bg-background px-2.5 py-1.5 text-xs left-0 top-0"
               style={{
+                // Na vertical o balão fica sempre dentro da área do gráfico (nunca cobre o eixo X).
                 transform: tooltipOnLeft
-                  ? `translate3d(calc(${cursorPx}px - 100% - 12px), calc(${cursorYpx}px - 50%), 0)`
-                  : `translate3d(${cursorPx + 12}px, calc(${cursorYpx}px - 50%), 0)`,
+                  ? `translate3d(calc(${cursorPx}px - 100% - 12px), ${tooltipY}, 0)`
+                  : `translate3d(${cursorPx + 12}px, ${tooltipY}, 0)`,
                 transition: `transform ${transition}`,
                 willChange: "transform",
                 boxShadow: TOOLTIP_SHADOW,

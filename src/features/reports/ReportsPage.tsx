@@ -5,6 +5,9 @@ import { ChartColumn } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { BarChart, type BarSeries } from '../../components/ui/BarChart'
+import { PageHeader, SectionHeader } from '../../components/ui/Card'
+import { ChipRadioGroup } from '../../components/ui/Chip'
+import { SegmentedRing } from '../../components/ui/SegmentedRing'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { QueryError } from '../../components/ui/QueryError'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
@@ -20,7 +23,8 @@ import { useCards } from '../cards/api'
 import { useCategories } from '../categories/api'
 import { categoryLabel } from '../categories/label'
 import { useGroupMembers, useMyGroups } from '../groups/api'
-import { memberDisplayName } from '../groups/display'
+import { MEMBER_COLORS, memberColorOf, memberDisplayName } from '../groups/display'
+import { MemberShares } from '../groups/MemberShares'
 import { groupMonthStats } from '../groups/stats'
 import type { Group } from '../groups/types'
 import { useEntriesRange, useGroupPeriodEntries } from './api'
@@ -29,16 +33,14 @@ import {
 } from './aggregate'
 
 const PRESETS: ReportPreset[] = ['last3', 'last6', 'last12', 'thisYear']
-/** Cores das séries por membro, em ordem fixa (validadas para daltonismo). */
-const MEMBER_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)']
-const MAX_SERIES = 6
+const MAX_SERIES = MEMBER_COLORS.length
 
 type Period = { months: string[]; from: string; to: string; labels: string[]; titles: string[] }
 
 function Panel({ title, children, className = '' }: { title?: string; children: ReactNode; className?: string }) {
   return (
-    <section className={`rounded-[24px] bg-surface p-5 shadow-sheet sm:p-6 ${className}`}>
-      {title && <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{title}</h2>}
+    <section className={`rounded-card bg-surface p-5 sm:p-6 ${className}`}>
+      {title && <SectionHeader title={title} />}
       {children}
     </section>
   )
@@ -56,7 +58,7 @@ function Tile({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="min-w-0">
       <p className="text-[13px] font-semibold text-muted">{label}</p>
-      <div className="mt-1 truncate text-[22px] font-extrabold tracking-[-0.02em]">{children}</div>
+      <div className="mt-1 truncate text-[19px] font-extrabold tracking-[-0.03em] sm:text-[24px] sm:tracking-[-0.04em]">{children}</div>
     </div>
   )
 }
@@ -80,21 +82,24 @@ function useMoneyFormats(currency: string, locale: string) {
 
 type CategoryItem = { id: string; label: string; icon: string; color: string; amount: number; share: number }
 
-/** Barra empilhada fina (como no Início) e a lista das categorias com a fatia de cada uma. */
+/** Rosca das categorias (total no centro) ao lado da lista com a fatia de cada uma. */
 function CategoryBreakdown({ items, currency, locale }: { items: CategoryItem[]; currency: string; locale: string }) {
   const { t } = useTranslation()
   const total = items.reduce((s, c) => s + c.amount, 0)
   if (items.length === 0) return <p className="py-2 text-sm font-medium text-muted">{t('reports.empty')}</p>
   return (
-    <>
-      <div className="mb-5 flex h-3 gap-0.5 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
+    <div className="@container">
+    <div className="flex flex-col items-center gap-5 @md:flex-row @md:items-start">
+      <SegmentedRing size={136} stroke={13} ariaLabel={t('reports.byCategory')} className="@md:mt-1"
+        segments={items.map((c) => ({ key: c.id, value: c.amount, color: c.color }))}>
+        <span className="flex max-w-[96px] flex-col items-center">
+          <Amount cents={total} currency={currency} locale={locale} whole className="text-[17px] font-extrabold leading-tight tracking-[-0.03em]" />
+          <span className="text-[12px] font-semibold text-muted">{t('reports.expense')}</span>
+        </span>
+      </SegmentedRing>
+      <ul className="flex w-full min-w-0 flex-col @md:flex-1">
         {items.map((c) => (
-          <div key={c.id} className="h-full" style={{ width: `${total > 0 ? (c.amount / total) * 100 : 0}%`, backgroundColor: c.color }} />
-        ))}
-      </div>
-      <ul className="flex flex-col gap-1">
-        {items.map((c) => (
-          <li key={c.id} className="flex items-center gap-3.5 py-2">
+          <li key={c.id} className="flex items-center gap-3.5 py-1.5">
             <CategoryIcon icon={c.icon} color={c.color} size="sm" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[15px] font-bold">{c.label}</span>
@@ -104,7 +109,8 @@ function CategoryBreakdown({ items, currency, locale }: { items: CategoryItem[];
           </li>
         ))}
       </ul>
-    </>
+    </div>
+    </div>
   )
 }
 
@@ -145,29 +151,20 @@ export default function ReportsPage() {
   const groupsFailed = scope !== 'personal' && groupsQuery.isError
 
   return (
-    <section className="flex flex-col gap-5">
-      <div className="min-w-0 max-w-xl">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] lg:text-[34px]">{t('reports.title')}</h1>
-        <p className="mt-1 text-[15px] font-medium text-muted">{t('reports.subtitle')}</p>
-      </div>
+    <section className="flex flex-col gap-6">
+      <PageHeader title={t('reports.title')} subtitle={t('reports.subtitle')} />
 
       <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end lg:gap-x-6">
         {groups.length > 0 && (
           <div className="min-w-0">
             <ControlLabel>{t('reports.scope')}</ControlLabel>
-            <div role="radiogroup" aria-label={t('reports.scope')} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-              {[{ id: 'personal', name: t('reports.personal') }, ...groups].map((g) => {
-                const on = g.id === 'personal' ? !group && !waitingGroup && !groupsFailed : g.id === group?.id
-                return (
-                  <button key={g.id} type="button" role="radio" aria-checked={on}
-                    onClick={() => update({ scope: g.id === 'personal' ? null : g.id, src: null, cur: null })}
-                    className={`h-11 shrink-0 rounded-full px-5 text-sm font-bold transition focus-visible:outline-2 focus-visible:outline-primary ${
-                      on ? 'bg-primary-soft text-primary' : 'bg-surface text-muted shadow-sheet hover:text-fg'}`}>
-                    {g.name}
-                  </button>
-                )
-              })}
-            </div>
+            <ChipRadioGroup label={t('reports.scope')}
+              options={[{ id: 'personal', name: t('reports.personal') }, ...groups].map((g) => ({
+                value: g.id,
+                label: g.name,
+                checked: g.id === 'personal' ? !group && !waitingGroup && !groupsFailed : g.id === group?.id,
+              }))}
+              onChange={(id) => update({ scope: id === 'personal' ? null : id, src: null, cur: null })} />
           </div>
         )}
         <div className="min-w-0 lg:w-[26rem]">
@@ -234,7 +231,7 @@ function PersonalReport({ period, locale, src, cur, onSource, onCurrency }: {
     const cat = categoriesById.get(c.category_id)
     return {
       id: c.category_id, amount: c.amount, share: c.share,
-      label: cat ? categoryLabel(cat, t) : t('common.other'), icon: cat?.icon ?? 'tag', color: cat?.color ?? '#8a8699',
+      label: cat ? categoryLabel(cat, t) : t('common.other'), icon: cat?.icon ?? 'tag', color: cat?.color ?? 'var(--muted)',
     }
   }), [filtered, currency, categoriesById, t])
 
@@ -253,8 +250,8 @@ function PersonalReport({ period, locale, src, cur, onSource, onCurrency }: {
   const balance = income - expense
   const avg = Math.round(expense / Math.max(1, period.months.length))
   const series: BarSeries[] = [
-    { name: t('reports.income'), color: 'var(--success)', values: monthly.map((m) => m.income) },
-    { name: t('reports.expense'), color: 'var(--primary)', values: monthly.map((m) => m.expense) },
+    { name: t('reports.income'), color: 'var(--income)', values: monthly.map((m) => m.income) },
+    { name: t('reports.expense'), color: 'var(--expense)', values: monthly.map((m) => m.expense) },
   ]
 
   return (
@@ -334,12 +331,8 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
     label: categoryLabel({ name: c.name, i18n_key: c.key }, t),
   })), [stats, t])
 
-  // A cor segue a pessoa: posição dela na lista de membros (já ordenada pelo servidor), nunca o
-  // ranking nem o período — trocar 3→12 meses não repinta ninguém.
-  const colorOf = useMemo(() => {
-    const index = new Map(members.map((m, i) => [m.user_id, i]))
-    return (userId: string) => MEMBER_COLORS[(index.get(userId) ?? 0) % MEMBER_COLORS.length]
-  }, [members])
+  // A cor segue a pessoa (posição na lista de membros): trocar 3→12 meses não repinta ninguém.
+  const colorOf = useMemo(() => memberColorOf(members), [members])
 
   // Uma série por membro que gastou (até 6; os demais somados em "Outros"), na ordem da lista de membros.
   const series = useMemo<BarSeries[]>(() => {
@@ -396,25 +389,7 @@ function GroupReport({ group, period, locale }: { group: Group; period: Period; 
       </div>
       <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
         <Panel title={t('reports.byMember')}>
-          <ul className="flex flex-col gap-4">
-            {stats.byMember.map((m) => {
-              return (
-                <li key={m.user_id}>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="flex min-w-0 items-center gap-2">
-                      <span className="truncate text-[15px] font-bold">{memberDisplayName(m, myId, t)}</span>
-                      {m.left && <span className="shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-muted">{t('groups.left')}</span>}
-                    </span>
-                    <Amount cents={m.amount} currency={group.currency} locale={locale} className="shrink-0 text-[15px] font-bold" />
-                  </div>
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-                    <div className="h-full rounded-full" style={{ width: `${m.share}%`, backgroundColor: colorOf(m.user_id) }} />
-                  </div>
-                  <p className="mt-1 text-[13px] font-medium text-muted">{t('groups.share', { pct: m.share })}</p>
-                </li>
-              )
-            })}
-          </ul>
+          <MemberShares members={stats.byMember} myId={myId} currency={group.currency} locale={locale} colorOf={colorOf} />
         </Panel>
         <Panel title={t('reports.byCategory')}>
           <CategoryBreakdown items={categories} currency={group.currency} locale={locale} />

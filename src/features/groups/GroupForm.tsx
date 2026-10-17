@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../components/ui/Button'
+import { TILE_BUTTON } from '../../components/ui/Chip'
 import { SelectField } from '../../components/ui/SelectField'
 import { TextField } from '../../components/ui/TextField'
 import { normalizeLocale } from '../../lib/locale'
@@ -51,7 +52,7 @@ export function GroupForm({ initial, submitLabel, loading, error, onSubmit }: Pr
             const on = icon === n
             return (
               <button key={n} type="button" aria-pressed={on} aria-label={t('categories.iconOption', { n: i + 1 })} onClick={() => setIcon(n)}
-                className={`grid h-12 place-items-center rounded-2xl transition ${on ? 'bg-primary text-primary-fg' : 'bg-surface-2 text-muted hover:bg-surface-3'}`}>
+                className={TILE_BUTTON}>
                 <Icon className="size-5" aria-hidden="true" />
               </button>
             )

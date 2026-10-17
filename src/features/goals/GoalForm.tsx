@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { ChoiceTile } from '../../components/ui/Chip'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { SelectField } from '../../components/ui/SelectField'
 import { TextField } from '../../components/ui/TextField'
@@ -83,7 +84,7 @@ export function GoalForm({ goal, currency: initialCurrency, onDone }: Props) {
         {goal ? (
           <div className="flex flex-col gap-1.5">
             <span className="text-[13px] font-semibold text-muted">{t('goals.currency')}</span>
-            <span className="grid h-12 place-items-center rounded-2xl bg-surface-2 px-4 text-[15px] font-extrabold text-muted">{currency}</span>
+            <span className="grid h-13 place-items-center rounded-[18px] bg-surface px-4 text-[15px] font-extrabold text-muted">{currency}</span>
           </div>
         ) : (
           <SelectField label={t('goals.currency')} value={currency} disabled={busy} className="w-28"
@@ -102,13 +103,9 @@ export function GoalForm({ goal, currency: initialCurrency, onDone }: Props) {
           {GOAL_ICONS.map((name, i) => {
             const Icon = CATEGORY_ICONS[name]
             return (
-              <label key={name} className="grid aspect-square max-h-14 cursor-pointer place-items-center rounded-2xl border-2 border-transparent bg-surface-2 text-muted transition hover:bg-surface-3
-                has-checked:border-primary has-checked:bg-primary-soft has-checked:text-primary
-                has-focus-visible:ring-2 has-focus-visible:ring-primary has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-surface">
-                <input type="radio" name="goal-icon" value={name} className="sr-only" checked={icon === name}
-                  onChange={() => setIcon(name)} aria-label={t('categories.iconOption', { n: i + 1 })} />
+              <ChoiceTile key={name} className="aspect-square max-h-14 text-muted" name="goal-icon" value={name} checked={icon === name} onChange={() => setIcon(name)} aria-label={t('categories.iconOption', { n: i + 1 })}>
                 <Icon className="size-5" aria-hidden="true" />
-              </label>
+              </ChoiceTile>
             )
           })}
         </div>
@@ -118,7 +115,7 @@ export function GoalForm({ goal, currency: initialCurrency, onDone }: Props) {
         <legend className="mb-2 text-[13px] font-semibold text-muted">{t('goals.color')}</legend>
         <div className="grid w-fit grid-cols-4 gap-2 sm:grid-cols-8">
           {GOAL_COLORS.map((c, i) => (
-            <label key={c} className="grid size-11 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-surface
+            <label key={c} className="grid size-11 cursor-pointer place-items-center rounded-full ring-offset-2 ring-offset-bg
               has-checked:ring-2 has-checked:ring-fg has-focus-visible:ring-2 has-focus-visible:ring-primary" style={{ backgroundColor: c }}>
               <input type="radio" name="goal-color" value={c} className="sr-only" checked={color === c}
                 onChange={() => setColor(c)} aria-label={t('categories.colorOption', { n: i + 1 })} />

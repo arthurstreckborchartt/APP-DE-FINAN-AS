@@ -13,7 +13,7 @@ import { GroupIcon } from './GroupIcon'
 function Card({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center py-6">
-      <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-[28px] bg-surface p-6 text-center shadow-sheet sm:p-8">
+      <div className="flex w-full max-w-md flex-col items-center gap-4 rounded-card bg-surface p-6 text-center sm:p-8">
         {children}
       </div>
     </div>
@@ -43,12 +43,12 @@ export default function JoinGroupPage() {
   if (!data || unavailable) {
     return (
       <Card>
-        <span className="grid size-14 place-items-center rounded-full bg-surface-2 text-muted">
+        <span className="grid size-16 place-items-center rounded-[20px] bg-bg text-muted dark:bg-surface-2">
           <Link2Off className="size-7" aria-hidden="true" />
         </span>
         <h1 className="text-[22px] font-extrabold tracking-[-0.02em]">{t('groups.join.title')}</h1>
         <p role="alert" className="text-[15px] font-medium text-muted">{t(unavailable ?? 'groups.join.invalid')}</p>
-        <Link to="/groups" className="mt-1 rounded-full bg-surface-2 px-5 py-2.5 text-sm font-bold text-fg hover:bg-surface-3">{t('groups.title')}</Link>
+        <Link to="/groups" className="mt-1 inline-flex min-h-11 items-center rounded-full bg-ink px-5 text-sm font-bold text-ink-fg hover:bg-ink-hover">{t('groups.title')}</Link>
       </Card>
     )
   }

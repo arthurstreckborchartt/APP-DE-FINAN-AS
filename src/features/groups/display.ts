@@ -52,3 +52,15 @@ export function groupSaveErrorKey(error: unknown): string | null {
   if (isRpcHint(error, 'group_currency')) return 'groups.groupCurrency'
   return null
 }
+
+/** Cores por membro, em ordem fixa (validadas para daltonismo). */
+export const MEMBER_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)', 'var(--chart-6)']
+
+/**
+ * A cor segue a pessoa: posição dela na lista de membros (já ordenada pelo servidor), nunca o ranking
+ * nem o período — trocar de mês ou de período não repinta ninguém.
+ */
+export function memberColorOf(members: { user_id: string }[]): (userId: string) => string {
+  const index = new Map(members.map((m, i) => [m.user_id, i]))
+  return (userId) => MEMBER_COLORS[(index.get(userId) ?? 0) % MEMBER_COLORS.length]
+}

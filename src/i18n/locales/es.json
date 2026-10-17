@@ -222,7 +222,12 @@
     "firstInvoice": "La primera cuota entra en el resumen de {{month}}.",
     "installmentBadge": "{{n}}/{{total}}",
     "paidLocked": "Este movimiento está en un resumen pagado y no se puede modificar. Deshaz el pago del resumen para editarlo.",
-    "dailySpending": "Gastos por día"
+    "dailySpending": "Gastos por día",
+    "filters": "Filtros",
+    "filtersActive_one": "{{count}} activo",
+    "filtersActive_other": "{{count}} activos",
+    "clearFilters": "Borrar filtros",
+    "showResults": "Ver resultados"
   },
   "home": {
     "greeting": "¡Hola, {{name}}!",
@@ -248,7 +253,21 @@
     "invoiceOf": "Resumen {{card}}",
     "budget": "Presupuesto del mes",
     "budgetEmpty": "Define límites por categoría para seguir tus gastos.",
-    "budgetCta": "Crear presupuesto"
+    "budgetCta": "Crear presupuesto",
+    "leftToSpend": "Te queda para gastar este mes",
+    "overBudget": "Por encima del presupuesto este mes",
+    "heroBudgetRing": "{{pct}}% del presupuesto usado",
+    "heroIncomeRing": "{{pct}}% de tus entradas gastado",
+    "heroNoIncome": "Ninguna entrada este mes",
+    "ringIncome": "Tus entradas cubren el {{pct}}% de las salidas",
+    "ringExpense": "Tus salidas son el {{pct}}% de las entradas",
+    "ringCards": "{{pct}}% del límite de tus tarjetas en uso",
+    "cardsFree": "Límite libre",
+    "noCards": "Sin tarjetas",
+    "week": "Gastos de esta semana",
+    "weekDay": "{{date}}: {{amount}} en gastos",
+    "weekDayHidden": "{{date}}: {{pct}}% del promedio diario",
+    "weekDayNone": "{{date}}: sin gastos"
   },
   "cards": {
     "title": "Tarjetas",
@@ -273,7 +292,8 @@
     "emptyBody": "Registra tus tarjetas para seguir resúmenes, cuotas y el límite disponible.",
     "archivedSection": "Tarjetas archivadas",
     "deleteBlocked": "Esta tarjeta tiene movimientos. Archívala en lugar de eliminarla.",
-    "invoiceHistory": "Historial de resúmenes"
+    "invoiceHistory": "Historial de resúmenes",
+    "usedPct": "{{pct}}% del límite en uso"
   },
   "invoices": {
     "title": "Resúmenes",
@@ -406,7 +426,8 @@
       "open": "Abrir grupo",
       "full": "Este grupo ya tiene el máximo de 50 miembros.",
       "removed": "Te quitaron de este grupo. Para volver, pida un nuevo enlace al administrador."
-    }
+    },
+    "memberRing": "Reparto de gastos por miembro"
   },
   "budgets": {
     "title": "Presupuestos",
@@ -436,7 +457,10 @@
     "group": "Presupuesto del grupo",
     "groupEmpty": "Sin presupuesto en el grupo.",
     "groupEmptyAdmin": "Define límites mensuales por categoría para todo el grupo.",
-    "groupHint": "Suma los movimientos del grupo de todos los miembros."
+    "groupHint": "Suma los movimientos del grupo de todos los miembros.",
+    "heroLeft": "Disponible en el mes",
+    "heroOver": "Por encima del presupuesto del mes",
+    "byCategory": "Por categoría"
   },
   "goals": {
     "title": "Metas",

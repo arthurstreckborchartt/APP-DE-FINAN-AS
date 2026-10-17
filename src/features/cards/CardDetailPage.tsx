@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ChevronLeft, Pencil } from 'lucide-react'
+import { ChevronLeft, CreditCard, Pencil } from 'lucide-react'
 import { Amount } from '../../components/Amount'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { MoneyLineChart } from '../../components/MoneyLineChart'
 import { Button } from '../../components/ui/Button'
+import { Card, SectionHeader } from '../../components/ui/Card'
+import { HERO_NUMBER, HeroCard } from '../../components/ui/HeroCard'
+import { Ring } from '../../components/ui/Ring'
 import { QueryError } from '../../components/ui/QueryError'
 import { Sheet } from '../../components/ui/Sheet'
 import { FullScreenSpinner, Spinner } from '../../components/ui/Spinner'
@@ -64,14 +67,14 @@ function InvoiceItems({ invoiceId, currency, locale }: { invoiceId: string; curr
         return (
           <li key={i.id}>
             <Link to={`/transactions/${tx.id}/edit`}
-              className="flex items-center gap-3.5 rounded-2xl px-2 py-3 transition hover:bg-surface-2">
+              className="-mx-2 flex items-center gap-3.5 rounded-[18px] px-2 py-2.5 transition hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-primary">
               <CategoryIcon icon={cat?.icon ?? 'tag'} color={cat?.color ?? '#64748b'} />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[15px] font-bold">{tx.description || label}</span>
                 <span className="flex items-center gap-2 text-[13px] font-medium text-muted">
                   <span className="truncate">{label}</span>
                   {multi && (
-                    <span className="shrink-0 rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-bold text-fg">
+                    <span className="shrink-0 rounded-full bg-bg px-2 py-0.5 text-[11px] font-bold text-fg dark:bg-surface-2">
                       {t('transactions.installmentBadge', { n: i.number, total: tx.installments_count })}
                     </span>
                   )}
@@ -210,6 +213,7 @@ export default function CardDetailPage() {
     new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(parseISO(iso))
   const status = selected ? invoiceStatus(selected, today) : null
   const pct = card.limit_amount > 0 ? Math.min(100, Math.max(0, (card.used / card.limit_amount) * 100)) : 0
+  const limitParts = t('cards.ofLimit', { limit: '__L__' }).split('__L__')
 
   return (
     <section className="mx-auto max-w-3xl">
@@ -223,30 +227,43 @@ export default function CardDetailPage() {
       </div>
 
       <div className="mx-auto mt-4 max-w-md">
-        <CardTile card={card} locale={locale} />
-        <div className="mt-1 flex items-baseline justify-between gap-2 px-1">
-          <span className="text-[13px] font-semibold text-muted">{t('cards.used')} · {Math.round(pct)}%</span>
-          <Amount cents={card.used} currency={card.currency} locale={locale} className="text-[15px] font-extrabold" />
-        </div>
+        <CardTile card={card} locale={locale} summary={false} />
       </div>
 
+      <HeroCard className="mt-6"
+        value={<Amount cents={card.available} currency={card.currency} locale={locale} smallSymbol className={HERO_NUMBER} />}
+        label={t('cards.available')}
+        detail={
+          <p className="mt-1 text-[13px] font-medium text-muted">
+            {t('cards.used')}: <Amount cents={card.used} currency={card.currency} locale={locale} className="font-bold text-fg" />
+            {' '}{limitParts[0]}<Amount cents={card.limit_amount} currency={card.currency} locale={locale} />{limitParts[1]}
+          </p>
+        }
+        caption={t('cards.usedPct', { pct: Math.round(pct) })}
+        ring={
+          <Ring value={card.limit_amount > 0 ? card.used / card.limit_amount : 0} size={100} stroke={10} color={card.color}
+            overflowColor="var(--danger)" ariaLabel={t('cards.usedPct', { pct: Math.round(pct) })}>
+            <CreditCard className="size-7" style={{ color: card.color }} aria-hidden="true" />
+          </Ring>
+        } />
+
       {invoices.length > 1 && (
-        <section className="mx-auto mt-6 max-w-md rounded-[24px] bg-surface p-5 shadow-sheet">
-          <h2 className="mb-4 text-[17px] font-extrabold tracking-[-0.01em]">{t('cards.invoiceHistory')}</h2>
+        <Card className="mt-6">
+          <SectionHeader title={t('cards.invoiceHistory')} />
           <MoneyLineChart values={invoices.map((i) => i.total)} currency={card.currency} locale={locale}
             labels={invoices.map((i) => monthShort(i.reference_month, locale))} name={t('invoices.total')}
             color={card.color} />
-        </section>
+        </Card>
       )}
 
-      <h2 className="mt-8 text-lg font-extrabold tracking-[-0.02em]">{t('invoices.title')}</h2>
+      <h2 className="mt-8 text-[19px] font-extrabold tracking-[-0.02em]">{t('invoices.title')}</h2>
 
       {invoicesQuery.isPending ? (
         <div className="grid place-items-center py-10"><Spinner /></div>
       ) : invoicesQuery.isError ? (
         <QueryError onRetry={() => void invoicesQuery.refetch()} />
       ) : invoices.length === 0 ? (
-        <p className="mt-3 rounded-2xl bg-surface-2 px-4 py-6 text-center text-sm font-medium text-muted">{t('invoices.empty')}</p>
+        <p className="mt-3 rounded-card bg-surface px-4 py-6 text-center text-sm font-medium text-muted">{t('invoices.empty')}</p>
       ) : (
         <>
           <div ref={stripRef} role="radiogroup" aria-label={t('invoices.title')}
@@ -260,11 +277,11 @@ export default function CardDetailPage() {
                   ref={(el) => { pillRefs.current[inv.id] = el }}
                   onClick={() => setChosenId(inv.id)}
                   onKeyDown={(e) => onPillKey(e, index)}
-                  className={`flex shrink-0 flex-col items-start rounded-2xl px-4 py-2.5 text-left transition
+                  className={`flex shrink-0 flex-col items-start rounded-[20px] px-4 py-2.5 text-left transition
                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
-                    ${isSel ? 'bg-surface shadow-sheet ring-2 ring-fg' : 'bg-surface-2 hover:bg-surface-3'}`}>
+                    ${isSel ? 'bg-ink text-ink-fg' : 'bg-surface hover:bg-surface-2'}`}>
                   <span className="text-[15px] font-extrabold">{shortMonth(inv.reference_month, locale)}</span>
-                  <span className={`flex items-center gap-1.5 text-xs font-bold ${STATUS_TEXT[st]}`}>
+                  <span className={`flex items-center gap-1.5 text-xs font-bold ${isSel ? '' : STATUS_TEXT[st]}`}>
                     <span className={`size-2 rounded-full ${STATUS_DOT[st]}`} aria-hidden="true" />
                     {t(`invoices.status.${st}`)}
                   </span>
@@ -274,7 +291,7 @@ export default function CardDetailPage() {
           </div>
 
           {selected && status && (
-            <div className="mt-4 rounded-[24px] bg-surface p-5 shadow-sheet">
+            <div className="mt-4 rounded-card bg-surface p-5 sm:p-6">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <span className={`inline-flex items-center gap-1.5 text-sm font-bold ${STATUS_TEXT[status]}`}>
@@ -283,7 +300,7 @@ export default function CardDetailPage() {
                   </span>
                   <p className="mt-1 text-[13px] font-semibold text-muted">{t('invoices.total')}</p>
                   <Amount cents={selected.total} currency={selected.currency} locale={locale}
-                    className="block text-[34px] font-extrabold tracking-[-0.03em]" />
+                    className="block text-[36px] font-extrabold leading-[1.1] tracking-[-0.04em]" />
                 </div>
                 <div className="shrink-0 text-right text-[13px] font-medium text-muted">
                   <p>{t('invoices.closes', { date: dayMonth(selected.closing_date) })}</p>
@@ -297,7 +314,7 @@ export default function CardDetailPage() {
                     <span className="text-sm font-bold text-success">
                       {t('invoices.paidOn', { date: new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(new Date(selected.paid_at)) })}
                     </span>
-                    <Button variant="secondary" className="h-11" loading={reopen.isPending} onClick={() => void undoPayment(selected)}>
+                    <Button variant="plain" className="h-11" loading={reopen.isPending} onClick={() => void undoPayment(selected)}>
                       {t('invoices.reopen')}
                     </Button>
                   </div>
@@ -309,7 +326,7 @@ export default function CardDetailPage() {
                 )}
               </div>
 
-              <h3 className="mt-6 text-sm font-extrabold">{t('invoices.items')}</h3>
+              <h3 className="mt-6 text-[17px] font-extrabold tracking-[-0.02em]">{t('invoices.items')}</h3>
               <div className="mt-1">
                 <InvoiceItems key={selected.id} invoiceId={selected.id} currency={selected.currency} locale={locale} />
               </div>

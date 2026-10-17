@@ -48,7 +48,7 @@ export default function LoginPage() {
           required value={email} onChange={(e) => setEmail(e.target.value)} />
         <TextField label={t('auth.fields.password')} type="password" autoComplete="current-password"
           required value={password} onChange={(e) => setPassword(e.target.value)} />
-        <Link to="/forgot-password" className="self-end text-sm font-medium text-primary">{t('auth.login.forgot')}</Link>
+        <Link to="/forgot-password" className="-my-2 inline-flex min-h-11 items-center self-end text-sm font-semibold text-primary">{t('auth.login.forgot')}</Link>
         {error && <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
         <Button type="submit" full loading={loading}>{t('auth.login.submit')}</Button>
       </form>

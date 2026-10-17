@@ -36,6 +36,7 @@ One app for personal and shared money: each person keeps private finances and ca
 - Name: **FINANCE** (provisional, chosen by the owner; may change later).
 - Personality: **calm and trustworthy** — serious like a good bank, conveys control and tranquility. Not playful, not loud fintech.
 - Visual preference (2026-10-11): the owner chose the **category standard** — a familiar personal-finance/banking app — executed at the craft level of **Nubank** and **Revolut / Monzo**. Convention is the commitment; no novelty worlds.
+- Visual preference (2026-10-18, supersedes the above): the owner asked for the **Cal AI** app's visual language — white ground, flat light-gray cards, huge numbers beside thick progress rings, black pill buttons — keeping the violet accent and the two-circle logo.
 
 ## Evidence on Hand
 

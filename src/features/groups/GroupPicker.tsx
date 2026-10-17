@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CurrencyCode } from '../../lib/money'
+import { CHIP } from '../../components/ui/Chip'
 import { useMyGroups } from './api'
 import { GroupIcon } from './GroupIcon'
 
@@ -10,10 +11,6 @@ type Props = {
   /** Moeda da origem escolhida (conta ou cartão); `undefined` enquanto não há origem. */
   currency: CurrencyCode | undefined
 }
-
-const CHIP = `flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-transparent bg-surface-2 pl-1.5 pr-4 text-[13px] font-bold transition
-  hover:bg-surface-3 has-checked:border-primary has-checked:bg-primary-soft has-focus-visible:ring-4 has-focus-visible:ring-primary/25
-  has-disabled:cursor-not-allowed has-disabled:opacity-50 has-disabled:hover:bg-surface-2`
 
 /** Escolha do grupo de um lançamento ou recorrente. Só grupos na moeda da origem podem ser marcados. */
 export function GroupPicker({ value, onChange, currency }: Props) {
@@ -37,18 +34,18 @@ export function GroupPicker({ value, onChange, currency }: Props) {
     <fieldset>
       <legend className="mb-3 text-[13px] font-semibold text-muted">{t('groups.field')}</legend>
       <div className="flex flex-wrap gap-2">
-        <label className={`${CHIP} pl-4`}>
+        <label className={CHIP}>
           <input type="radio" name="group" className="sr-only" checked={value === null} onChange={() => onChange(null)} />
           {t('groups.none')}
         </label>
         {former && (
-          <label className={`${CHIP} pl-4`}>
+          <label className={CHIP}>
             <input type="radio" name="group" className="sr-only" checked readOnly />
             {t('groups.formerGroup')}
           </label>
         )}
         {groups.map((g) => (
-          <label key={g.id} className={CHIP}>
+          <label key={g.id} className={`${CHIP} pl-1`}>
             <input type="radio" name="group" className="sr-only" value={g.id} checked={value === g.id}
               disabled={!!currency && g.currency !== currency} onChange={() => onChange(g.id)} />
             <GroupIcon name={g.icon} size="sm" />

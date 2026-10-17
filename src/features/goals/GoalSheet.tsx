@@ -2,7 +2,6 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Archive, ArchiveRestore, Minus, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Amount } from '../../components/Amount'
-import { CategoryIcon } from '../../components/CategoryIcon'
 import { Button } from '../../components/ui/Button'
 import { QueryError } from '../../components/ui/QueryError'
 import { Spinner } from '../../components/ui/Spinner'
@@ -100,7 +99,7 @@ function History({ goal, locale }: { goal: Goal; locale: string }) {
 
   return (
     <section aria-labelledby="goal-history">
-      <h3 id="goal-history" className="text-[13px] font-extrabold uppercase tracking-[0.06em] text-muted">{t('goals.history')}</h3>
+      <h3 id="goal-history" className="text-[17px] font-extrabold tracking-[-0.02em]">{t('goals.history')}</h3>
       {error && <p role="alert" className="mt-2 rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">{error}</p>}
       {query.isPending ? (
         <div className="grid place-items-center py-6 text-primary"><Spinner /></div>
@@ -109,9 +108,9 @@ function History({ goal, locale }: { goal: Goal; locale: string }) {
       ) : query.data.length === 0 ? (
         <p className="mt-2 text-sm font-medium text-muted">{t('goals.historyEmpty')}</p>
       ) : (
-        <ul className="mt-1 flex flex-col">
+        <ul className="mt-3 flex flex-col gap-2">
           {query.data.map((c) => (
-            <li key={c.id} className="py-1">
+            <li key={c.id} className="rounded-[22px] bg-surface px-3.5 py-1">
               {confirming === c.id ? (
                 <ConfirmPanel message={t('goals.deleteContributionConfirm')} confirmLabel={t('goals.deleteContribution')}
                   danger loading={remove.isPending} onConfirm={() => void destroy(c)} onCancel={() => setConfirming(null)} />
@@ -126,7 +125,7 @@ function History({ goal, locale }: { goal: Goal; locale: string }) {
                     className={`shrink-0 whitespace-nowrap text-[15px] font-extrabold ${c.amount > 0 ? 'text-success' : ''}`} />
                   <button type="button" aria-label={t('goals.deleteContribution')} disabled={remove.isPending}
                     onClick={() => { setError(null); setConfirming(c.id) }}
-                    className="grid size-11 shrink-0 place-items-center rounded-full text-muted transition hover:bg-surface-2 hover:text-danger
+                    className="-mr-2 grid size-11 shrink-0 place-items-center rounded-full text-muted transition hover:bg-surface-2 hover:text-danger
                       focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-50">
                     <Trash2 className="size-4" aria-hidden="true" />
                   </button>
@@ -172,16 +171,11 @@ export function GoalSheet({ goal, locale, today, onEdit, onDeleted }: Props) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="rounded-2xl bg-surface-2 p-4">
+      <div className="rounded-card bg-surface p-5">
         {goal.archived && (
-          <span className="mb-3 inline-block rounded-full bg-surface px-2.5 py-1 text-[12px] font-extrabold text-muted">{t('common.archived')}</span>
+          <span className="mb-3 inline-block rounded-full bg-bg px-2.5 py-1 text-[12px] font-extrabold text-muted dark:bg-surface-2">{t('common.archived')}</span>
         )}
-        <div className="flex items-start gap-3">
-          <CategoryIcon icon={goal.icon} color={goal.color} size="sm" />
-          <span className="min-w-0 flex-1">
-            <GoalProgress goal={goal} locale={locale} today={today} track="bg-surface" />
-          </span>
-        </div>
+        <GoalProgress goal={goal} locale={locale} today={today} size={112} />
       </div>
 
       {kind ? (

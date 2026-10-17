@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LogOut, Trash2 } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
+import { TILE_BUTTON } from '../../components/ui/Chip'
 import { Sheet } from '../../components/ui/Sheet'
 import { TextField } from '../../components/ui/TextField'
 import { useDeleteGroup, useLeaveGroup, useUpdateGroup } from './api'
@@ -80,7 +81,7 @@ function SettingsContent({ group, onClose, onLeaving }: Omit<Props, 'open'>) {
                 const on = icon === n
                 return (
                   <button key={n} type="button" aria-pressed={on} aria-label={t('categories.iconOption', { n: i + 1 })} onClick={() => setIcon(n)}
-                    className={`grid h-12 place-items-center rounded-2xl transition ${on ? 'bg-primary text-primary-fg' : 'bg-surface-2 text-muted hover:bg-surface-3'}`}>
+                    className={TILE_BUTTON}>
                     <Icon className="size-5" aria-hidden="true" />
                   </button>
                 )
@@ -98,9 +99,9 @@ function SettingsContent({ group, onClose, onLeaving }: Omit<Props, 'open'>) {
           <ConfirmPanel message={t('groups.leaveConfirm')} confirmLabel={t('groups.leave')} danger
             loading={leave.isPending} onConfirm={() => void confirm()} onCancel={() => setPending(null)} />
         ) : pending === 'adminLeave' ? (
-          <div role="status" className="rounded-2xl bg-surface-2 p-4">
+          <div role="status" className="rounded-[20px] bg-surface p-4">
             <p className="text-sm font-semibold">{t('groups.adminMustTransfer')}</p>
-            <Button type="button" variant="ghost" className="mt-3 h-10 bg-surface" onClick={() => setPending(null)}>
+            <Button type="button" variant="plain" className="mt-3 h-10" onClick={() => setPending(null)}>
               {t('common.close')}
             </Button>
           </div>

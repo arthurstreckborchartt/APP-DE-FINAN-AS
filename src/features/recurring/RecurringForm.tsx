@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CategoryIcon } from '../../components/CategoryIcon'
 import { Button } from '../../components/ui/Button'
+import { ChoiceTile } from '../../components/ui/Chip'
 import { SegmentedControl } from '../../components/ui/SegmentedControl'
 import { SelectField } from '../../components/ui/SelectField'
 import { TextField } from '../../components/ui/TextField'
@@ -112,7 +113,7 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
               {' · '}{new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(`${startDate}T00:00:00`))}
             </span>
           </p>
-          <p className="rounded-2xl bg-surface-2 px-4 py-3 text-[13px] font-medium text-muted">{t('recurring.editHint')}</p>
+          <p className="rounded-[18px] bg-surface px-4 py-3 text-[13px] font-medium text-muted">{t('recurring.editHint')}</p>
         </>
       ) : (
         <SegmentedControl label={t('transactions.kindFilter')} value={kind} onChange={changeKind}
@@ -130,13 +131,10 @@ export function RecurringForm({ recurring, accounts, cards, categories, loading,
         <legend className="mb-3 text-[13px] font-semibold text-muted">{t('transactions.category')}</legend>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {selectableCategories.map((c) => (
-            <label key={c.id} className="flex cursor-pointer flex-col items-center gap-1.5 rounded-2xl border-2 border-transparent bg-surface-2 px-1.5 py-3 text-center transition
-              hover:bg-surface-3 has-checked:border-primary has-checked:bg-primary-soft has-focus-visible:ring-4 has-focus-visible:ring-primary/25">
-              <input type="radio" name="category" className="sr-only" value={c.id} checked={categoryId === c.id}
-                onChange={() => { setCategoryId(c.id); setErrors({}) }} />
+            <ChoiceTile key={c.id} name="category" value={c.id} checked={categoryId === c.id} onChange={() => { setCategoryId(c.id); setErrors({}) }}>
               <CategoryIcon icon={c.icon} color={c.color} size="sm" />
               <span className="line-clamp-2 text-[12px] font-bold leading-tight">{categoryLabel(c, t)}</span>
-            </label>
+            </ChoiceTile>
           ))}
         </div>
         {errors.category && <p className="mt-2 text-[13px] font-medium text-danger">{errors.category}</p>}
